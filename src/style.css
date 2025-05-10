@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Default dark theme styles */
+:root {
+  --bg-primary: theme('colors.gray.800');
+  --bg-secondary: theme('colors.gray.700');
+  --text-primary: theme('colors.white');
+  --text-secondary: theme('colors.gray.300');
+  --accent: theme('colors.blue.600');
+}
+
+/* Light theme styles */
+:root.light-theme {
+  --bg-primary: theme('colors.white');
+  --bg-secondary: theme('colors.gray.100');
+  --text-primary: theme('colors.gray.800');
+  --text-secondary: theme('colors.gray.600');
+  --accent: theme('colors.blue.500');
+}
+
+/* Apply theme variables */
+.theme-bg-primary {
+  @apply bg-gray-800;
+}
+
+.theme-bg-secondary {
+  @apply bg-gray-700;
+}
+
+.theme-text-primary {
+  @apply text-white;
+}
+
+.theme-text-secondary {
+  @apply text-gray-300;
+}
+
+/* Light theme application */
+.light-theme .theme-bg-primary {
+  @apply bg-white;
+}
+
+.light-theme .theme-bg-secondary {
+  @apply bg-gray-100;
+}
+
+.light-theme .theme-text-primary {
+  @apply text-gray-800;
+}
+
+.light-theme .theme-text-secondary {
+  @apply text-gray-600;
+}
+
+body {
+  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  @apply bg-gray-100;
+}
