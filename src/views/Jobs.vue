@@ -168,28 +168,28 @@ export default {
       },
       jobs: [
         { 
-          id: 'job-123', 
+          id: '73b6a7e9-51e0-4982-a106-f54c4369271a', 
           topic: 'data-processing', 
           status: 'Running', 
           created: '2023-05-15 14:30:45', 
           updated: '2023-05-15 14:35:12' 
         },
         { 
-          id: 'job-122', 
+          id: 'f56cf42d-8b8a-4b95-b088-ae42dd9c1b56', 
           topic: 'email-notifications', 
           status: 'Succeeded', 
           created: '2023-05-15 14:20:33', 
           updated: '2023-05-15 14:25:47' 
         },
         { 
-          id: 'job-121', 
+          id: '3a7f1e5c-d254-4071-beff-9fe72171c6b9', 
           topic: 'report-generation', 
           status: 'Failed', 
           created: '2023-05-15 14:10:22', 
           updated: '2023-05-15 14:15:36' 
         },
         { 
-          id: 'job-120', 
+          id: '2c8d69b4-a61f-4e0c-a2e6-791dd0f68991', 
           topic: 'file-uploads', 
           status: 'Succeeded', 
           created: '2023-05-15 14:00:11', 

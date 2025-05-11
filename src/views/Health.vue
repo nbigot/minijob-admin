@@ -202,14 +202,14 @@ export default {
       },
       stalledJobs: [
         {
-          id: 'job-117',
+          id: 'a8f2e357-1d2c-4b6e-9d0f-e5c7b3461d9a',
           topic: 'data-processing',
           status: 'Stalled',
           created: '2023-05-14 10:30:45',
           duration: '1d 4h 25m'
         },
         {
-          id: 'job-112',
+          id: 'bd93c8e2-4f57-49e7-b5d8-1a2b3c4d5e6f',
           topic: 'report-generation',
           status: 'Stalled',
           created: '2023-05-14 08:15:22',

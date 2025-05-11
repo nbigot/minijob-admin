@@ -371,9 +371,9 @@ const fetchDashboardData = async () => {
         topic: ['data-processing', 'email-notifications', 'report-generation', 'file-uploads', 'other'][Math.floor(Math.random() * 5)]
       })),
       lockedResources: [
-        { id: 1, name: 'database-connection', jobId: 'job-123', lockedSince: new Date(Date.now() - 5 * 60 * 1000) },
-        { id: 2, name: 'file-system', jobId: 'job-119', lockedSince: new Date(Date.now() - 25 * 60 * 1000) },
-        { id: 3, name: 'api-key', jobId: 'job-117', lockedSince: new Date(Date.now() - 35 * 60 * 1000) }
+        { id: 1, name: 'database-connection', jobId: '73b6a7e9-51e0-4982-a106-f54c4369271a', lockedSince: new Date(Date.now() - 5 * 60 * 1000) },
+        { id: 2, name: 'file-system', jobId: '9e7b3fee-84c5-4fd0-b8e6-8e735c7deca1', lockedSince: new Date(Date.now() - 25 * 60 * 1000) },
+        { id: 3, name: 'api-key', jobId: 'a8f2e357-1d2c-4b6e-9d0f-e5c7b3461d9a', lockedSince: new Date(Date.now() - 35 * 60 * 1000) }
       ],
       serverStatus: healthData.status || 'healthy',
       memoryUsage: 42,

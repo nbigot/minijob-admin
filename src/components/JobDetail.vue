@@ -153,8 +153,8 @@
 
         <div v-if="activeTab === 'logs'" class="bg-gray-50 dark:bg-gray-700 p-4 rounded-md">
           <pre class="text-sm text-gray-800 dark:text-gray-200 whitespace-pre-wrap">
-[14:30:45] INFO: Job job-123 created
-[14:31:30] INFO: Job job-123 moved to queue
+[14:30:45] INFO: Job 73b6a7e9-51e0-4982-a106-f54c4369271a created
+[14:31:30] INFO: Job 73b6a7e9-51e0-4982-a106-f54c4369271a moved to queue
 [14:32:45] INFO: Locked resource: database-connection
 [14:35:12] INFO: Started processing data
 [14:36:25] INFO: Processing batch 1/10
@@ -172,7 +172,7 @@ export default {
   props: {
     jobId: {
       type: String,
-      default: 'job-123'
+      default: '73b6a7e9-51e0-4982-a106-f54c4369271a'
     }
   },
   data() {

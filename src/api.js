@@ -3,11 +3,11 @@
 
 // Mock data
 const mockJobs = [
-  { id: 'job-123', status: 'running', created: new Date(Date.now() - 20 * 60 * 1000), type: 'data-processing' },
-  { id: 'job-122', status: 'queued', created: new Date(Date.now() - 45 * 60 * 1000), type: 'email-notifications' },
-  { id: 'job-121', status: 'failed', created: new Date(Date.now() - 3 * 60 * 60 * 1000), type: 'report-generation' },
-  { id: 'job-120', status: 'succeeded', created: new Date(Date.now() - 5 * 60 * 60 * 1000), type: 'file-uploads' },
-  { id: 'job-119', status: 'created', created: new Date(Date.now() - 10 * 60 * 1000), type: 'data-processing' }
+  { id: '73b6a7e9-51e0-4982-a106-f54c4369271a', status: 'running', created: new Date(Date.now() - 20 * 60 * 1000), type: 'data-processing' },
+  { id: 'f56cf42d-8b8a-4b95-b088-ae42dd9c1b56', status: 'queued', created: new Date(Date.now() - 45 * 60 * 1000), type: 'email-notifications' },
+  { id: '3a7f1e5c-d254-4071-beff-9fe72171c6b9', status: 'failed', created: new Date(Date.now() - 3 * 60 * 60 * 1000), type: 'report-generation' },
+  { id: '2c8d69b4-a61f-4e0c-a2e6-791dd0f68991', status: 'succeeded', created: new Date(Date.now() - 5 * 60 * 60 * 1000), type: 'file-uploads' },
+  { id: '9e7b3fee-84c5-4fd0-b8e6-8e735c7deca1', status: 'created', created: new Date(Date.now() - 10 * 60 * 1000), type: 'data-processing' }
 ];
 
 const mockHealth = {
@@ -18,11 +18,11 @@ const mockHealth = {
 };
 
 const mockResources = [
-  { id: 1, name: 'database-connection', status: 'locked', jobId: 'job-123' },
-  { id: 2, name: 'file-system', status: 'locked', jobId: 'job-119' },
-  { id: 3, name: 'api-key', status: 'locked', jobId: 'job-117' },
-  { id: 4, name: 'email-sender', status: 'available', jobId: null },
-  { id: 5, name: 'report-generator', status: 'available', jobId: null }
+  { id: 1, name: 'database-connection', status: 'locked', jobId: '73b6a7e9-51e0-4982-a106-f54c4369271a' },
+  { id: 2, name: 'file-system', status: 'locked', jobId: '9e7b3fee-84c5-4fd0-b8e6-8e735c7deca1' },
+  { id: 3, name: 'api-key', status: 'locked', jobId: 'a8f2e357-1d2c-4b6e-9d0f-e5c7b3461d9a' },
+  { id: 4, name: 'email-sender', status: 'available', jobId: '1e0b3fee-84c5-4fd0-b8e6-8e735c7deca2' },
+  { id: 5, name: 'report-generator', status: 'available', jobId: '33ab3fee-84c5-4fd0-b8e6-8e735c7de321' }
 ];
 
 // API client
