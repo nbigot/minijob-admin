@@ -1,5 +1,5 @@
 <template>
-  <aside class="h-screen flex flex-col transition-all duration-300" 
+  <aside class="h-screen flex flex-col transition-all duration-100" 
          :class="[
            isCollapsed ? 'w-16' : 'w-64', 
            isDarkTheme ? 'bg-gray-900 text-white' : 'bg-primary-800 text-white'
