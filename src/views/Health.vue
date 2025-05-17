@@ -59,8 +59,8 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <h4 class="font-medium text-gray-800 mb-2 dark:text-gray-200">Job Processing Rate</h4>
-          <div class="h-64 bg-gray-50 rounded-lg border border-gray-200 dark:bg-gray-700 dark:border-gray-600 p-4 flex items-center justify-center">
-            <p class="text-gray-500 dark:text-gray-300">Job Processing Rate Chart</p>
+          <div class="h-64 bg-gray-50 rounded-lg border border-gray-200 dark:bg-gray-700 dark:border-gray-600 p-4">
+            <JobProcessingChart :job-data="jobProcessingData" />
           </div>
         </div>
         <div>
@@ -181,9 +181,13 @@
 </template>
 
 <script>
+import JobProcessingChart from '../components/JobProcessingChart.vue';
 
 export default {
   name: 'Health',
+  components: {
+    JobProcessingChart
+  },
   data() {
     return {
       systemInfo: {
@@ -219,11 +223,55 @@ export default {
           created: '2023-05-14 08:15:22',
           duration: '1d 6h 40m'
         }
-      ]
+      ],
+      jobProcessingData: {
+        labels: ['8:00', '9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00'],
+        succeeded: [12, 19, 15, 21, 25, 31, 28, 24],
+        failed: [2, 4, 1, 3, 2, 0, 2, 1],
+        pending: [5, 8, 3, 4, 6, 9, 5, 7]
+      },
+      simulationInterval: null
     }
   },
   methods: {
-    // Format server status
+    // Job processing simulation methods
+    startJobProcessingSimulation() {
+      this.simulationInterval = setInterval(() => {
+        // Simulate new data point by removing first point and adding a new one
+        const newLabel = this.getNextHourLabel(this.jobProcessingData.labels[this.jobProcessingData.labels.length - 1]);
+        
+        // Create new arrays instead of manipulating the existing ones for reactivity
+        const newLabels = [...this.jobProcessingData.labels.slice(1), newLabel];
+        const newSucceeded = [...this.jobProcessingData.succeeded.slice(1), this.getRandomInt(15, 35)];
+        const newFailed = [...this.jobProcessingData.failed.slice(1), this.getRandomInt(0, 5)];
+        const newPending = [...this.jobProcessingData.pending.slice(1), this.getRandomInt(3, 10)];
+        
+        // Update data - using Object.assign to ensure reactivity
+        this.jobProcessingData = {
+          labels: newLabels,
+          succeeded: newSucceeded,
+          failed: newFailed,
+          pending: newPending
+        };
+      }, 5000); // Update every 5 seconds
+    },
+    
+    stopJobProcessingSimulation() {
+      if (this.simulationInterval) {
+        clearInterval(this.simulationInterval);
+      }
+    },
+    
+    getNextHourLabel(lastLabel) {
+      // Simple simulation to get the next hour
+      const [hour, minute] = lastLabel.split(':').map(Number);
+      const nextHour = (hour + 1) % 24;
+      return `${nextHour}:${minute < 10 ? '0' + minute : minute}`;
+    },
+    
+    getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    },
     formatServerStatus(status) {
       if (!status) return 'Unknown';
       
@@ -298,8 +346,12 @@ export default {
   },
   mounted() {
     // Initialize health monitoring
-    console.log('Health monitoring initialized')
+    console.log('Health monitoring initialized');
     // Add real-time monitoring logic here
+    this.startJobProcessingSimulation();
+  },
+  beforeUnmount() {
+    this.stopJobProcessingSimulation();
   }
 }
 </script>
