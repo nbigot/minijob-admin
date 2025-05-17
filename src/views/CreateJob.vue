@@ -16,26 +16,30 @@
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
       <form @submit.prevent="submitJob">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <!-- Topic Selection -->
+          <!-- Topic Selection with Editable Dropdown -->
           <div>
             <label for="topic" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Topic</label>
-            <select id="topic" v-model="job.topic" required class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50">
-              <option value="" disabled>Select a topic</option>
-              <option value="data-processing">data-processing</option>
-              <option value="email-notifications">email-notifications</option>
-              <option value="report-generation">report-generation</option>
-              <option value="file-uploads">file-uploads</option>
-            </select>
+            <div class="relative">
+              <input 
+                list="topic-options" 
+                id="topic" 
+                v-model="job.topic" 
+                required 
+                class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50"
+                placeholder="Select or enter a new topic"
+              >
+              <datalist id="topic-options">
+                <option v-for="topic in availableTopics" :key="topic" :value="topic">{{ topic }}</option>
+              </datalist>
+            </div>
+            <p class="text-xs text-gray-500 mt-1">Select from existing topics or type a new one</p>
           </div>
 
           <!-- Priority -->
           <div>
             <label for="priority" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Priority</label>
             <select id="priority" v-model="job.priority" required class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50">
-              <option value="low">Low</option>
-              <option value="medium">Medium</option>
-              <option value="high">High</option>
-              <option value="critical">Critical</option>
+              <option v-for="(label, value) in priorityOptions" :key="value" :value="value">{{ label }}</option>
             </select>
           </div>
 
@@ -79,6 +83,20 @@ export default {
   name: 'CreateJob',
   data() {
     return {
+      availableTopics: [
+        'data-processing',
+        'email-notifications',
+        'report-generation',
+        'file-uploads',
+        'user-onboarding',
+        'data-backup'
+      ],
+      priorityOptions: {
+        low: 'Low',
+        medium: 'Medium',
+        high: 'High',
+        critical: 'Critical'
+      },
       job: {
         topic: '',
         priority: 'medium',
