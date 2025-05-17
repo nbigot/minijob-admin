@@ -216,7 +216,12 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ resource.jobId }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ formatDateRelative(resource.lockedSince) }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                      <button @click="unlockResource(resource.id)" class="text-red-600 hover:text-red-900 dark:text-red-600">Unlock</button>
+                      <button 
+                        class="text-red-600 hover:text-red-900 dark:text-red-700"
+                        @click="unlockResource(resource.id)"
+                      >
+                        <i class="fas fa-unlock mr-1"></i> Unlock
+                      </button>
                     </td>
                   </tr>
                   <tr v-if="!dashboardData.lockedResources || dashboardData.lockedResources.length === 0">
