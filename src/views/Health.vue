@@ -59,13 +59,13 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <h4 class="font-medium text-gray-800 mb-2 dark:text-gray-200">Job Processing Rate</h4>
-          <div class="h-64 bg-gray-50 rounded-lg border border-gray-200 p-4 flex items-center justify-center">
+          <div class="h-64 bg-gray-50 rounded-lg border border-gray-200 dark:bg-gray-700 dark:border-gray-600 p-4 flex items-center justify-center">
             <p class="text-gray-500 dark:text-gray-300">Job Processing Rate Chart</p>
           </div>
         </div>
         <div>
           <h4 class="font-medium text-gray-800 mb-2 dark:text-gray-200">Resource Usage</h4>
-          <div class="h-64 bg-gray-50 rounded-lg border border-gray-200 p-4 flex items-center justify-center">
+          <div class="h-64 bg-gray-50 rounded-lg border border-gray-200 dark:bg-gray-700 dark:border-gray-600 p-4 flex items-center justify-center">
             <p class="text-gray-500 dark:text-gray-300">Resource Usage Chart</p>
           </div>
         </div>
@@ -92,7 +92,7 @@
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-200">{{ job.id }}</td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{{ job.topic }}</td>
               <td class="px-6 py-4 whitespace-nowrap">
-                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">{{ job.status }}</span>
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-orange-200 text-orange-800">{{ job.status }}</span>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{{ job.created }}</td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{{ job.duration }}</td>
