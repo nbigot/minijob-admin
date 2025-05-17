@@ -227,51 +227,6 @@
             </div>
           </div>
         </div>
-
-        <!-- System Health -->
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-          <h3 class="text-lg font-semibold mb-4 dark:text-gray-200">System Health</h3>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="border rounded-lg p-4 dark:border-gray-700">
-              <div class="flex items-center">
-                <div class="rounded-full bg-green-100 p-3 flex items-center justify-center w-10 h-10">
-                  <i class="fas fa-server text-green-500 text-sm"></i>
-                </div>
-                <div class="ml-4">
-                  <h4 class="text-gray-500 text-sm dark:text-gray-400">Server Status</h4>
-                  <div class="flex items-center">
-                    <span class="h-3 w-3 rounded-full mr-2" :class="getServerStatusColor(dashboardData.serverStatus)"></span>
-                    <h3 class="text-lg font-bold dark:text-gray-300">{{ formatServerStatus(dashboardData.serverStatus) }}</h3>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div class="border rounded-lg p-4 dark:border-gray-700">
-              <div class="flex items-center">
-                <div class="rounded-full bg-blue-100 p-3 flex items-center justify-center w-10 h-10">
-                  <i class="fas fa-memory text-blue-500 text-sm"></i>
-                </div>
-                <div class="ml-4">
-                  <h4 class="text-gray-500 text-sm dark:text-gray-400">Memory Usage</h4>
-                  <h3 class="text-lg font-bold dark:text-gray-300">{{ dashboardData.memoryUsage || '42' }}%</h3>
-                </div>
-              </div>
-            </div>
-            
-            <div class="border rounded-lg p-4 dark:border-gray-700">
-              <div class="flex items-center">
-                <div class="rounded-full bg-purple-100 p-3 flex items-center justify-center w-10 h-10">
-                  <i class="fas fa-tachometer-alt text-purple-500 text-sm"></i>
-                </div>
-                <div class="ml-4">
-                  <h4 class="text-gray-500 text-sm dark:text-gray-400">Response Time</h4>
-                  <h3 class="text-lg font-bold dark:text-gray-300">{{ dashboardData.responseTime || '124' }}ms</h3>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </main>
@@ -415,24 +370,6 @@ const formatDate = (dateString) => {
 
 // Same as formatDate for this demo
 const formatDateRelative = formatDate;
-
-// Format server status
-const formatServerStatus = (status) => {
-  if (!status) return 'Unknown';
-  
-  return status === 'healthy' ? 'Healthy' : 
-         status === 'warning' ? 'Warning' : 
-         status === 'unhealthy' ? 'Unhealthy' : 'Unknown';
-};
-
-// Get server status color
-const getServerStatusColor = (status) => {
-  if (!status) return 'bg-gray-500';
-  
-  return status === 'healthy' ? 'bg-green-500' : 
-         status === 'warning' ? 'bg-yellow-500' : 
-         status === 'unhealthy' ? 'bg-red-500' : 'bg-gray-500';
-};
 
 // Get status class
 const getStatusClass = (status) => {

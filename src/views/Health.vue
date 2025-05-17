@@ -17,8 +17,8 @@
             <div class="ml-4">
               <h4 class="text-gray-500 text-sm dark:text-gray-300">Server Status</h4>
               <div class="flex items-center">
-                <span class="h-3 w-3 bg-green-500 rounded-full mr-2"></span>
-                <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200">{{ healthStatus.server.status }}</h3>
+                <span class="h-3 w-3 rounded-full mr-2" :class="getServerStatusColor(healthStatus.server.status)"></span>
+                <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200">{{ formatServerStatus(healthStatus.server.status) }}</h3>
               </div>
             </div>
           </div>
@@ -31,7 +31,10 @@
             </div>
             <div class="ml-4">
               <h4 class="text-gray-500 text-sm dark:text-gray-300">Response Time</h4>
-              <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200">{{ healthStatus.responseTime }}</h3>
+              <div class="flex items-center">
+                <span class="h-3 w-3 rounded-full mr-2" :class="getServerResponseTimeColor(healthStatus.responseTime)"></span>
+                <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200">{{ healthStatus.responseTime }}ms</h3>
+              </div>
             </div>
           </div>
         </div>
@@ -43,7 +46,7 @@
             </div>
             <div class="ml-4">
               <h4 class="text-gray-500 text-sm dark:text-gray-300">Last Checked</h4>
-              <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200">{{ healthStatus.lastChecked }}</h3>
+              <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200">{{ formatLastChecked(healthStatus.lastChecked) }}</h3>
             </div>
           </div>
         </div>
@@ -124,11 +127,11 @@
               <tr>
                 <td class="py-2 text-sm font-medium text-gray-500 dark:text-gray-400">Server Version</td>
                 <td class="py-2 text-sm text-gray-900 dark:text-gray-300"><a href="https://github.com/nbigot/minijob" target="_blank" class="button github-button" title="GitHub">
-                  <font-awesome-icon icon="fa-brands fa-github" class="mr-2" />{{ systemInfo.version }}</a></td>
+                  <font-awesome-icon icon="fa-brands fa-github" class="mr-2" />MiniJob {{ systemInfo.version }}</a></td>
               </tr>
               <tr>
                 <td class="py-2 text-sm font-medium text-gray-500 dark:text-gray-400">Uptime</td>
-                <td class="py-2 text-sm text-gray-900 dark:text-gray-300">{{ systemInfo.uptime }}</td>
+                <td class="py-2 text-sm text-gray-900 dark:text-gray-300">{{ formatUptime(systemInfo.uptime) }}</td>
               </tr>
               <tr>
                 <td class="py-2 text-sm font-medium text-gray-500 dark:text-gray-400">Host</td>
@@ -178,13 +181,14 @@
 </template>
 
 <script>
+
 export default {
   name: 'Health',
   data() {
     return {
       systemInfo: {
-        version: 'MiniJob v1.2.3',
-        uptime: '3 days, 7 hours, 22 minutes',
+        version: 'v1.2.3',
+        uptime: 1234567, // in seconds
         host: 'minijob-server-01',
         environment: 'Production'
       },
@@ -195,10 +199,10 @@ export default {
       },
       healthStatus: {
         server: {
-          status: 'Healthy'
+          status: 'healthy'
         },
-        responseTime: '124ms',
-        lastChecked: 'Just now'
+        responseTime: 17,
+        lastChecked: 1747464500 // Unix timestamp
       },
       stalledJobs: [
         {
@@ -219,6 +223,54 @@ export default {
     }
   },
   methods: {
+    // Format server status
+    formatServerStatus(status) {
+      if (!status) return 'Unknown';
+      
+      return status === 'healthy' ? 'Healthy' : 
+             status === 'warning' ? 'Warning' : 
+             status === 'unhealthy' ? 'Unhealthy' : 'Unknown';
+    },
+    // Get server status color
+    getServerStatusColor(status) {
+      if (!status) return 'bg-gray-500';
+      
+      return status === 'healthy' ? 'bg-green-500' : 
+             status === 'warning' ? 'bg-yellow-500' : 
+             status === 'unhealthy' ? 'bg-red-500' : 'bg-gray-500';
+    },
+    // Get server response time color
+    getServerResponseTimeColor(responseTime) {
+      // Assuming response time is a integer in milliseconds
+      if (!responseTime) return 'bg-gray-500';
+
+      return responseTime < 100 ? 'bg-blue-500' : 
+             responseTime < 300 ? 'bg-yellow-500' : 
+             responseTime >= 300 ? 'bg-red-500' : 'bg-gray-500';
+    },
+    // Format server last checked time
+    formatLastChecked(lastChecked) {
+      // Assuming lastChecked is a Unix timestamp
+      if (!lastChecked) return 'Unknown';
+      if (lastChecked === 0) return 'Never';
+
+      // Compare with current time
+      const now = Math.floor(Date.now() / 1000);
+      const diff = now - lastChecked;
+      if (diff < 60) return 'Just now';
+      if (diff < 3600) return `${Math.floor(diff / 60)} minutes ago`;
+      if (diff < 86400) return `${Math.floor(diff / 3600)} hours ago`;
+      return `${Math.floor(diff / 86400)} days ago`;
+    },
+    // Format server uptime
+    formatUptime(uptime) {
+      // Assuming uptime is in seconds
+      if (!uptime) return 'Unknown';
+      const days = Math.floor(uptime / (24 * 3600));
+      const hours = Math.floor((uptime % (24 * 3600)) / 3600);
+      const minutes = Math.floor((uptime % (24 * 3600)) % 3600 / 60);
+      return `${days} days, ${hours} hours, ${minutes} minutes`;
+    },
     viewJobDetails(jobId) {
       console.log(`Viewing details for job: ${jobId}`)
       // Implement view job details logic
