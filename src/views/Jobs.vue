@@ -281,7 +281,14 @@ export default {
       console.log('Delete job', id);
     },
     navigateToCreateJob() {
-      this.$router.push('/job/create');
+      // Get unique topics from the jobs list
+      const topics = [...new Set(this.jobs.map(job => job.topic))];
+      
+      // Navigate to create job page with topics as route params
+      this.$router.push({
+        path: '/job/create',
+        query: { topics: JSON.stringify(topics) }
+      });
     }
   }
 }

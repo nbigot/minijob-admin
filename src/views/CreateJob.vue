@@ -29,7 +29,7 @@
                 placeholder="Select or enter a new topic"
               >
               <datalist id="topic-options">
-                <option v-for="topic in availableTopics" :key="topic" :value="topic">{{ topic }}</option>
+                <option v-for="topic in existingTopics" :key="topic" :value="topic">{{ topic }}</option>
               </datalist>
             </div>
             <p class="text-xs text-gray-500 mt-1">Select from existing topics or type a new one</p>
@@ -81,16 +81,35 @@
 <script>
 export default {
   name: 'CreateJob',
+  props: {
+    existingTopics: {
+      type: Array,
+      default: () => [
+        'mock-data-processing',
+        'mock-email-notifications',
+        'mock-report-generation',
+        'mock-file-uploads',
+        'mock-user-onboarding',
+        'mock-data-backup'
+      ]
+    }
+  },
+  created() {
+    // Check if topics were passed through query params
+    if (this.$route.query.topics) {
+      try {
+        const topicsFromRoute = JSON.parse(this.$route.query.topics);
+        if (Array.isArray(topicsFromRoute) && topicsFromRoute.length > 0) {
+          // Override the default existingTopics with the ones from the route
+          this.existingTopics = topicsFromRoute;
+        }
+      } catch (e) {
+        console.error('Error parsing topics from route:', e);
+      }
+    }
+  },
   data() {
     return {
-      availableTopics: [
-        'data-processing',
-        'email-notifications',
-        'report-generation',
-        'file-uploads',
-        'user-onboarding',
-        'data-backup'
-      ],
       priorityOptions: {
         low: 'Low',
         medium: 'Medium',
