@@ -182,6 +182,7 @@
 
 <script>
 import JobProcessingChart from '../components/JobProcessingChart.vue';
+import { jobService, healthService } from '../services/index.js';
 
 export default {
   name: 'Health',
@@ -321,34 +322,178 @@ export default {
     },
     viewJobDetails(jobId) {
       console.log(`Viewing details for job: ${jobId}`)
-      // Implement view job details logic
+      // TODO: Navigate to job details page or open modal
     },
-    cancelJob(jobId) {
+    
+    async cancelJob(jobId) {
       if (confirm(`Are you sure you want to cancel job ${jobId}?`)) {
-        console.log(`Cancelling job: ${jobId}`)
-        // Implement cancel job logic
+        try {
+          await jobService.cancelJob(jobId);
+          
+          // Update job status in the list
+          const job = this.stalledJobs.find(j => j.id === jobId);
+          if (job) {
+            job.status = 'Cancelled';
+          }
+          
+          this.$notify({
+            title: 'Success',
+            text: `Job ${jobId} was cancelled successfully`,
+            type: 'success'
+          });
+        } catch (error) {
+          console.error('Error cancelling job:', error);
+          this.$notify({
+            title: 'Error',
+            text: error.message,
+            type: 'error'
+          });
+        }
       }
     },
-    deleteJob(jobId) {
+    
+    async deleteJob(jobId) {
       if (confirm(`Are you sure you want to delete job ${jobId}? This action cannot be undone.`)) {
-        console.log(`Deleting job: ${jobId}`)
-        // Implement delete job logic
+        try {
+          await jobService.deleteJob(jobId);
+          
+          // Remove the job from the stalled jobs list
+          this.stalledJobs = this.stalledJobs.filter(job => job.id !== jobId);
+          
+          this.$notify({
+            title: 'Success',
+            text: `Job ${jobId} was deleted successfully`,
+            type: 'success'
+          });
+        } catch (error) {
+          console.error('Error deleting job:', error);
+          this.$notify({
+            title: 'Error',
+            text: error.message,
+            type: 'error'
+          });
+        }
       }
     },
-    openPrometheusDashboard() {
-      console.log('Opening Prometheus dashboard')
-      // Implement opening Prometheus dashboard logic
+    
+    async loadHealthData() {
+      try {
+        const healthStatus = await healthService.getHealthStatus();
+        this.healthStatus = {
+          ...this.healthStatus,
+          ...healthStatus
+        };
+      } catch (error) {
+        console.error('Error loading health status:', error);
+        this.$notify({
+          title: 'Warning',
+          text: 'Failed to load health status',
+          type: 'warn'
+        });
+      }
     },
-    openRawMetricsEndpoint() {
-      console.log('Opening raw metrics endpoint')
-      // Implement opening raw metrics endpoint logic
+
+    async loadSystemInfo() {
+      try {
+        const systemInfo = await healthService.getSystemInfo();
+        this.systemInfo = {
+          ...this.systemInfo,
+          ...systemInfo
+        };
+      } catch (error) {
+        console.error('Error loading system info:', error);
+        this.$notify({
+          title: 'Warning',
+          text: 'Failed to load system information',
+          type: 'warn'
+        });
+      }
+    },
+
+    async loadResourceUsage() {
+      try {
+        const resourceUsage = await healthService.getResourceUsage();
+        this.resourceUsage = {
+          ...this.resourceUsage,
+          ...resourceUsage
+        };
+      } catch (error) {
+        console.error('Error loading resource usage:', error);
+        this.$notify({
+          title: 'Warning',
+          text: 'Failed to load resource usage',
+          type: 'warn'
+        });
+      }
+    },
+
+    async loadStalledJobs() {
+      try {
+        const stalledJobs = await jobService.getStalledJobs();
+        this.stalledJobs = stalledJobs;
+      } catch (error) {
+        console.error('Error loading stalled jobs:', error);
+        this.$notify({
+          title: 'Warning',
+          text: 'Failed to load stalled jobs',
+          type: 'warn'
+        });
+      }
+    },
+
+    async loadJobProcessingData() {
+      try {
+        const jobProcessingData = await healthService.getJobProcessingData();
+        this.jobProcessingData = {
+          ...this.jobProcessingData,
+          ...jobProcessingData
+        };
+      } catch (error) {
+        console.error('Error loading job processing data:', error);
+        // Keep simulation if API fails
+        console.log('Falling back to simulation data');
+      }
+    },
+
+    async loadAllData() {
+      await Promise.allSettled([
+        this.loadHealthData(),
+        this.loadSystemInfo(),
+        this.loadResourceUsage(),
+        this.loadStalledJobs(),
+        this.loadJobProcessingData()
+      ]);
+    },
+
+    openPrometheusDashboard() {
+      console.log('Opening Prometheus dashboard');
+      // Open Prometheus dashboard in new tab
+      const prometheusUrl = import.meta.env.VITE_PROMETHEUS_URL || '/prometheus';
+      window.open(prometheusUrl, '_blank');
+    },
+    
+    async openRawMetricsEndpoint() {
+      try {
+        console.log('Opening raw metrics endpoint');
+        const metricsUrl = `${import.meta.env.VITE_API_BASE_URL || '/api'}/metrics/prometheus`;
+        window.open(metricsUrl, '_blank');
+      } catch (error) {
+        console.error('Error opening metrics endpoint:', error);
+        this.$notify({
+          title: 'Error',
+          text: 'Failed to open metrics endpoint',
+          type: 'error'
+        });
+      }
     }
   },
-  mounted() {
+  async mounted() {
     // Initialize health monitoring
     console.log('Health monitoring initialized');
-    // Add real-time monitoring logic here
     this.startJobProcessingSimulation();
+    
+    // Load initial data
+    await this.loadAllData();
   },
   beforeUnmount() {
     this.stopJobProcessingSimulation();
