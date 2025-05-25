@@ -191,45 +191,29 @@ export default {
   },
   data() {
     return {
+      // Initialize with empty data, will be loaded from API/mocks
       systemInfo: {
-        version: 'v1.2.3',
-        uptime: 1234567, // in seconds
-        host: 'minijob-server-01',
-        environment: 'Production'
+        version: '',
+        uptime: 0,
+        host: '',
+        environment: ''
       },
       resourceUsage: {
-        memory: { label: 'Memory Usage', value: 42 },
-        disk: { label: 'Disk Usage', value: 28 },
-        network: { label: 'Network I/O', value: 15 }
+        memory: { label: 'Memory Usage', value: 0 },
+        disk: { label: 'Disk Usage', value: 0 },
+        network: { label: 'Network I/O', value: 0 }
       },
       healthStatus: {
-        server: {
-          status: 'healthy'
-        },
-        responseTime: 17,
-        lastChecked: 1747464500 // Unix timestamp
+        server: { status: 'unknown' },
+        responseTime: 0,
+        lastChecked: 0
       },
-      stalledJobs: [
-        {
-          id: 'a8f2e357-1d2c-4b6e-9d0f-e5c7b3461d9a',
-          topic: 'data-processing',
-          status: 'Stalled',
-          created: '2023-05-14 10:30:45',
-          duration: '1d 4h 25m'
-        },
-        {
-          id: 'bd93c8e2-4f57-49e7-b5d8-1a2b3c4d5e6f',
-          topic: 'report-generation',
-          status: 'Stalled',
-          created: '2023-05-14 08:15:22',
-          duration: '1d 6h 40m'
-        }
-      ],
+      stalledJobs: [],
       jobProcessingData: {
-        labels: ['8:00', '9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00'],
-        succeeded: [12, 19, 15, 21, 25, 31, 28, 24],
-        failed: [2, 4, 1, 3, 2, 0, 2, 1],
-        pending: [5, 8, 3, 4, 6, 9, 5, 7]
+        labels: [],
+        succeeded: [],
+        failed: [],
+        pending: []
       },
       simulationInterval: null
     }
@@ -238,8 +222,12 @@ export default {
     // Job processing simulation methods
     startJobProcessingSimulation() {
       this.simulationInterval = setInterval(() => {
+        // Only simulate if we have existing data
+        if (this.jobProcessingData.labels.length === 0) return;
+        
         // Simulate new data point by removing first point and adding a new one
-        const newLabel = this.getNextHourLabel(this.jobProcessingData.labels[this.jobProcessingData.labels.length - 1]);
+        const lastLabel = this.jobProcessingData.labels[this.jobProcessingData.labels.length - 1];
+        const newLabel = this.getNextHourLabel(lastLabel);
         
         // Create new arrays instead of manipulating the existing ones for reactivity
         const newLabels = [...this.jobProcessingData.labels.slice(1), newLabel];
@@ -263,16 +251,16 @@ export default {
       }
     },
     
+    getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    },
+    
     getNextHourLabel(lastLabel) {
-      // Simple simulation to get the next hour
       const [hour, minute] = lastLabel.split(':').map(Number);
       const nextHour = (hour + 1) % 24;
       return `${nextHour}:${minute < 10 ? '0' + minute : minute}`;
     },
     
-    getRandomInt(min, max) {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    },
     formatServerStatus(status) {
       if (!status) return 'Unknown';
       
@@ -429,7 +417,7 @@ export default {
 
     async loadStalledJobs() {
       try {
-        const stalledJobs = await jobService.getStalledJobs();
+        const stalledJobs = await healthService.getStalledJobs();
         this.stalledJobs = stalledJobs;
       } catch (error) {
         console.error('Error loading stalled jobs:', error);

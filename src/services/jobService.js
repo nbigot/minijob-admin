@@ -1,4 +1,4 @@
-import apiClient from './api.js';
+import apiClient from './axios.js';
 
 export const jobService = {
   // Get all jobs

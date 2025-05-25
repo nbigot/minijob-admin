@@ -45,14 +45,27 @@ library.add(
   faGithub
 )
 
-// Create Vue app
-const app = createApp(App)
+// Async function to handle mock setup and app initialization
+async function initializeApp() {
+  // Import mock setup in development - MUST be synchronous and before Vue app creation
+  if (import.meta.env.VITE_USE_MOCK_API === 'true') {
+    console.warn('Mock mode is enabled. Using mock data.');
+    // Use synchronous import to ensure mock is ready before app starts
+    await import('./mocks/index.js');
+  }
 
-// Register Font Awesome component globally
-app.component('font-awesome-icon', FontAwesomeIcon)
+  // Create Vue app
+  const app = createApp(App)
 
-// Use router
-app.use(router)
+  // Register Font Awesome component globally
+  app.component('font-awesome-icon', FontAwesomeIcon)
 
-// Mount the app
-app.mount('#app')
+  // Use router
+  app.use(router)
+
+  // Mount the app
+  app.mount('#app')
+}
+
+// Initialize the app
+initializeApp()
