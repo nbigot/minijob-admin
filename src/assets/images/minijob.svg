@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#38bdf8" />
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect x="2" y="2" width="60" height="60" rx="12" fill="url(#blueGrad)" stroke="#e0e7ef" stroke-width="2"/>
+  <!-- Server (small box) -->
+  <rect x="16" y="36" width="32" height="12" rx="3" fill="#fff" fill-opacity="0.95" stroke="#2563eb" stroke-width="1.5"/>
+  <!-- Speed lines -->
+  <rect x="12" y="40" width="4" height="2" rx="1" fill="#38bdf8"/>
+  <rect x="12" y="44" width="3" height="2" rx="1" fill="#38bdf8"/>
+  <!-- Job queue (stacked tasks) -->
+  <rect x="20" y="16" width="24" height="6" rx="2" fill="#fff" fill-opacity="0.95" stroke="#2563eb" stroke-width="1"/>
+  <rect x="20" y="24" width="24" height="6" rx="2" fill="#fff" fill-opacity="0.95" stroke="#2563eb" stroke-width="1"/>
+  <rect x="20" y="32" width="24" height="6" rx="2" fill="#fff" fill-opacity="0.95" stroke="#2563eb" stroke-width="1"/>
+  <!-- Checkmark for tasks -->
+  <polyline points="24,20 27,23 32,18" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <polyline points="24,28 27,31 32,26" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <polyline points="24,36 27,39 32,34" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
