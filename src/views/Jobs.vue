@@ -156,6 +156,8 @@
 </template>
 
 <script>
+import { jobService } from '../services/index.js';
+
 export default {
   name: 'Jobs',
   data() {
@@ -166,39 +168,11 @@ export default {
         sort: 'created_desc',
         search: ''
       },
-      jobs: [
-        { 
-          id: '73b6a7e9-51e0-4982-a106-f54c4369271a', 
-          topic: 'data-processing', 
-          status: 'Running', 
-          created: '2023-05-15 14:30:45', 
-          updated: '2023-05-15 14:35:12' 
-        },
-        { 
-          id: 'f56cf42d-8b8a-4b95-b088-ae42dd9c1b56', 
-          topic: 'email-notifications', 
-          status: 'Succeeded', 
-          created: '2023-05-15 14:20:33', 
-          updated: '2023-05-15 14:25:47' 
-        },
-        { 
-          id: '3a7f1e5c-d254-4071-beff-9fe72171c6b9', 
-          topic: 'report-generation', 
-          status: 'Failed', 
-          created: '2023-05-15 14:10:22', 
-          updated: '2023-05-15 14:15:36' 
-        },
-        { 
-          id: '2c8d69b4-a61f-4e0c-a2e6-791dd0f68991', 
-          topic: 'file-uploads', 
-          status: 'Succeeded', 
-          created: '2023-05-15 14:00:11', 
-          updated: '2023-05-15 14:05:25' 
-        }
-      ],
+      jobs: [],
       currentPage: 1,
       itemsPerPage: 10,
-      totalJobs: 97
+      totalJobs: 0,
+      loading: false
     }
   },
   computed: {
@@ -228,57 +202,130 @@ export default {
   methods: {
     getStatusClass(status) {
       const classes = {
-        'Created': 'bg-gray-100 text-gray-800',
-        'Queued': 'bg-yellow-100 text-yellow-800',
-        'Running': 'bg-green-100 dark:bg-green-200 text-green-800',
-        'Succeeded': 'bg-indigo-100 text-indigo-800',
-        'Failed': 'bg-red-100 text-red-800'
+        'created': 'bg-gray-100 text-gray-800',
+        'queued': 'bg-yellow-100 text-yellow-800',
+        'running': 'bg-green-100 dark:bg-green-200 text-green-800',
+        'succeeded': 'bg-indigo-100 text-indigo-800',
+        'failed': 'bg-red-100 text-red-800'
       }
       return classes[status] || 'bg-gray-100 text-gray-800'
     },
-    applyFilters() {
-      // In a real app, this would fetch filtered data from an API
-      console.log('Applying filters:', this.filters)
-      this.currentPage = 1
+    
+    async loadJobs() {
+      this.loading = true;
+      try {
+        const params = {
+          page: this.currentPage,
+          limit: this.itemsPerPage,
+          ...this.filters
+        };
+        
+        const response = await jobService.getJobs(params);
+        this.jobs = response.jobs || [];
+        this.totalJobs = response.total || 0;
+      } catch (error) {
+        console.error('Error loading jobs:', error);
+        this.$notify({
+          title: 'Error',
+          text: 'Failed to load jobs',
+          type: 'error'
+        });
+      } finally {
+        this.loading = false;
+      }
     },
-    resetFilters() {
+    
+    async applyFilters() {
+      this.currentPage = 1;
+      await this.loadJobs();
+    },
+    
+    async resetFilters() {
       this.filters = {
         status: '',
         topic: '',
         sort: 'created_desc',
         search: ''
-      }
-      // In a real app, this would fetch reset data from an API
-      console.log('Filters reset')
+      };
+      this.currentPage = 1;
+      await this.loadJobs();
     },
     prevPage() {
       if (this.currentPage > 1) {
         this.currentPage--
+        this.loadJobs()
       }
     },
     nextPage() {
       const totalPages = Math.ceil(this.totalJobs / this.itemsPerPage)
       if (this.currentPage < totalPages) {
         this.currentPage++
+        this.loadJobs()
       }
     },
     goToPage(page) {
       if (typeof page === 'number') {
         this.currentPage = page
+        this.loadJobs()
       }
     },
     viewJob(id) {
       console.log('View job', id);
       this.$router.push(`/job/${id}`);
     },
-    cloneJob(id) {
+    async cloneJob(id) {
       console.log('Clone job', id);
+      // TODO: Implement clone functionality
     },
-    cancelJob(id) {
-      console.log('Cancel job', id);
+    async cancelJob(id) {
+      if (confirm(`Are you sure you want to cancel job ${id}?`)) {
+        try {
+          await jobService.cancelJob(id);
+          
+          // Update job status in the list
+          const job = this.jobs.find(j => j.id === id);
+          if (job) {
+            job.status = 'Cancelled';
+          }
+          
+          this.$notify({
+            title: 'Success',
+            text: `Job ${id} was cancelled successfully`,
+            type: 'success'
+          });
+        } catch (error) {
+          console.error('Error cancelling job:', error);
+          this.$notify({
+            title: 'Error',
+            text: error.message,
+            type: 'error'
+          });
+        }
+      }
     },
-    deleteJob(id) {
-      console.log('Delete job', id);
+    async deleteJob(id) {
+      if (confirm(`Are you sure you want to delete job ${id}? This action cannot be undone.`)) {
+        try {
+          await jobService.deleteJob(id);
+          
+          // Remove the job from the list
+          this.jobs = this.jobs.filter(job => job.id !== id);
+          this.totalJobs--;
+          
+          this.$notify({
+            title: 'Success',
+            text: `Job ${id} was deleted successfully`,
+            type: 'success'
+          });
+        } catch (error) {
+          console.error('Error deleting job:', error);
+          this.$notify({
+            title: 'Error',
+            text: error.message,
+            type: 'error'
+          });
+        }
+      }
     },
     navigateToCreateJob() {
       // Get unique topics from the jobs list
@@ -290,6 +337,10 @@ export default {
         query: { topics: JSON.stringify(topics) }
       });
     }
+  },
+  async mounted() {
+    // Load initial job data
+    await this.loadJobs();
   }
 }
 </script>
