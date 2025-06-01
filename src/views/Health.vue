@@ -92,7 +92,7 @@
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-200">{{ job.id }}</td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{{ job.topic }}</td>
               <td class="px-6 py-4 whitespace-nowrap">
-                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-orange-200 text-orange-800">{{ job.status }}</span>
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full" :class="getStatusClass(job.status)">{{ job.status }}</span>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{{ job.created }}</td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{{ job.duration }}</td>
@@ -183,6 +183,7 @@
 <script>
 import JobProcessingChart from '../components/JobProcessingChart.vue';
 import { jobService, healthService } from '../services/index.js';
+import { getStatusClass } from '../utils/statusClass.js';
 
 export default {
   name: 'Health',
@@ -219,6 +220,7 @@ export default {
     }
   },
   methods: {
+    getStatusClass,
     // Job processing simulation methods
     startJobProcessingSimulation() {
       this.simulationInterval = setInterval(() => {

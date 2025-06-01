@@ -239,6 +239,7 @@
 
 <script>
 import { dashboardService } from '../services/index.js';
+import { getStatusClass } from '../utils/statusClass.js';
 
 export default {
   name: 'Dashboard',
@@ -272,6 +273,7 @@ export default {
     }
   },
   methods: {
+    getStatusClass,
     calculatePercentage(count) {
       return this.totalJobs > 0 ? Math.round((count / this.totalJobs) * 100) : 0;
     },
@@ -325,28 +327,6 @@ export default {
         return `${Math.floor(diffSeconds / 3600)}h ago`;
       } else {
         return `${Math.floor(diffSeconds / 86400)}d ago`;
-      }
-    },
-    
-    getStatusClass(status) {
-      if (!status) return '';
-      
-      switch (status.toLowerCase()) {
-        case 'running':
-          return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-400';
-        case 'scheduled':
-        case 'queued':
-          return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-400';
-        case 'completed':
-        case 'succeeded':
-          return 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-400';
-        case 'failed':
-          return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-400';
-        case 'created':
-          return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-400';
-        default:
-          return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-400';
-
       }
     },
     

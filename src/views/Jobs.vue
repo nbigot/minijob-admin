@@ -157,6 +157,7 @@
 
 <script>
 import { jobService } from '../services/index.js';
+import { getStatusClass } from '../utils/statusClass.js';
 
 export default {
   name: 'Jobs',
@@ -200,17 +201,7 @@ export default {
     }
   },
   methods: {
-    getStatusClass(status) {
-      const classes = {
-        'created': 'bg-gray-100 text-gray-800',
-        'queued': 'bg-yellow-100 text-yellow-800',
-        'running': 'bg-green-100 dark:bg-green-200 text-green-800',
-        'succeeded': 'bg-indigo-100 text-indigo-800',
-        'failed': 'bg-red-100 text-red-800'
-      }
-      return classes[status] || 'bg-gray-100 text-gray-800'
-    },
-    
+    getStatusClass,
     async loadJobs() {
       this.loading = true;
       try {
