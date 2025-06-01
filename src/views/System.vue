@@ -64,35 +64,23 @@
 
     </main>
 
-    <!-- Confirmation Modal -->
-    <div v-if="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-md w-full p-6 mx-auto">
-        <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-4">{{ modalTitle }}</h3>
-        <p class="text-gray-600 dark:text-gray-400 mb-6">{{ modalMessage }}</p>
-        <div class="flex justify-end space-x-3">
-          <button 
-            @click="cancelModal" 
-            class="px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 rounded"
-          >
-            Cancel
-          </button>
-          <button 
-            @click="confirmModal" 
-            class="px-4 py-2 bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800 text-white rounded"
-          >
-            Confirm
-          </button>
-        </div>
-      </div>
-    </div>
+    <ConfirmationModal
+      :visible="showModal"
+      :title="modalTitle"
+      :message="modalMessage"
+      @confirm="confirmModal"
+      @cancel="cancelModal"
+    />
   </div>
 </template>
 
 <script>
 import { systemService } from '../services/index.js';
+import ConfirmationModal from '../components/ConfirmationModal.vue';
 
 export default {
   name: 'System',
+  components: { ConfirmationModal },
   data() {
     return {
       showModal: false,
@@ -122,131 +110,96 @@ export default {
       this.openModal(
         'Restart Server',
         'Are you sure you want to restart the server?',
-        async () => {
-          this.loading = true;
-          try {
-            const response = await systemService.restartServer();
-            this.$notify({
-              title: 'Success',
-              text: response.message || 'Server restart initiated',
-              type: 'success'
-            });
-          } catch (error) {
-            console.error('Error restarting server:', error);
-            this.$notify({
-              title: 'Error',
-              text: 'Failed to restart server',
-              type: 'error'
-            });
-          } finally {
-            this.loading = false;
-          }
-        }
+        this.restartServerAction
       );
+    },
+    async restartServerAction() {
+      this.loading = true;
+      try {
+        const response = await systemService.restartServer();
+        this.openModal('Success', response.message || 'Server restart initiated', null);
+      } catch (error) {
+        console.error('Error restarting server:', error);
+        this.openModal('Error', 'Failed to restart server', null);
+      } finally {
+        this.loading = false;
+      }
     },
     async shutdownServer() {
       this.openModal(
         'Shutdown Server',
         'Are you sure you want to shut down the server?',
-        async () => {
-          this.loading = true;
-          try {
-            const response = await systemService.shutdownServer();
-            this.$notify({
-              title: 'Success',
-              text: response.message || 'Server shutdown initiated',
-              type: 'success'
-            });
-          } catch (error) {
-            console.error('Error shutting down server:', error);
-            this.$notify({
-              title: 'Error',
-              text: 'Failed to shutdown server',
-              type: 'error'
-            });
-          } finally {
-            this.loading = false;
-          }
-        }
+        this.shutdownServerAction
       );
+    },
+    async shutdownServerAction() {
+      this.loading = true;
+      try {
+        const response = await systemService.shutdownServer();
+        this.openModal('Success', response.message || 'Server shutdown initiated', null);
+      } catch (error) {
+        console.error('Error shutting down server:', error);
+        this.openModal('Error', 'Failed to shutdown server', null);
+      } finally {
+        this.loading = false;
+      }
     },
     async deleteAllJobs() {
       this.openModal(
         'Delete All Jobs',
         'WARNING: This will permanently delete all jobs. This action cannot be undone. Continue?',
-        async () => {
-          this.loading = true;
-          try {
-            const response = await systemService.deleteAllJobs();
-            this.$notify({
-              title: 'Success',
-              text: response.message || `All jobs deleted successfully (${response.deletedCount} jobs)`,
-              type: 'success'
-            });
-          } catch (error) {
-            console.error('Error deleting all jobs:', error);
-            this.$notify({
-              title: 'Error',
-              text: 'Failed to delete all jobs',
-              type: 'error'
-            });
-          } finally {
-            this.loading = false;
-          }
-        }
+        this.deleteAllJobsAction
       );
+    },
+    async deleteAllJobsAction() {
+      this.loading = true;
+      try {
+        const response = await systemService.deleteAllJobs();
+        this.openModal('Success', response.message || `All jobs deleted successfully (${response.deletedCount} jobs)`, null);
+      } catch (error) {
+        console.error('Error deleting all jobs:', error);
+        this.openModal('Error', 'Failed to delete all jobs', null);
+      } finally {
+        this.loading = false;
+      }
     },
     async clearJobQueues() {
       this.openModal(
         'Clear Job Queues',
         'Are you sure you want to clear the job queues?',
-        async () => {
-          this.loading = true;
-          try {
-            const response = await systemService.clearJobQueues();
-            this.$notify({
-              title: 'Success',
-              text: response.message || `Job queues cleared successfully (${response.clearedCount} items)`,
-              type: 'success'
-            });
-          } catch (error) {
-            console.error('Error clearing job queues:', error);
-            this.$notify({
-              title: 'Error',
-              text: 'Failed to clear job queues',
-              type: 'error'
-            });
-          } finally {
-            this.loading = false;
-          }
-        }
+        this.clearJobQueuesAction
       );
+    },
+    async clearJobQueuesAction() {
+      this.loading = true;
+      try {
+        const response = await systemService.clearJobQueues();
+        this.openModal('Success', response.message || `Job queues cleared successfully (${response.clearedCount} items)`, null);
+      } catch (error) {
+        console.error('Error clearing job queues:', error);
+        this.openModal('Error', 'Failed to clear job queues', null);
+      } finally {
+        this.loading = false;
+      }
     },
     async unlockAllResources() {
       this.openModal(
         'Unlock All Resources',
         'Are you sure you want to unlock all resources? This may affect running jobs.',
-        async () => {
-          this.loading = true;
-          try {
-            const response = await systemService.unlockAllResources();
-            this.$notify({
-              title: 'Success',
-              text: response.message || `All resources unlocked successfully (${response.unlockedCount} resources)`,
-              type: 'success'
-            });
-          } catch (error) {
-            console.error('Error unlocking all resources:', error);
-            this.$notify({
-              title: 'Error',
-              text: 'Failed to unlock all resources',
-              type: 'error'
-            });
-          } finally {
-            this.loading = false;
-          }
-        }
+        this.unlockAllResourcesAction
       );
+    },
+    async unlockAllResourcesAction() {
+      this.loading = true;
+      try {
+        const response = await systemService.unlockAllResources();
+        this.openModal('Success', response.message || `All resources unlocked successfully (${response.unlockedCount} resources)`, null);
+      } catch (error) {
+        console.error('Error unlocking all resources:', error);
+        this.openModal('Error', 'Failed to unlock all resources', null);
+      } finally {
+        this.loading = false;
+      }
     }
   }
 }

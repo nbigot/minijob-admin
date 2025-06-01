@@ -77,14 +77,24 @@
         </table>
       </div>
     </div>
+
+    <ConfirmationModal
+      :visible="showModal"
+      :title="modalTitle"
+      :message="modalMessage"
+      @confirm="confirmModal"
+      @cancel="cancelModal"
+    />
   </main>
 </template>
 
 <script>
 import { resourceService } from '../services/index.js';
+import ConfirmationModal from '../components/ConfirmationModal.vue';
 
 export default {
   name: 'Resources',
+  components: { ConfirmationModal },
   data() {
     return {
       loading: false,
@@ -93,7 +103,11 @@ export default {
         locked: 0,
         available: 0
       },
-      resources: []
+      resources: [],
+      showModal: false,
+      modalTitle: '',
+      modalMessage: '',
+      modalAction: null
     }
   },
   methods: {
@@ -109,74 +123,77 @@ export default {
         this.resourceStats = statsResponse;
       } catch (error) {
         console.error('Error loading resources:', error);
-        this.$notify({
-          title: 'Error',
-          text: 'Failed to load resources',
-          type: 'error'
-        });
+        this.openModal('Error', 'Failed to load resources', null);
       } finally {
         this.loading = false;
       }
     },
 
     async unlockResource(resourceName) {
-      if (confirm(`Are you sure you want to unlock ${resourceName}? This may affect running jobs.`)) {
-        try {
-          await resourceService.unlockResource(resourceName);
-          
-          // Update local state
-          const resource = this.resources.find(r => r.name === resourceName);
-          if (resource) {
-            resource.jobId = null;
-            resource.lockedSince = null;
-            this.resourceStats.locked--;
-            this.resourceStats.available++;
+      this.openModal(
+        'Unlock Resource',
+        `Are you sure you want to unlock ${resourceName}? This may affect running jobs.`,
+        async () => {
+          this.loading = true;
+          try {
+            await resourceService.unlockResource(resourceName);
+            // Update local state
+            const resource = this.resources.find(r => r.name === resourceName);
+            if (resource) {
+              resource.jobId = null;
+              resource.lockedSince = null;
+              this.resourceStats.locked--;
+              this.resourceStats.available++;
+            }
+            this.openModal('Success', `Resource ${resourceName} unlocked successfully.`, null);
+          } catch (error) {
+            console.error('Error unlocking resource:', error);
+            this.openModal('Error', `Failed to unlock resource ${resourceName}.`, null);
+          } finally {
+            this.loading = false;
           }
-          
-          this.$notify({
-            title: 'Success',
-            text: `Resource ${resourceName} unlocked successfully`,
-            type: 'success'
-          });
-        } catch (error) {
-          console.error('Error unlocking resource:', error);
-          this.$notify({
-            title: 'Error',
-            text: `Failed to unlock resource ${resourceName}`,
-            type: 'error'
-          });
         }
-      }
+      );
     },
 
-    async unlockAllResources() {
-      if (confirm('Are you sure you want to unlock all resources? This may affect running jobs.')) {
-        try {
-          const response = await resourceService.unlockAllResources();
-          
-          // Update local state
-          this.resources.forEach(resource => {
-            resource.jobId = null;
-            resource.lockedSince = null;
-          });
-          
-          this.resourceStats.locked = 0;
-          this.resourceStats.available = this.resourceStats.total;
-          
-          this.$notify({
-            title: 'Success',
-            text: `All resources unlocked successfully (${response.unlockedCount} resources)`,
-            type: 'success'
-          });
-        } catch (error) {
-          console.error('Error unlocking all resources:', error);
-          this.$notify({
-            title: 'Error',
-            text: 'Failed to unlock all resources',
-            type: 'error'
-          });
-        }
+    openModal(title, message, action) {
+      this.modalTitle = title;
+      this.modalMessage = message;
+      this.modalAction = action;
+      this.showModal = true;
+    },
+    confirmModal() {
+      this.showModal = false;
+      if (this.modalAction) {
+        this.modalAction();
       }
+    },
+    cancelModal() {
+      this.showModal = false;
+    },
+    async unlockAllResources() {
+      this.openModal(
+        'Unlock All Resources',
+        'Are you sure you want to unlock all resources? This may affect running jobs.',
+        async () => {
+          this.loading = true;
+          try {
+            const response = await resourceService.unlockAllResources();
+            this.resources.forEach(resource => {
+              resource.jobId = null;
+              resource.lockedSince = null;
+            });
+            this.resourceStats.locked = 0;
+            this.resourceStats.available = this.resourceStats.total;
+            this.openModal('Success', `All resources unlocked successfully (${response.unlockedCount} resources)`, null);
+          } catch (error) {
+            console.error('Error unlocking all resources:', error);
+            this.openModal('Error', 'Failed to unlock all resources', null);
+          } finally {
+            this.loading = false;
+          }
+        }
+      );
     }
   },
 
