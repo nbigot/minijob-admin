@@ -71,7 +71,7 @@
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 <a @click="viewTopicJobs(topic.name)" class="text-primary-600 hover:text-primary-900 cursor-pointer">
-                  <i class="fas fa-eye mr-1"></i> View Jobs
+                  <font-awesome-icon :icon="['fas', 'eye']" class="mr-1" /> View Jobs
                 </a>
               </td>
             </tr>

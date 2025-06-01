@@ -7,7 +7,7 @@
       </div>
       <div class="mt-4 md:mt-0">
         <button @click="navigateBackToJobs" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">
-          <i class="fas fa-arrow-left mr-2"></i> Back to Jobs
+          <font-awesome-icon :icon="['fas', 'arrow-left']" class="mr-2" /> Back to Jobs
         </button>
       </div>
     </div>
@@ -70,7 +70,7 @@
             Cancel
           </button>
           <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded">
-            <i class="fas fa-save mr-2"></i> Create Job
+            <font-awesome-icon :icon="['fas', 'save']" class="mr-2" /> Create Job
           </button>
         </div>
       </form>

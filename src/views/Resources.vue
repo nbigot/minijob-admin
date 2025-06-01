@@ -7,7 +7,7 @@
       </div>
       <div class="mt-4 md:mt-0">
         <button class="bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600 text-white dark:text-gray-200 font-bold py-2 px-4 rounded" @click="unlockAllResources">
-          <i class="fas fa-unlock-alt mr-2"></i> Unlock All Resources
+          <font-awesome-icon :icon="['fas', 'unlock-alt']" class="mr-2" /> Unlock All Resources
         </button>
       </div>
     </div>
@@ -17,7 +17,7 @@
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
         <div class="flex items-center">
           <div class="rounded-full bg-blue-100 p-3">
-            <i class="fas fa-lock text-blue-500"></i>
+            <font-awesome-icon :icon="['fas', 'lock']" class="text-blue-500" />
           </div>
           <div class="ml-4">
             <h4 class="text-gray-500 dark:text-gray-300 text-sm">Total Resources</h4>
@@ -29,7 +29,7 @@
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
         <div class="flex items-center">
           <div class="rounded-full bg-yellow-100 p-3">
-            <i class="fas fa-lock text-yellow-500"></i>
+            <font-awesome-icon :icon="['fas', 'lock']" class="text-yellow-500" />
           </div>
           <div class="ml-4">
             <h4 class="text-gray-500 dark:text-gray-300 text-sm">Locked Resources</h4>
@@ -69,7 +69,7 @@
                   class="text-red-600 hover:text-red-900 dark:text-red-700"
                   @click="unlockResource(resource.name)"
                 >
-                  <i class="fas fa-unlock mr-1"></i> Unlock
+                  <font-awesome-icon :icon="['fas', 'unlock']" class="mr-1" /> Unlock
                 </button>
               </td>
             </tr>

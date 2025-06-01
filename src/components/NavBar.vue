@@ -17,13 +17,17 @@
       <div class="navbar-end">
         <div class="navbar-item">
           <button @click="toggleTheme" class="button" title="Toggle theme">
-            <span v-if="isDarkMode"><i class="fas fa-sun"></i></span>
-            <span v-else><i class="fas fa-moon"></i></span>
+            <span v-if="isDarkMode">
+              <font-awesome-icon icon="sun" />
+            </span>
+            <span v-else>
+              <font-awesome-icon icon="moon" />
+            </span>
           </button>
         </div>
         <div class="navbar-item" style="margin-left: 0.5rem;">
           <button @click="toggleAutoRefresh" class="button" :class="{ 'is-active': isAutoRefreshing }" title="Toggle auto-refresh">
-            <i class="fas fa-sync" :class="{ 'fa-spin': isAutoRefreshing }"></i>
+            <font-awesome-icon icon="sync" :class="{ 'fa-spin': isAutoRefreshing }" />
           </button>
         </div>
       </div>

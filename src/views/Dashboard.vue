@@ -27,7 +27,7 @@
           <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
             <div class="flex items-center">
               <div class="rounded-full bg-blue-100 p-3 flex items-center justify-center w-10 h-10">
-                <i class="fas fa-plus text-blue-500 text-sm"></i>
+                <font-awesome-icon :icon="['fas', 'plus']" class="text-blue-500 text-sm" />
               </div>
               <div class="ml-4">
                 <h4 class="text-gray-500 text-sm dark:text-gray-400">Created</h4>
@@ -40,7 +40,7 @@
           <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
             <div class="flex items-center">
               <div class="rounded-full bg-yellow-100 p-3 flex items-center justify-center w-10 h-10">
-                <i class="fas fa-clock text-yellow-500 text-sm"></i>
+                <font-awesome-icon :icon="['fas', 'clock']" class="text-yellow-500 text-sm" />
               </div>
               <div class="ml-4">
                 <h4 class="text-gray-500 text-sm dark:text-gray-400">Queued</h4>
@@ -53,7 +53,7 @@
           <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
             <div class="flex items-center">
               <div class="rounded-full bg-green-100 p-3 flex items-center justify-center w-10 h-10">
-                <i class="fas fa-play text-green-500 text-sm"></i>
+                <font-awesome-icon :icon="['fas', 'play']" class="text-green-500 text-sm" />
               </div>
               <div class="ml-4">
                 <h4 class="text-gray-500 text-sm dark:text-gray-400">Running</h4>
@@ -66,7 +66,7 @@
           <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
             <div class="flex items-center">
               <div class="rounded-full bg-indigo-100 p-3 flex items-center justify-center w-10 h-10">
-                <i class="fas fa-check text-indigo-500 text-sm"></i>
+                <font-awesome-icon :icon="['fas', 'check']" class="text-indigo-500 text-sm" />
               </div>
               <div class="ml-4">
                 <h4 class="text-gray-500 text-sm dark:text-gray-400">Succeeded</h4>
@@ -79,7 +79,7 @@
           <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
             <div class="flex items-center">
               <div class="rounded-full bg-red-100 p-3 flex items-center justify-center w-10 h-10">
-                <i class="fas fa-times text-red-500 text-sm"></i>
+                <font-awesome-icon :icon="['fas', 'times']" class="text-red-500 text-sm" />
               </div>
               <div class="ml-4">
                 <h4 class="text-gray-500 text-sm dark:text-gray-400">Failed</h4>
@@ -220,7 +220,7 @@
                         class="text-red-600 hover:text-red-900 dark:text-red-700"
                         @click="unlockResource(resource.id)"
                       >
-                        <i class="fas fa-unlock mr-1"></i> Unlock
+                        <font-awesome-icon :icon="['fas', 'unlock']" class="mr-1" /> Unlock
                       </button>
                     </td>
                   </tr>
@@ -361,7 +361,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
-</style>

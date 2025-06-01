@@ -4,7 +4,7 @@
       <div>
         <div class="flex items-center">
           <a href="#" @click.prevent="goBack" class="text-primary-600 hover:text-primary-800 mr-2">
-            <i class="fas fa-arrow-left"></i>
+            <font-awesome-icon :icon="['fas', 'arrow-left']" />
           </a>
           <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Job Detail: {{ jobId }}</h2>
         </div>
@@ -12,13 +12,13 @@
       </div>
       <div class="mt-4 md:mt-0 flex flex-wrap gap-2">
         <button class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded">
-          <i class="fas fa-copy mr-2"></i> Clone
+          <font-awesome-icon :icon="['fas', 'copy']" class="mr-2" /> Clone
         </button>
         <button class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-          <i class="fas fa-stop mr-2"></i> Cancel
+          <font-awesome-icon :icon="['fas', 'stop']" class="mr-2" /> Cancel
         </button>
         <button class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-          <i class="fas fa-trash mr-2"></i> Delete
+          <font-awesome-icon :icon="['fas', 'trash']" class="mr-2" /> Delete
         </button>
       </div>
     </div>
@@ -28,7 +28,7 @@
       <div class="flex flex-col md:flex-row md:items-center md:justify-between">
         <div class="flex items-center mb-4 md:mb-0">
           <div class="rounded-full bg-green-100 p-3 mr-4">
-            <i class="fas fa-play text-green-500"></i>
+            <font-awesome-icon :icon="['fas', 'play']" class="text-green-500" />
           </div>
           <div>
             <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200">Running</h3>
@@ -124,7 +124,7 @@
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">5 min ago</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                   <button class="text-red-600 hover:text-red-900">
-                    <i class="fas fa-unlock mr-1"></i> Unlock
+                    <font-awesome-icon :icon="['fas', 'unlock']" class="mr-1" /> Unlock
                   </button>
                 </td>
               </tr>

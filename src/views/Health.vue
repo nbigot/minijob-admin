@@ -12,7 +12,7 @@
         <div class="border rounded-lg p-4">
           <div class="flex items-center">
             <div class="rounded-full bg-green-100 p-3">
-              <i class="fas fa-server text-green-500"></i>
+              <font-awesome-icon :icon="['fas', 'server']" class="text-green-500"></font-awesome-icon>
             </div>
             <div class="ml-4">
               <h4 class="text-gray-500 text-sm dark:text-gray-300">Server Status</h4>
@@ -27,7 +27,7 @@
         <div class="border rounded-lg p-4">
           <div class="flex items-center">
             <div class="rounded-full bg-blue-100 p-3">
-              <i class="fas fa-tachometer-alt text-blue-500"></i>
+              <font-awesome-icon :icon="['fas', 'tachometer-alt']" class="text-blue-500"></font-awesome-icon>
             </div>
             <div class="ml-4">
               <h4 class="text-gray-500 text-sm dark:text-gray-300">Response Time</h4>
@@ -42,7 +42,7 @@
         <div class="border rounded-lg p-4">
           <div class="flex items-center">
             <div class="rounded-full bg-purple-100 p-3">
-              <i class="fas fa-clock text-purple-500"></i>
+              <font-awesome-icon :icon="['fas', 'clock']" class="text-purple-500"></font-awesome-icon>
             </div>
             <div class="ml-4">
               <h4 class="text-gray-500 text-sm dark:text-gray-300">Last Checked</h4>
@@ -99,13 +99,13 @@
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                 <div class="flex space-x-2">
                   <button class="text-primary-600 hover:text-primary-900" title="View Details" @click="viewJobDetails(job.id)">
-                    <i class="fas fa-eye"></i>
+                    <font-awesome-icon :icon="['fas', 'eye']" />
                   </button>
                   <button class="text-red-600 hover:text-red-900" title="Cancel" @click="cancelJob(job.id)">
-                    <i class="fas fa-stop"></i>
+                    <font-awesome-icon :icon="['fas', 'stop']" />
                   </button>
                   <button class="text-red-600 hover:text-red-900" title="Delete" @click="deleteJob(job.id)">
-                    <i class="fas fa-trash"></i>
+                    <font-awesome-icon :icon="['fas', 'trash']" />
                   </button>
                 </div>
               </td>
@@ -169,10 +169,10 @@
       <p class="text-gray-600 mb-4 dark:text-gray-400">Access Prometheus metrics for detailed monitoring and alerting.</p>
       <div class="flex flex-wrap gap-4">
         <a href="#" class="bg-primary-600 hover:bg-primary-700 dark:bg-primary-700 dark:hover:bg-primary-800 text-white dark:text-gray-300 font-bold py-2 px-4 rounded" @click="openPrometheusDashboard">
-          <i class="fas fa-chart-line mr-2"></i> View Prometheus Dashboard
+          <font-awesome-icon :icon="['fas', 'chart-line']" class="mr-2" /> View Prometheus Dashboard
         </a>
         <a href="#" class="bg-gray-600 hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-800 text-white dark:text-gray-300 font-bold py-2 px-4 rounded" @click="openRawMetricsEndpoint">
-          <i class="fas fa-code mr-2"></i> Raw Metrics Endpoint
+          <font-awesome-icon :icon="['fas', 'code']" class="mr-2" /> Raw Metrics Endpoint
         </a>
       </div>
     </div>
