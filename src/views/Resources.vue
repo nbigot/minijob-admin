@@ -81,90 +81,107 @@
 </template>
 
 <script>
+import { resourceService } from '../services/index.js';
+
 export default {
   name: 'Resources',
   data() {
     return {
+      loading: false,
       resourceStats: {
-        total: 7,
-        locked: 7
+        total: 0,
+        locked: 0,
+        available: 0
       },
-      resources: [
-        { 
-          name: 'database-connection', 
-          jobId: 'a1b2c3d4-e5f6-4a1b-8c2d-3e4f5a6b7c8d', 
-          lockedSince: '5 min ago',
-          topic: 'Database' 
-        },
-        { 
-          name: 'file-system', 
-          jobId: '7f8e9d6c-5b4a-4321-9f8e-7d6c5b4a3210', 
-          lockedSince: '25 min ago',
-          topic: 'Storage' 
-        },
-        { 
-          name: 'api-key', 
-          jobId: 'b7c8d9e0-f1a2-4b3c-8d9e-0f1a2b3c4d5e', 
-          lockedSince: '35 min ago',
-          topic: 'Security' 
-        },
-        { 
-          name: 'email-service', 
-          jobId: '2d3e4f5a-6b7c-4d5e-6f7a-8b9c0d1e2f3a', 
-          lockedSince: '45 min ago',
-          topic: 'Messaging' 
-        },
-        { 
-          name: 'queue-manager', 
-          jobId: 'c4d5e6f7-8a9b-4e5f-6a7b-8c9d0e1f2a3b', 
-          lockedSince: '1 hour ago',
-          topic: 'Messaging' 
-        },
-        { 
-          name: 'backup-service', 
-          jobId: '3f4a5b6c-7d8e-4f5a-6b7c-8d9e0f1a2b3c', 
-          lockedSince: '1.5 hours ago',
-          topic: 'Storage' 
-        },
-        { 
-          name: 'auth-service', 
-          jobId: 'd9e0f1a2-b3c4-4f1a-2b3c-4d5e6f7a8b9c', 
-          lockedSince: '2 hours ago',
-          topic: 'Security' 
-        }
-      ]
+      resources: []
     }
   },
   methods: {
-    unlockResource(resourceName) {
-      if (confirm(`Are you sure you want to unlock ${resourceName}? This may affect running jobs.`)) {
-        console.log(`Unlocking resource: ${resourceName}`);
+    async loadResources() {
+      this.loading = true;
+      try {
+        const [resourcesResponse, statsResponse] = await Promise.all([
+          resourceService.getResources(),
+          resourceService.getResourceStats()
+        ]);
         
-        // Find the resource and update its status
-        const resource = this.resources.find(r => r.name === resourceName);
-        if (resource) {
-          resource.jobId = null;
-          resource.lockedSince = null;
+        this.resources = resourcesResponse;
+        this.resourceStats = statsResponse;
+      } catch (error) {
+        console.error('Error loading resources:', error);
+        this.$notify({
+          title: 'Error',
+          text: 'Failed to load resources',
+          type: 'error'
+        });
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async unlockResource(resourceName) {
+      if (confirm(`Are you sure you want to unlock ${resourceName}? This may affect running jobs.`)) {
+        try {
+          await resourceService.unlockResource(resourceName);
           
-          // Update stats
-          this.resourceStats.locked--;
+          // Update local state
+          const resource = this.resources.find(r => r.name === resourceName);
+          if (resource) {
+            resource.jobId = null;
+            resource.lockedSince = null;
+            this.resourceStats.locked--;
+            this.resourceStats.available++;
+          }
+          
+          this.$notify({
+            title: 'Success',
+            text: `Resource ${resourceName} unlocked successfully`,
+            type: 'success'
+          });
+        } catch (error) {
+          console.error('Error unlocking resource:', error);
+          this.$notify({
+            title: 'Error',
+            text: `Failed to unlock resource ${resourceName}`,
+            type: 'error'
+          });
         }
       }
     },
-    unlockAllResources() {
+
+    async unlockAllResources() {
       if (confirm('Are you sure you want to unlock all resources? This may affect running jobs.')) {
-        console.log('Unlocking all resources');
-        
-        // Update all locked resources
-        this.resources.forEach(resource => {
-          resource.jobId = null;
-          resource.lockedSince = null;
-        });
-        
-        // Update stats
-        this.resourceStats.locked = 0;
+        try {
+          const response = await resourceService.unlockAllResources();
+          
+          // Update local state
+          this.resources.forEach(resource => {
+            resource.jobId = null;
+            resource.lockedSince = null;
+          });
+          
+          this.resourceStats.locked = 0;
+          this.resourceStats.available = this.resourceStats.total;
+          
+          this.$notify({
+            title: 'Success',
+            text: `All resources unlocked successfully (${response.unlockedCount} resources)`,
+            type: 'success'
+          });
+        } catch (error) {
+          console.error('Error unlocking all resources:', error);
+          this.$notify({
+            title: 'Error',
+            text: 'Failed to unlock all resources',
+            type: 'error'
+          });
+        }
       }
     }
+  },
+
+  async mounted() {
+    await this.loadResources();
   }
 }
 </script>

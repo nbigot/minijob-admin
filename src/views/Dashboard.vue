@@ -31,7 +31,7 @@
               </div>
               <div class="ml-4">
                 <h4 class="text-gray-500 text-sm dark:text-gray-400">Created</h4>
-                <h3 class="text-2xl font-bold dark:text-gray-200">{{ dashboardData.createdJobs || 24 }}</h3>
+                <h3 class="text-2xl font-bold dark:text-gray-200">{{ dashboardData.jobStats.createdJobs }}</h3>
               </div>
             </div>
           </div>
@@ -44,7 +44,7 @@
               </div>
               <div class="ml-4">
                 <h4 class="text-gray-500 text-sm dark:text-gray-400">Queued</h4>
-                <h3 class="text-2xl font-bold dark:text-gray-200">{{ dashboardData.queuedJobs || 12 }}</h3>
+                <h3 class="text-2xl font-bold dark:text-gray-200">{{ dashboardData.jobStats.queuedJobs }}</h3>
               </div>
             </div>
           </div>
@@ -57,7 +57,7 @@
               </div>
               <div class="ml-4">
                 <h4 class="text-gray-500 text-sm dark:text-gray-400">Running</h4>
-                <h3 class="text-2xl font-bold dark:text-gray-200">{{ dashboardData.runningJobs || 8 }}</h3>
+                <h3 class="text-2xl font-bold dark:text-gray-200">{{ dashboardData.jobStats.runningJobs }}</h3>
               </div>
             </div>
           </div>
@@ -70,7 +70,7 @@
               </div>
               <div class="ml-4">
                 <h4 class="text-gray-500 text-sm dark:text-gray-400">Succeeded</h4>
-                <h3 class="text-2xl font-bold dark:text-gray-200">{{ dashboardData.succeededJobs || 156 }}</h3>
+                <h3 class="text-2xl font-bold dark:text-gray-200">{{ dashboardData.jobStats.succeededJobs }}</h3>
               </div>
             </div>
           </div>
@@ -83,7 +83,7 @@
               </div>
               <div class="ml-4">
                 <h4 class="text-gray-500 text-sm dark:text-gray-400">Failed</h4>
-                <h3 class="text-2xl font-bold dark:text-gray-200">{{ dashboardData.failedJobs || 7 }}</h3>
+                <h3 class="text-2xl font-bold dark:text-gray-200">{{ dashboardData.jobStats.failedJobs }}</h3>
               </div>
             </div>
           </div>
@@ -187,7 +187,7 @@
                         {{ job.status }}
                       </span>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ formatDate(job.created) }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ formatDateRelative(job.created) }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -237,179 +237,129 @@
   </main>
 </template>
 
-<script setup>
-import { ref, computed, onMounted } from 'vue';
-import api from '../api';
+<script>
+import { dashboardService } from '../services/index.js';
 
-// Dashboard data
-const dashboardData = ref({
-  createdJobs: 24,
-  queuedJobs: 12,
-  runningJobs: 8,
-  succeededJobs: 156,
-  failedJobs: 7,
-  recentJobs: [],
-  lockedResources: [],
-  serverStatus: 'healthy',
-  memoryUsage: 42,
-  responseTime: 124,
-  jobsByTopic: {
-    'data-processing': 87,
-    'email-notifications': 56,
-    'report-generation': 34,
-    'file-uploads': 22,
-    'other': 8
-  }
-});
-const loading = ref(true);
-
-// Calculate total jobs for percentage calculations
-const totalJobs = computed(() => {
-  return (dashboardData.value.createdJobs || 24) +
-         (dashboardData.value.queuedJobs || 12) +
-         (dashboardData.value.runningJobs || 8) +
-         (dashboardData.value.succeededJobs || 156) +
-         (dashboardData.value.failedJobs || 7);
-});
-
-// Calculate total topic jobs
-const totalTopicJobs = computed(() => {
-  return Object.values(dashboardData.value.jobsByTopic).reduce((sum, count) => sum + count, 0);
-});
-
-// Calculate percentage for job status
-const calculatePercentage = (count) => {
-  return Math.round((count / totalJobs.value) * 100);
-};
-
-// Calculate percentage for job topics
-const calculateTopicPercentage = (count) => {
-  return Math.round((count / totalTopicJobs.value) * 100);
-};
-
-// Get topic color class based on index
-const getTopicColorClass = (index) => {
-  const colors = [
+export default {
+  name: 'Dashboard',
+  data() {
+    return {
+      loading: false,
+      dashboardData: {
+        jobStats: {
+          createdJobs: 0,
+          queuedJobs: 0,
+          runningJobs: 0,
+          succeededJobs: 0,
+          failedJobs: 0
+        },
+        recentJobs: [],
+        lockedResources: [],
+        jobsByTopic: {}
+      }
+    }
+  },
+  computed: {
+    totalJobs() {
+      return this.dashboardData.jobStats.createdJobs +
+             this.dashboardData.jobStats.queuedJobs +
+             this.dashboardData.jobStats.runningJobs +
+             this.dashboardData.jobStats.succeededJobs +
+             this.dashboardData.jobStats.failedJobs;
+    },
+    totalTopicJobs() {
+      return Object.values(this.dashboardData.jobsByTopic).reduce((sum, count) => sum + count, 0);
+    }
+  },
+  methods: {
+    calculatePercentage(count) {
+      return this.totalJobs > 0 ? Math.round((count / this.totalJobs) * 100) : 0;
+    },
+    
+    calculateTopicPercentage(count) {
+      return this.totalTopicJobs > 0 ? Math.round((count / this.totalTopicJobs) * 100) : 0;
+    },
+    
+    getTopicColorClass(index) {
+      const colors = [
     'bg-purple-500 dark:bg-purple-700', 'bg-pink-500 dark:bg-pink-700', 'bg-cyan-500 dark:bg-cyan-700',
     'bg-orange-500 dark:bg-orange-700', 'bg-gray-500 dark:bg-gray-700', 'bg-lime-500 dark:bg-lime-700',
     'bg-teal-500 dark:bg-teal-700', 'bg-emerald-500 dark:bg-emerald-700', 'bg-yellow-500 dark:bg-yellow-700',
     'bg-red-500 dark:bg-red-700', 'bg-blue-500 dark:bg-blue-700', 'bg-indigo-500 dark:bg-indigo-700',
     'bg-rose-500 dark:bg-rose-700', 'bg-slate-500 dark:bg-slate-700', 'bg-zinc-500 dark:bg-zinc-700'
-  ];
-  return colors[index % colors.length];
-};
-
-// Fetch dashboard data
-const fetchDashboardData = async () => {
-  loading.value = true;
-  
-  try {
-    // For a real application, you would have a dedicated endpoint for dashboard data
-    // Here we're gathering data from multiple endpoints to simulate that
+ 
+      ];
+      return colors[index % colors.length];
+    },
     
-    // Get jobs data
-    const jobsResponse = await api.getJobs({ limit: 5 });
-    const recentJobs = jobsResponse.data.items || [];
-    
-    // Get health data
-    const healthResponse = await api.getHealth();
-    const healthData = healthResponse.data;
-    
-    // Get resources data
-    const resourcesResponse = await api.getResources();
-    const resources = resourcesResponse.data || [];
-    
-    // Create mock dashboard data combining all responses
-    dashboardData.value = {
-      createdJobs: 24,
-      queuedJobs: 12,
-      runningJobs: 8,
-      succeededJobs: 156,
-      failedJobs: 7,
-      recentJobs: recentJobs.map(job => ({
-        ...job,
-        topic: ['data-processing', 'email-notifications', 'report-generation', 'file-uploads', 'other'][Math.floor(Math.random() * 5)]
-      })),
-      lockedResources: [
-        { id: 1, name: 'database-connection', jobId: '73b6a7e9-51e0-4982-a106-f54c4369271a', lockedSince: new Date(Date.now() - 5 * 60 * 1000) },
-        { id: 2, name: 'file-system', jobId: '9e7b3fee-84c5-4fd0-b8e6-8e735c7deca1', lockedSince: new Date(Date.now() - 25 * 60 * 1000) },
-        { id: 3, name: 'api-key', jobId: 'a8f2e357-1d2c-4b6e-9d0f-e5c7b3461d9a', lockedSince: new Date(Date.now() - 35 * 60 * 1000) }
-      ],
-      serverStatus: healthData.status || 'healthy',
-      memoryUsage: 42,
-      responseTime: 124,
-      jobsByTopic: {
-        'data-processing': 87,
-        'email-notifications': 56,
-        'report-generation': 34,
-        'file-uploads': 22,
-        'other': 8
+    async fetchDashboardData() {
+      this.loading = true;
+      
+      try {
+        const response = await dashboardService.getDashboardData();
+        this.dashboardData = response;
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+        this.$notify({
+          title: 'Error',
+          text: 'Failed to load dashboard data',
+          type: 'error'
+        });
+      } finally {
+        this.loading = false;
       }
-    };
-  } catch (error) {
-    console.error('Error fetching dashboard data:', error);
-    // Even if there's an error, we'll show mock data
-  } finally {
-    loading.value = false;
+    },
+    
+    formatDateRelative(dateString) {
+      if (!dateString) return 'N/A';
+      
+      const date = new Date(dateString);
+      const now = new Date();
+      const diffSeconds = Math.floor((now - date) / 1000);
+      
+      if (diffSeconds < 60) {
+        return 'Just now';
+      } else if (diffSeconds < 3600) {
+        return `${Math.floor(diffSeconds / 60)}m ago`;
+      } else if (diffSeconds < 86400) {
+        return `${Math.floor(diffSeconds / 3600)}h ago`;
+      } else {
+        return `${Math.floor(diffSeconds / 86400)}d ago`;
+      }
+    },
+    
+    getStatusClass(status) {
+      if (!status) return '';
+      
+      switch (status.toLowerCase()) {
+        case 'running':
+          return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-400';
+        case 'scheduled':
+        case 'queued':
+          return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-400';
+        case 'completed':
+        case 'succeeded':
+          return 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-400';
+        case 'failed':
+          return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-400';
+        case 'created':
+          return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-400';
+        default:
+          return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-400';
+
+      }
+    },
+    
+    unlockResource(resourceId) {
+      // In a real app, this would make an API call
+      console.log(`Unlocking resource with ID: ${resourceId}`);
+      this.dashboardData.lockedResources = this.dashboardData.lockedResources.filter(r => r.id !== resourceId);
+    }
+  },
+  async mounted() {
+    await this.fetchDashboardData();
   }
-};
-
-// Format date
-const formatDate = (dateString) => {
-  if (!dateString) return 'N/A';
-  
-  const date = new Date(dateString);
-  const now = new Date();
-  const diffSeconds = Math.floor((now - date) / 1000);
-  
-  if (diffSeconds < 60) {
-    return 'Just now';
-  } else if (diffSeconds < 3600) {
-    return `${Math.floor(diffSeconds / 60)}m ago`;
-  } else if (diffSeconds < 86400) {
-    return `${Math.floor(diffSeconds / 3600)}h ago`;
-  } else {
-    return `${Math.floor(diffSeconds / 86400)}d ago`;
-  }
-};
-
-// Same as formatDate for this demo
-const formatDateRelative = formatDate;
-
-// Get status class
-const getStatusClass = (status) => {
-  if (!status) return '';
-  
-  switch (status.toLowerCase()) {
-    case 'running':
-      return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-400';
-    case 'scheduled':
-    case 'queued':
-      return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-400';
-    case 'completed':
-    case 'succeeded':
-      return 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-400';
-    case 'failed':
-      return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-400';
-    case 'created':
-      return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-400';
-    default:
-      return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-400';
-  }
-};
-
-// Unlock a resource (mock function)
-const unlockResource = (resourceId) => {
-  // In a real app, this would make an API call
-  console.log(`Unlocking resource with ID: ${resourceId}`);
-  // Remove the resource from the locked resources list
-  dashboardData.value.lockedResources = dashboardData.value.lockedResources.filter(r => r.id !== resourceId);
-};
-
-// Fetch data on mount
-onMounted(() => {
-  fetchDashboardData();
-});
+}
 </script>
 
 <style scoped>

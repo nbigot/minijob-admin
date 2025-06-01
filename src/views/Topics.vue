@@ -83,39 +83,52 @@
 </template>
 
 <script>
+import { topicService } from '../services/index.js';
+
 export default {
   name: 'Topics',
   data() {
     return {
-      topicDistribution: [
-        { name: 'data-processing', count: 87, percentage: 42, color: 'bg-purple-500' },
-        { name: 'email-notifications', count: 56, percentage: 27, color: 'bg-pink-500' },
-        { name: 'report-generation', count: 34, percentage: 16, color: 'bg-cyan-500' },
-        { name: 'file-uploads', count: 22, percentage: 11, color: 'bg-orange-500' },
-        { name: 'other', count: 8, percentage: 4, color: 'bg-gray-500' }
-      ],
-      successRates: [
-        { name: 'data-processing', rate: 92 },
-        { name: 'email-notifications', rate: 98 },
-        { name: 'report-generation', rate: 85 },
-        { name: 'file-uploads', rate: 78 },
-        { name: 'other', rate: 90 }
-      ],
-      topicsList: [
-        { name: 'data-processing', totalJobs: 87, activeJobs: 12, successRate: 92 },
-        { name: 'email-notifications', totalJobs: 56, activeJobs: 8, successRate: 98 },
-        { name: 'report-generation', totalJobs: 34, activeJobs: 5, successRate: 85 },
-        { name: 'file-uploads', totalJobs: 22, activeJobs: 3, successRate: 78 },
-        { name: 'other', totalJobs: 8, activeJobs: 1, successRate: 90 }
-      ]
+      loading: false,
+      topicDistribution: [],
+      successRates: [],
+      topicsList: []
     }
   },
   methods: {
+    async loadTopicsData() {
+      this.loading = true;
+      try {
+        const [topicsResponse, distributionResponse, successRatesResponse] = await Promise.all([
+          topicService.getTopics(),
+          topicService.getTopicDistribution(),
+          topicService.getTopicSuccessRates()
+        ]);
+        
+        this.topicsList = topicsResponse;
+        this.topicDistribution = distributionResponse;
+        this.successRates = successRatesResponse;
+      } catch (error) {
+        console.error('Error loading topics data:', error);
+        this.$notify({
+          title: 'Error',
+          text: 'Failed to load topics data',
+          type: 'error'
+        });
+      } finally {
+        this.loading = false;
+      }
+    },
+    
     viewTopicJobs(topic) {
-      console.log(`Viewing jobs for topic: ${topic}`)
-      // In a real application, navigate to jobs view filtered by topic
-      // this.$router.push({ name: 'jobs', query: { topic } });
+      console.log(`Viewing jobs for topic: ${topic}`);
+      // Navigate to jobs view filtered by topic
+      this.$router.push({ name: 'Jobs', query: { topic } });
     }
+  },
+  
+  async mounted() {
+    await this.loadTopicsData();
   }
 }
 </script>
