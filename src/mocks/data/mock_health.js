@@ -8,13 +8,13 @@ let data = {
     host: 'minijob-server-01',
     environment: 'Production'
   },
-  
+
   resourceUsage: {
     memory: { label: 'Memory Usage', value: 42 },
     disk: { label: 'Disk Usage', value: 28 },
     network: { label: 'Network I/O', value: 15 }
   },
-  
+
   healthStatus: {
     server: {
       status: 'healthy'
@@ -22,7 +22,7 @@ let data = {
     responseTime: 17,
     lastChecked: 1747464500 // Unix timestamp
   },
-  
+
   stalledJobs: [
     {
       id: 'a8f2e357-1d2c-4b6e-9d0f-e5c7b3461d9a',
@@ -39,7 +39,7 @@ let data = {
       duration: '1d 6h 40m'
     }
   ],
-  
+
   jobProcessingData: {
     labels: ['8:00', '9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00'],
     succeeded: [12, 19, 15, 21, 25, 31, 28, 24],
@@ -58,7 +58,7 @@ mock.onGet('/health/job-processing-data').reply(config => {
   // Generate dynamic data based on the last label
   const lastLabel = data.jobProcessingData.labels[data.jobProcessingData.labels.length - 1];
   const newLabels = Array.from({ length: 8 }, (_, i) => mockDataHelpers.getNextHourLabel(lastLabel));
-  
+
   return [200, mockDataHelpers.generateRandomJobProcessingData(newLabels)];
 });
 
@@ -67,13 +67,13 @@ export const mockDataHelpers = {
   getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   },
-  
+
   getNextHourLabel(lastLabel) {
     const [hour, minute] = lastLabel.split(':').map(Number);
     const nextHour = (hour + 1) % 24;
     return `${nextHour}:${minute < 10 ? '0' + minute : minute}`;
   },
-  
+
   generateRandomJobProcessingData(labels) {
     return {
       labels: [...labels],

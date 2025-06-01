@@ -146,7 +146,7 @@ export default {
 
 .button span { /* For the theme toggle icon container */
   font-size: 1.2rem;
-  display: inline-flex; 
+  display: inline-flex;
   align-items: center;
   justify-content: center;
 }
@@ -156,7 +156,7 @@ export default {
 }
 
 .button.is-active {
-  color: #007bff; 
+  color: #007bff;
   border-color: #007bff;
 }
 </style>

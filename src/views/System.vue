@@ -10,13 +10,13 @@
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
         <h3 class="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">Server Control</h3>
         <div class="flex flex-wrap gap-4">
-          <button 
+          <button
             class="bg-yellow-500 hover:bg-yellow-600 dark:bg-yellow-600 dark:hover:bg-yellow-700 text-white dark:text-gray-200 font-bold py-2 px-4 rounded"
             @click="restartServer"
           >
             <font-awesome-icon :icon="['fas', 'sync-alt']" class="mr-2" /> Restart Server
           </button>
-          <button 
+          <button
             class="bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600 text-white dark:text-gray-200 font-bold py-2 px-4 rounded"
             @click="shutdownServer"
           >
@@ -32,7 +32,7 @@
           <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
             <h4 class="font-medium text-gray-800 dark:text-gray-200 mb-2">Delete All Jobs</h4>
             <p class="text-gray-600 dark:text-gray-400 mb-4">This will permanently delete all jobs from the system. This action cannot be undone.</p>
-            <button 
+            <button
               class="bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600 text-white dark:text-gray-200 font-bold py-2 px-4 rounded"
               @click="deleteAllJobs"
             >
@@ -42,7 +42,7 @@
           <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
             <h4 class="font-medium text-gray-800 dark:text-gray-200 mb-2">Clear Job Queues</h4>
             <p class="text-gray-600 dark:text-gray-400 mb-4">This will remove all queued jobs. Running jobs will not be affected.</p>
-            <button 
+            <button
               class="bg-yellow-500 hover:bg-yellow-600 dark:bg-yellow-600 dark:hover:bg-yellow-700 text-white dark:text-gray-200 font-bold py-2 px-4 rounded"
               @click="clearJobQueues"
             >
@@ -52,7 +52,7 @@
           <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
             <h4 class="font-medium text-gray-800 dark:text-gray-200 mb-2">Unlock All Resources</h4>
             <p class="text-gray-600 dark:text-gray-400 mb-4">This will release all locked resources. Running jobs may be affected.</p>
-            <button 
+            <button
               class="bg-yellow-500 hover:bg-yellow-600 dark:bg-yellow-600 dark:hover:bg-yellow-700 text-white dark:text-gray-200 font-bold py-2 px-4 rounded"
               @click="unlockAllResources"
             >

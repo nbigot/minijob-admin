@@ -9,7 +9,7 @@ let data = {
     { name: 'file-uploads', count: 22, percentage: 11, color: 'bg-orange-500' },
     { name: 'other', count: 8, percentage: 4, color: 'bg-gray-500' }
   ],
-  
+
   successRates: [
     { name: 'data-processing', rate: 92 },
     { name: 'email-notifications', rate: 98 },
@@ -17,7 +17,7 @@ let data = {
     { name: 'file-uploads', rate: 78 },
     { name: 'other', rate: 90 }
   ],
-  
+
   topicsList: [
     { name: 'data-processing', totalJobs: 87, activeJobs: 12, successRate: 92 },
     { name: 'email-notifications', totalJobs: 56, activeJobs: 8, successRate: 98 },
@@ -45,7 +45,7 @@ export const mockDataHelpers = {
   getTopicByName(topicName) {
     return data.topicsList.find(topic => topic.name === topicName);
   },
-  
+
   updateTopicStats(topicName, updates) {
     const topic = this.getTopicByName(topicName);
     if (topic) {

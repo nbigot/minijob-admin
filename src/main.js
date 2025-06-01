@@ -6,14 +6,14 @@ import './assets/css/style.css'
 // Setup Font Awesome
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { 
-  faHeart, 
-  faHome, 
-  faUser, 
-  faSun, 
-  faMoon, 
-  faSync, 
-  faChevronLeft, 
+import {
+  faHeart,
+  faHome,
+  faUser,
+  faSun,
+  faMoon,
+  faSync,
+  faChevronLeft,
   faChevronRight,
   faTachometerAlt,
   faTasks,
@@ -49,13 +49,13 @@ import { faGithub } from '@fortawesome/free-brands-svg-icons'
 
 // Add icons to the library
 library.add(
-  faHeart, 
-  faHome, 
-  faUser, 
-  faSun, 
-  faMoon, 
-  faSync, 
-  faChevronLeft, 
+  faHeart,
+  faHome,
+  faUser,
+  faSun,
+  faMoon,
+  faSync,
+  faChevronLeft,
   faChevronRight,
   faTachometerAlt,
   faTasks,

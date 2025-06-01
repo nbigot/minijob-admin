@@ -104,7 +104,7 @@ export default {
           topicService.getTopicDistribution(),
           topicService.getTopicSuccessRates()
         ]);
-        
+
         this.topicsList = topicsResponse;
         this.topicDistribution = distributionResponse;
         this.successRates = successRatesResponse;
@@ -119,14 +119,14 @@ export default {
         this.loading = false;
       }
     },
-    
+
     viewTopicJobs(topic) {
       console.log(`Viewing jobs for topic: ${topic}`);
       // Navigate to jobs view filtered by topic
       this.$router.push({ name: 'Jobs', query: { topic } });
     }
   },
-  
+
   async mounted() {
     await this.loadTopicsData();
   }

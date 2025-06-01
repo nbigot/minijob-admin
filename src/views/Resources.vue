@@ -25,7 +25,7 @@
           </div>
         </div>
       </div>
-      
+
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
         <div class="flex items-center">
           <div class="rounded-full bg-yellow-100 p-3">
@@ -56,7 +56,7 @@
             <tr v-for="resource in resources" :key="resource.name">
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-200">{{ resource.name }}</td>
               <td class="px-6 py-4 whitespace-nowrap">
-                <span 
+                <span
                   class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-400"
                 >
                   {{ resource.topic }}
@@ -65,7 +65,7 @@
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ resource.jobId || '-' }}</td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ resource.lockedSince || '-' }}</td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                <button 
+                <button
                   class="text-red-600 hover:text-red-900 dark:text-red-700"
                   @click="unlockResource(resource.name)"
                 >
@@ -118,7 +118,7 @@ export default {
           resourceService.getResources(),
           resourceService.getResourceStats()
         ]);
-        
+
         this.resources = resourcesResponse;
         this.resourceStats = statsResponse;
       } catch (error) {

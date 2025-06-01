@@ -42,7 +42,7 @@ export const mockDataHelpers = {
   getServerStatus() {
     return data.serverStatus;
   },
-  
+
   updateServerStatus(newStatus) {
     data.serverStatus = { ...data.serverStatus, ...newStatus };
     return data.serverStatus;

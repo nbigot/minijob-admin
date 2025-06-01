@@ -31,12 +31,12 @@ const api = {
   getJobs: async ({ limit = 10, status = null } = {}) => {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 500));
-    
+
     let filteredJobs = [...mockJobs];
     if (status) {
       filteredJobs = filteredJobs.filter(job => job.status === status);
     }
-    
+
     return {
       data: {
         items: filteredJobs.slice(0, limit),
@@ -44,22 +44,22 @@ const api = {
       }
     };
   },
-  
+
   // Get system health information
   getHealth: async () => {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 300));
-    
+
     return {
       data: mockHealth
     };
   },
-  
+
   // Get resources information
   getResources: async () => {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 400));
-    
+
     return {
       data: mockResources
     };

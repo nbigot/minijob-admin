@@ -6,7 +6,7 @@
         <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-200">Dashboard Overview</h2>
         <p class="text-gray-600 dark:text-gray-400">Monitor server status and performance</p>
       </div>
-      
+
       <!-- Loading State -->
       <div v-if="loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-8">
         <div v-for="i in 5" :key="i" class="bg-white dark:bg-gray-800 rounded-lg shadow animate-pulse p-4">
@@ -19,7 +19,7 @@
           </div>
         </div>
       </div>
-      
+
       <div v-else>
         <!-- Status Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-8">
@@ -35,7 +35,7 @@
               </div>
             </div>
           </div>
-          
+
           <!-- Queued Jobs Card -->
           <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
             <div class="flex items-center">
@@ -48,7 +48,7 @@
               </div>
             </div>
           </div>
-          
+
           <!-- Running Jobs Card -->
           <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
             <div class="flex items-center">
@@ -61,7 +61,7 @@
               </div>
             </div>
           </div>
-          
+
           <!-- Succeeded Jobs Card -->
           <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
             <div class="flex items-center">
@@ -74,7 +74,7 @@
               </div>
             </div>
           </div>
-          
+
           <!-- Failed Jobs Card -->
           <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
             <div class="flex items-center">
@@ -216,7 +216,7 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ resource.jobId }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ formatDateRelative(resource.lockedSince) }}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                      <button 
+                      <button
                         class="text-red-600 hover:text-red-900 dark:text-red-700"
                         @click="unlockResource(resource.id)"
                       >
@@ -277,11 +277,11 @@ export default {
     calculatePercentage(count) {
       return this.totalJobs > 0 ? Math.round((count / this.totalJobs) * 100) : 0;
     },
-    
+
     calculateTopicPercentage(count) {
       return this.totalTopicJobs > 0 ? Math.round((count / this.totalTopicJobs) * 100) : 0;
     },
-    
+
     getTopicColorClass(index) {
       const colors = [
     'bg-purple-500 dark:bg-purple-700', 'bg-pink-500 dark:bg-pink-700', 'bg-cyan-500 dark:bg-cyan-700',
@@ -289,14 +289,14 @@ export default {
     'bg-teal-500 dark:bg-teal-700', 'bg-emerald-500 dark:bg-emerald-700', 'bg-yellow-500 dark:bg-yellow-700',
     'bg-red-500 dark:bg-red-700', 'bg-blue-500 dark:bg-blue-700', 'bg-indigo-500 dark:bg-indigo-700',
     'bg-rose-500 dark:bg-rose-700', 'bg-slate-500 dark:bg-slate-700', 'bg-zinc-500 dark:bg-zinc-700'
- 
+
       ];
       return colors[index % colors.length];
     },
-    
+
     async fetchDashboardData() {
       this.loading = true;
-      
+
       try {
         const response = await dashboardService.getDashboardData();
         this.dashboardData = response;
@@ -311,14 +311,14 @@ export default {
         this.loading = false;
       }
     },
-    
+
     formatDateRelative(dateString) {
       if (!dateString) return 'N/A';
-      
+
       const date = new Date(dateString);
       const now = new Date();
       const diffSeconds = Math.floor((now - date) / 1000);
-      
+
       if (diffSeconds < 60) {
         return 'Just now';
       } else if (diffSeconds < 3600) {
@@ -329,7 +329,7 @@ export default {
         return `${Math.floor(diffSeconds / 86400)}d ago`;
       }
     },
-    
+
     unlockResource(resourceId) {
       // In a real app, this would make an API call
       console.log(`Unlocking resource with ID: ${resourceId}`);

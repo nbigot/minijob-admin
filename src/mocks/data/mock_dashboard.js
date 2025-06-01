@@ -9,7 +9,7 @@ let data = {
     succeededJobs: 156,
     failedJobs: 7
   },
-  
+
   recentJobs: [
     {
       id: '73b6a7e9-51e0-4982-a106-f54c4369271a',
@@ -33,28 +33,28 @@ let data = {
       updated: '2023-05-15 14:15:36'
     }
   ],
-  
+
   lockedResources: [
-    { 
-      id: 1, 
-      name: 'database-connection', 
-      jobId: '73b6a7e9-51e0-4982-a106-f54c4369271a', 
-      lockedSince: new Date(Date.now() - 5 * 60 * 1000) 
+    {
+      id: 1,
+      name: 'database-connection',
+      jobId: '73b6a7e9-51e0-4982-a106-f54c4369271a',
+      lockedSince: new Date(Date.now() - 5 * 60 * 1000)
     },
-    { 
-      id: 2, 
-      name: 'file-system', 
-      jobId: '9e7b3fee-84c5-4fd0-b8e6-8e735c7deca1', 
-      lockedSince: new Date(Date.now() - 25 * 60 * 1000) 
+    {
+      id: 2,
+      name: 'file-system',
+      jobId: '9e7b3fee-84c5-4fd0-b8e6-8e735c7deca1',
+      lockedSince: new Date(Date.now() - 25 * 60 * 1000)
     },
-    { 
-      id: 3, 
-      name: 'api-key', 
-      jobId: 'a8f2e357-1d2c-4b6e-9d0f-e5c7b3461d9a', 
-      lockedSince: new Date(Date.now() - 35 * 60 * 1000) 
+    {
+      id: 3,
+      name: 'api-key',
+      jobId: 'a8f2e357-1d2c-4b6e-9d0f-e5c7b3461d9a',
+      lockedSince: new Date(Date.now() - 35 * 60 * 1000)
     }
   ],
-  
+
   jobsByTopic: {
     'data-processing': 87,
     'email-notifications': 56,
@@ -81,7 +81,7 @@ export const mockDataHelpers = {
   getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   },
-  
+
   updateJobStats() {
     // Simulate changing job statistics
     data.jobStats = {

@@ -16,22 +16,22 @@
 
 <script>
 import { Bar } from 'vue-chartjs'
-import { 
-  Chart as ChartJS, 
-  Title, 
-  Tooltip, 
-  Legend, 
-  BarElement, 
-  CategoryScale, 
-  LinearScale 
+import {
+  Chart as ChartJS,
+  Title,
+  Tooltip,
+  Legend,
+  BarElement,
+  CategoryScale,
+  LinearScale
 } from 'chart.js'
 
 ChartJS.register(
-  Title, 
-  Tooltip, 
-  Legend, 
-  BarElement, 
-  CategoryScale, 
+  Title,
+  Tooltip,
+  Legend,
+  BarElement,
+  CategoryScale,
   LinearScale
 )
 
@@ -154,13 +154,13 @@ export default {
         };
         return;
       }
-      
+
       // Use a safer approach to access data properties
       const labels = Array.isArray(data.labels) ? data.labels : [];
       const succeeded = Array.isArray(data.succeeded) ? data.succeeded : [];
       const failed = Array.isArray(data.failed) ? data.failed : [];
       const pending = Array.isArray(data.pending) ? data.pending : [];
-      
+
       this.chartData = {
         labels: labels,
         datasets: [

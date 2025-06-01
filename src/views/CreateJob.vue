@@ -20,11 +20,11 @@
           <div>
             <label for="topic" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Topic</label>
             <div class="relative">
-              <input 
-                list="topic-options" 
-                id="topic" 
-                v-model="job.topic" 
-                required 
+              <input
+                list="topic-options"
+                id="topic"
+                v-model="job.topic"
+                required
                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50"
                 placeholder="Select or enter a new topic"
               >

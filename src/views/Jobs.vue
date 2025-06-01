@@ -132,10 +132,10 @@
                 <span class="sr-only">Previous</span>
                 <font-awesome-icon :icon="['fas', 'chevron-left']" />
               </a>
-              <a v-for="page in displayedPages" :key="page" href="#" 
-                 @click.prevent="goToPage(page)" 
+              <a v-for="page in displayedPages" :key="page" href="#"
+                 @click.prevent="goToPage(page)"
                  :class="[
-                   currentPage === page 
+                   currentPage === page
                      ? 'z-10 bg-primary-50 border-primary-500 text-primary-600 dark:bg-gray-200 dark:border-primary-800 dark:text-primary-900'
                      : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50 dark:bg-gray-300',
                    'relative inline-flex items-center px-4 py-2 border text-sm font-medium'
@@ -188,15 +188,15 @@ export default {
       if (totalPages <= 5) {
         return Array.from({ length: totalPages }, (_, i) => i + 1)
       }
-      
+
       if (this.currentPage <= 3) {
         return [1, 2, 3, '...', totalPages]
       }
-      
+
       if (this.currentPage >= totalPages - 2) {
         return [1, '...', totalPages - 2, totalPages - 1, totalPages]
       }
-      
+
       return [1, '...', this.currentPage, '...', totalPages]
     }
   },
@@ -210,7 +210,7 @@ export default {
           limit: this.itemsPerPage,
           ...this.filters
         };
-        
+
         const response = await jobService.getJobs(params);
         this.jobs = response.jobs || [];
         this.totalJobs = response.total || 0;
@@ -225,12 +225,12 @@ export default {
         this.loading = false;
       }
     },
-    
+
     async applyFilters() {
       this.currentPage = 1;
       await this.loadJobs();
     },
-    
+
     async resetFilters() {
       this.filters = {
         status: '',
@@ -272,13 +272,13 @@ export default {
       if (confirm(`Are you sure you want to cancel job ${id}?`)) {
         try {
           await jobService.cancelJob(id);
-          
+
           // Update job status in the list
           const job = this.jobs.find(j => j.id === id);
           if (job) {
             job.status = 'Cancelled';
           }
-          
+
           this.$notify({
             title: 'Success',
             text: `Job ${id} was cancelled successfully`,
@@ -298,11 +298,11 @@ export default {
       if (confirm(`Are you sure you want to delete job ${id}? This action cannot be undone.`)) {
         try {
           await jobService.deleteJob(id);
-          
+
           // Remove the job from the list
           this.jobs = this.jobs.filter(job => job.id !== id);
           this.totalJobs--;
-          
+
           this.$notify({
             title: 'Success',
             text: `Job ${id} was deleted successfully`,
@@ -321,7 +321,7 @@ export default {
     navigateToCreateJob() {
       // Get unique topics from the jobs list
       const topics = [...new Set(this.jobs.map(job => job.topic))];
-      
+
       // Navigate to create job page with topics as route params
       this.$router.push({
         path: '/job/create',

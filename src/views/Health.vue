@@ -23,7 +23,7 @@
             </div>
           </div>
         </div>
-        
+
         <div class="border rounded-lg p-4">
           <div class="flex items-center">
             <div class="rounded-full bg-blue-100 p-3">
@@ -38,7 +38,7 @@
             </div>
           </div>
         </div>
-        
+
         <div class="border rounded-lg p-4">
           <div class="flex items-center">
             <div class="rounded-full bg-purple-100 p-3">
@@ -226,17 +226,17 @@ export default {
       this.simulationInterval = setInterval(() => {
         // Only simulate if we have existing data
         if (this.jobProcessingData.labels.length === 0) return;
-        
+
         // Simulate new data point by removing first point and adding a new one
         const lastLabel = this.jobProcessingData.labels[this.jobProcessingData.labels.length - 1];
         const newLabel = this.getNextHourLabel(lastLabel);
-        
+
         // Create new arrays instead of manipulating the existing ones for reactivity
         const newLabels = [...this.jobProcessingData.labels.slice(1), newLabel];
         const newSucceeded = [...this.jobProcessingData.succeeded.slice(1), this.getRandomInt(15, 35)];
         const newFailed = [...this.jobProcessingData.failed.slice(1), this.getRandomInt(0, 5)];
         const newPending = [...this.jobProcessingData.pending.slice(1), this.getRandomInt(3, 10)];
-        
+
         // Update data - using Object.assign to ensure reactivity
         this.jobProcessingData = {
           labels: newLabels,
@@ -246,36 +246,36 @@ export default {
         };
       }, 5000); // Update every 5 seconds
     },
-    
+
     stopJobProcessingSimulation() {
       if (this.simulationInterval) {
         clearInterval(this.simulationInterval);
       }
     },
-    
+
     getRandomInt(min, max) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
     },
-    
+
     getNextHourLabel(lastLabel) {
       const [hour, minute] = lastLabel.split(':').map(Number);
       const nextHour = (hour + 1) % 24;
       return `${nextHour}:${minute < 10 ? '0' + minute : minute}`;
     },
-    
+
     formatServerStatus(status) {
       if (!status) return 'Unknown';
-      
-      return status === 'healthy' ? 'Healthy' : 
-             status === 'warning' ? 'Warning' : 
+
+      return status === 'healthy' ? 'Healthy' :
+             status === 'warning' ? 'Warning' :
              status === 'unhealthy' ? 'Unhealthy' : 'Unknown';
     },
     // Get server status color
     getServerStatusColor(status) {
       if (!status) return 'bg-gray-500';
-      
-      return status === 'healthy' ? 'bg-green-500' : 
-             status === 'warning' ? 'bg-yellow-500' : 
+
+      return status === 'healthy' ? 'bg-green-500' :
+             status === 'warning' ? 'bg-yellow-500' :
              status === 'unhealthy' ? 'bg-red-500' : 'bg-gray-500';
     },
     // Get server response time color
@@ -283,8 +283,8 @@ export default {
       // Assuming response time is a integer in milliseconds
       if (!responseTime) return 'bg-gray-500';
 
-      return responseTime < 100 ? 'bg-blue-500' : 
-             responseTime < 300 ? 'bg-yellow-500' : 
+      return responseTime < 100 ? 'bg-blue-500' :
+             responseTime < 300 ? 'bg-yellow-500' :
              responseTime >= 300 ? 'bg-red-500' : 'bg-gray-500';
     },
     // Format server last checked time
@@ -314,18 +314,18 @@ export default {
       console.log(`Viewing details for job: ${jobId}`)
       // TODO: Navigate to job details page or open modal
     },
-    
+
     async cancelJob(jobId) {
       if (confirm(`Are you sure you want to cancel job ${jobId}?`)) {
         try {
           await jobService.cancelJob(jobId);
-          
+
           // Update job status in the list
           const job = this.stalledJobs.find(j => j.id === jobId);
           if (job) {
             job.status = 'Cancelled';
           }
-          
+
           this.$notify({
             title: 'Success',
             text: `Job ${jobId} was cancelled successfully`,
@@ -341,15 +341,15 @@ export default {
         }
       }
     },
-    
+
     async deleteJob(jobId) {
       if (confirm(`Are you sure you want to delete job ${jobId}? This action cannot be undone.`)) {
         try {
           await jobService.deleteJob(jobId);
-          
+
           // Remove the job from the stalled jobs list
           this.stalledJobs = this.stalledJobs.filter(job => job.id !== jobId);
-          
+
           this.$notify({
             title: 'Success',
             text: `Job ${jobId} was deleted successfully`,
@@ -365,7 +365,7 @@ export default {
         }
       }
     },
-    
+
     async loadHealthData() {
       try {
         const healthStatus = await healthService.getHealthStatus();
@@ -461,7 +461,7 @@ export default {
       const prometheusUrl = import.meta.env.VITE_PROMETHEUS_URL || '/prometheus';
       window.open(prometheusUrl, '_blank');
     },
-    
+
     async openRawMetricsEndpoint() {
       try {
         console.log('Opening raw metrics endpoint');
@@ -481,7 +481,7 @@ export default {
     // Initialize health monitoring
     console.log('Health monitoring initialized');
     this.startJobProcessingSimulation();
-    
+
     // Load initial data
     await this.loadAllData();
   },

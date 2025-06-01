@@ -144,7 +144,7 @@ mock.onGet('/jobs').reply(config => {
   const start = (page - 1) * limit;
   const end = start + limit;
   const paginatedJobs = data.jobs.slice(start, end);
-  
+
   return [200, {
     jobs: paginatedJobs,
     total: data.jobs.length,
@@ -159,7 +159,7 @@ mock.onGet('/jobs/stalled').reply(200, data.stalledJobs);
 mock.onGet(/\/jobs\/(.+)/).reply(config => {
   const jobId = config.url.split('/').pop();
   const job = data.jobs.find(j => j.id === jobId);
-  
+
   if (job) {
     return [200, job];
   } else {
@@ -170,7 +170,7 @@ mock.onGet(/\/jobs\/(.+)/).reply(config => {
 mock.onDelete(/\/jobs\/(.+)/).reply(config => {
   const jobId = config.url.split('/').pop();
   const jobIndex = data.jobs.findIndex(j => j.id === jobId);
-  
+
   if (jobIndex !== -1) {
     const deletedJob = data.jobs.splice(jobIndex, 1)[0];
     // Update stalled jobs list
@@ -184,7 +184,7 @@ mock.onDelete(/\/jobs\/(.+)/).reply(config => {
 mock.onPost(/\/jobs\/(.+)\/cancel/).reply(config => {
   const jobId = config.url.split('/')[2];
   const job = data.jobs.find(j => j.id === jobId);
-  
+
   if (job) {
     job.status = 'cancelled';
     job.updatedAt = new Date().toISOString();
@@ -199,7 +199,7 @@ mock.onPost(/\/jobs\/(.+)\/cancel/).reply(config => {
 mock.onPost(/\/jobs\/(.+)\/retry/).reply(config => {
   const jobId = config.url.split('/')[2];
   const job = data.jobs.find(j => j.id === jobId);
-  
+
   if (job) {
     job.status = 'waiting';
     job.attempts = 0;
@@ -220,7 +220,7 @@ export const mockDataHelpers = {
   findJobById(jobId) {
     return data.jobs.find(job => job.id === jobId);
   },
-  
+
   updateJobStatus(jobId, status) {
     const job = this.findJobById(jobId);
     if (job) {
@@ -232,7 +232,7 @@ export const mockDataHelpers = {
     }
     return null;
   },
-  
+
   removeJob(jobId) {
     const index = data.jobs.findIndex(job => job.id === jobId);
     if (index !== -1) {
