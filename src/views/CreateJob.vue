@@ -29,7 +29,7 @@
                 placeholder="Select or enter a new topic"
               >
               <datalist id="topic-options">
-                <option v-for="topic in existingTopics" :key="topic" :value="topic">{{ topic }}</option>
+                <option v-for="topic in topics" :key="topic" :value="topic">{{ topic }}</option>
               </datalist>
             </div>
             <p class="text-xs text-gray-500 mt-1">Select from existing topics or type a new one</p>
@@ -94,20 +94,6 @@ export default {
       ]
     }
   },
-  created() {
-    // Check if topics were passed through query params
-    if (this.$route.query.topics) {
-      try {
-        const topicsFromRoute = JSON.parse(this.$route.query.topics);
-        if (Array.isArray(topicsFromRoute) && topicsFromRoute.length > 0) {
-          // Override the default existingTopics with the ones from the route
-          this.existingTopics = topicsFromRoute;
-        }
-      } catch (e) {
-        console.error('Error parsing topics from route:', e);
-      }
-    }
-  },
   data() {
     return {
       priorityOptions: {
@@ -122,8 +108,23 @@ export default {
         content: '',
         schedule: 'immediate',
         scheduleTime: null
-      }
+      },
+      topics: [...this.existingTopics]
     };
+  },
+  created() {
+    // Check if topics were passed through query params
+    if (this.$route.query.topics) {
+      try {
+        const topicsFromRoute = JSON.parse(this.$route.query.topics);
+        if (Array.isArray(topicsFromRoute) && topicsFromRoute.length > 0) {
+          // Override the default topics with the ones from the route
+          this.topics = topicsFromRoute;
+        }
+      } catch (e) {
+        console.error('Error parsing topics from route:', e);
+      }
+    }
   },
   methods: {
     submitJob() {
