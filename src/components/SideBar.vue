@@ -71,15 +71,15 @@
         @click="toggleTheme"
         class="w-full p-2 rounded-md flex items-center justify-center transition hover:bg-primary-700 dark:hover:bg-gray-700"
         v-tooltip="
-          isCollapsed ? (isDarkTheme ? 'Light Theme' : 'Dark Theme') : ''
+          isCollapsed ? (isDarkTheme ? 'Dark Theme' : 'Light Theme') : ''
         "
       >
         <font-awesome-icon
-          :icon="isDarkTheme ? 'sun' : 'moon'"
+          :icon="isDarkTheme ? 'moon' : 'sun'"
           :class="{ 'mr-2': !isCollapsed }"
         />
         <span v-show="!isCollapsed">{{
-          isDarkTheme ? "Light Theme" : "Dark Theme"
+          isDarkTheme ? "Dark Theme" : "Light Theme"
         }}</span>
       </button>
     </div>
