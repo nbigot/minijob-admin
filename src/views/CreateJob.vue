@@ -1,13 +1,23 @@
 <template>
   <main class="flex-1 p-4 md:p-6">
-    <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between">
+    <div
+      class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between"
+    >
       <div>
-        <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Create New Job</h2>
-        <p class="text-gray-600 dark:text-gray-400">Fill out the form to create a new job</p>
+        <h2 class="text-2xl font-bold text-gray-800 dark:text-white">
+          Create New Job
+        </h2>
+        <p class="text-gray-600 dark:text-gray-400">
+          Fill out the form to create a new job
+        </p>
       </div>
       <div class="mt-4 md:mt-0">
-        <button @click="navigateBackToJobs" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">
-          <font-awesome-icon :icon="['fas', 'arrow-left']" class="mr-2" /> Back to Jobs
+        <button
+          @click="navigateBackToJobs"
+          class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
+        >
+          <font-awesome-icon :icon="['fas', 'arrow-left']" class="mr-2" /> Back
+          to Jobs
         </button>
       </div>
     </div>
@@ -18,7 +28,11 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <!-- Topic Selection with Editable Dropdown -->
           <div>
-            <label for="topic" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Topic</label>
+            <label
+              for="topic"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >Topic</label
+            >
             <div class="relative">
               <input
                 list="topic-options"
@@ -27,32 +41,70 @@
                 required
                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50"
                 placeholder="Select or enter a new topic"
-              >
+              />
               <datalist id="topic-options">
-                <option v-for="topic in topics" :key="topic" :value="topic">{{ topic }}</option>
+                <option v-for="topic in topics" :key="topic" :value="topic">
+                  {{ topic }}
+                </option>
               </datalist>
             </div>
-            <p class="text-xs text-gray-500 mt-1">Select from existing topics or type a new one</p>
+            <p class="text-xs text-gray-500 mt-1">
+              Select from existing topics or type a new one
+            </p>
           </div>
 
           <!-- Priority -->
           <div>
-            <label for="priority" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Priority</label>
-            <select id="priority" v-model="job.priority" required class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50">
-              <option v-for="(label, value) in priorityOptions" :key="value" :value="value">{{ label }}</option>
+            <label
+              for="priority"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >Priority</label
+            >
+            <select
+              id="priority"
+              v-model="job.priority"
+              required
+              class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50"
+            >
+              <option
+                v-for="(label, value) in priorityOptions"
+                :key="value"
+                :value="value"
+              >
+                {{ label }}
+              </option>
             </select>
           </div>
 
           <!-- Content -->
           <div class="md:col-span-2">
-            <label for="content" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Job Content</label>
-            <textarea id="content" v-model="job.content" rows="6" placeholder="Enter job content in JSON format..." required class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50 font-mono text-sm"></textarea>
+            <label
+              for="content"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >Job Content</label
+            >
+            <textarea
+              id="content"
+              v-model="job.content"
+              rows="6"
+              placeholder="Enter job content in JSON format..."
+              required
+              class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50 font-mono text-sm"
+            ></textarea>
           </div>
 
           <!-- Schedule -->
           <div>
-            <label for="schedule" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Schedule</label>
-            <select id="schedule" v-model="job.schedule" class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50">
+            <label
+              for="schedule"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >Schedule</label
+            >
+            <select
+              id="schedule"
+              v-model="job.schedule"
+              class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50"
+            >
               <option value="immediate">Run Immediately</option>
               <option value="scheduled">Schedule for Later</option>
             </select>
@@ -60,17 +112,35 @@
 
           <!-- Schedule Time (conditional) -->
           <div v-if="job.schedule === 'scheduled'">
-            <label for="scheduleTime" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Schedule Time</label>
-            <input type="datetime-local" id="scheduleTime" v-model="job.scheduleTime" required class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50">
+            <label
+              for="scheduleTime"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >Schedule Time</label
+            >
+            <input
+              type="datetime-local"
+              id="scheduleTime"
+              v-model="job.scheduleTime"
+              required
+              class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50"
+            />
           </div>
         </div>
 
         <div class="mt-6 flex justify-end">
-          <button type="button" @click="navigateBackToJobs" class="bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 font-medium py-2 px-4 rounded mr-2">
+          <button
+            type="button"
+            @click="navigateBackToJobs"
+            class="bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 font-medium py-2 px-4 rounded mr-2"
+          >
             Cancel
           </button>
-          <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded">
-            <font-awesome-icon :icon="['fas', 'save']" class="mr-2" /> Create Job
+          <button
+            type="submit"
+            class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded"
+          >
+            <font-awesome-icon :icon="['fas', 'save']" class="mr-2" /> Create
+            Job
           </button>
         </div>
       </form>
@@ -80,36 +150,36 @@
 
 <script>
 export default {
-  name: 'CreateJob',
+  name: "CreateJob",
   props: {
     existingTopics: {
       type: Array,
       default: () => [
-        'mock-data-processing',
-        'mock-email-notifications',
-        'mock-report-generation',
-        'mock-file-uploads',
-        'mock-user-onboarding',
-        'mock-data-backup'
-      ]
-    }
+        "mock-data-processing",
+        "mock-email-notifications",
+        "mock-report-generation",
+        "mock-file-uploads",
+        "mock-user-onboarding",
+        "mock-data-backup",
+      ],
+    },
   },
   data() {
     return {
       priorityOptions: {
-        low: 'Low',
-        medium: 'Medium',
-        high: 'High',
-        critical: 'Critical'
+        low: "Low",
+        medium: "Medium",
+        high: "High",
+        critical: "Critical",
       },
       job: {
-        topic: '',
-        priority: 'medium',
-        content: '',
-        schedule: 'immediate',
-        scheduleTime: null
+        topic: "",
+        priority: "medium",
+        content: "",
+        schedule: "immediate",
+        scheduleTime: null,
       },
-      topics: [...this.existingTopics]
+      topics: [...this.existingTopics],
     };
   },
   created() {
@@ -122,20 +192,20 @@ export default {
           this.topics = topicsFromRoute;
         }
       } catch (e) {
-        console.error('Error parsing topics from route:', e);
+        console.error("Error parsing topics from route:", e);
       }
     }
   },
   methods: {
     submitJob() {
       // In a real app, this would send the job data to an API
-      console.log('Submitting job:', this.job);
+      console.log("Submitting job:", this.job);
       // After successful submission, navigate back to jobs list
-      this.$router.push('/jobs');
+      this.$router.push("/jobs");
     },
     navigateBackToJobs() {
-      this.$router.push('/jobs');
-    }
-  }
+      this.$router.push("/jobs");
+    },
+  },
 };
 </script>

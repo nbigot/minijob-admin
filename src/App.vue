@@ -1,6 +1,12 @@
 <template>
-  <div class="flex h-screen overflow-hidden bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
-    <SideBar @theme-changed="handleThemeChange" @sidebar-collapsed="handleSidebarCollapse" @refresh-data="onRefreshData" />
+  <div
+    class="flex h-screen overflow-hidden bg-gray-100 dark:bg-gray-900 transition-colors duration-200"
+  >
+    <SideBar
+      @theme-changed="handleThemeChange"
+      @sidebar-collapsed="handleSidebarCollapse"
+      @refresh-data="onRefreshData"
+    />
     <div class="flex-1 overflow-auto">
       <router-view v-slot="{ Component }">
         <transition name="fade" mode="out-in">
