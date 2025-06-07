@@ -156,7 +156,7 @@ export default {
         this.remainingTime = Math.floor(this.autoRefreshRate / 1000);
         this.refreshInterval = setInterval(() => {
           this.remainingTime--;
-          if (this.remainingTime <= 0) {
+          if (this.remainingTime < 0) {
             this.$emit("refresh-data");
             this.remainingTime = Math.floor(this.autoRefreshRate / 1000);
           }

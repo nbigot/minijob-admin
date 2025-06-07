@@ -1,10 +1,10 @@
 <template>
   <div class="flex h-screen overflow-hidden bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
-    <SideBar @theme-changed="handleThemeChange" @sidebar-collapsed="handleSidebarCollapse" />
+    <SideBar @theme-changed="handleThemeChange" @sidebar-collapsed="handleSidebarCollapse" @refresh-data="onRefreshData" />
     <div class="flex-1 overflow-auto">
       <router-view v-slot="{ Component }">
         <transition name="fade" mode="out-in">
-          <component :is="Component" />
+          <component :is="Component" ref="routedView" />
         </transition>
       </router-view>
     </div>
@@ -37,6 +37,13 @@ export default {
     },
     handleSidebarCollapse(isCollapsed) {
       this.isSidebarCollapsed = isCollapsed;
+    },
+    onRefreshData() {
+      // Get the current routed component instance
+      const view = this.$refs.routedView;
+      if (view && typeof view.handleRefreshData === "function") {
+        view.handleRefreshData();
+      }
     },
   },
 };

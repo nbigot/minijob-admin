@@ -115,7 +115,6 @@
       </div>
     </div>
 
-
     <!-- System Information -->
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
       <h3 class="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">System Information</h3>
@@ -126,8 +125,11 @@
             <tbody>
               <tr>
                 <td class="py-2 text-sm font-medium text-gray-500 dark:text-gray-400">Server Version</td>
-                <td class="py-2 text-sm text-gray-900 dark:text-gray-300"><a href="https://github.com/nbigot/minijob" target="_blank" class="button github-button" title="GitHub">
-                  <font-awesome-icon icon="fa-brands fa-github" class="mr-2" />MiniJob {{ systemInfo.version }}</a></td>
+                <td class="py-2 text-sm text-gray-900 dark:text-gray-300">
+                  <a href="https://github.com/nbigot/minijob" target="_blank" class="button github-button" title="GitHub">
+                    <font-awesome-icon icon="fa-brands fa-github" class="mr-2" />MiniJob {{ systemInfo.version }}</a
+                  >
+                </td>
               </tr>
               <tr>
                 <td class="py-2 text-sm font-medium text-gray-500 dark:text-gray-400">Uptime</td>
@@ -168,56 +170,80 @@
       <h3 class="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">Prometheus Metrics</h3>
       <p class="text-gray-600 mb-4 dark:text-gray-400">Access Prometheus metrics for detailed monitoring and alerting.</p>
       <div class="flex flex-wrap gap-4">
-        <a href="#" class="bg-primary-600 hover:bg-primary-700 dark:bg-primary-700 dark:hover:bg-primary-800 text-white dark:text-gray-300 font-bold py-2 px-4 rounded" @click="openPrometheusDashboard">
+        <a
+          href="#"
+          class="bg-primary-600 hover:bg-primary-700 dark:bg-primary-700 dark:hover:bg-primary-800 text-white dark:text-gray-300 font-bold py-2 px-4 rounded"
+          @click="openPrometheusDashboard"
+        >
           <font-awesome-icon :icon="['fas', 'chart-line']" class="mr-2" /> View Prometheus Dashboard
         </a>
-        <a href="#" class="bg-gray-600 hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-800 text-white dark:text-gray-300 font-bold py-2 px-4 rounded" @click="openRawMetricsEndpoint">
+        <a
+          href="#"
+          class="bg-gray-600 hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-800 text-white dark:text-gray-300 font-bold py-2 px-4 rounded"
+          @click="openRawMetricsEndpoint"
+        >
           <font-awesome-icon :icon="['fas', 'code']" class="mr-2" /> Raw Metrics Endpoint
         </a>
       </div>
     </div>
-
   </main>
 </template>
 
 <script>
-import JobProcessingChart from '../components/JobProcessingChart.vue';
-import { jobService, healthService } from '../services/index.js';
-import { getStatusClass } from '../utils/statusClass.js';
+// To trigger health refresh from parent, use a ref on <Health /> and call $refs.healthRef.handleRefreshData() when SideBar emits 'refresh-data'.
+// Example in parent:
+// <Health ref="healthRef" />
+// <SideBar @refresh-data="() => $refs.healthRef.handleRefreshData()" />
+// Or use the Vue 3 composition API with defineExpose if using <script setup>.
+
+import JobProcessingChart from "../components/JobProcessingChart.vue";
+import { jobService, healthService } from "../services/index.js";
+import { getStatusClass } from "../utils/statusClass.js";
 
 export default {
-  name: 'Health',
+  name: "Health",
   components: {
-    JobProcessingChart
+    JobProcessingChart,
   },
   data() {
     return {
       // Initialize with empty data, will be loaded from API/mocks
       systemInfo: {
-        version: '',
+        version: "",
         uptime: 0,
-        host: '',
-        environment: ''
+        host: "",
+        environment: "",
       },
       resourceUsage: {
-        memory: { label: 'Memory Usage', value: 0 },
-        disk: { label: 'Disk Usage', value: 0 },
-        network: { label: 'Network I/O', value: 0 }
+        memory: { label: "Memory Usage", value: 0 },
+        disk: { label: "Disk Usage", value: 0 },
+        network: { label: "Network I/O", value: 0 },
       },
       healthStatus: {
-        server: { status: 'unknown' },
+        server: { status: "unknown" },
         responseTime: 0,
-        lastChecked: 0
+        lastChecked: 0,
       },
       stalledJobs: [],
       jobProcessingData: {
         labels: [],
         succeeded: [],
         failed: [],
-        pending: []
+        pending: [],
       },
-      simulationInterval: null
-    }
+      simulationInterval: null,
+    };
+  },
+  async mounted() {
+    // Initialize health monitoring
+    console.log("Health monitoring initialized");
+    this.startJobProcessingSimulation();
+
+    // Load initial data
+    await this.loadAllData();
+  },
+  beforeUnmount() {
+    this.stopJobProcessingSimulation();
   },
   methods: {
     getStatusClass,
@@ -242,7 +268,7 @@ export default {
           labels: newLabels,
           succeeded: newSucceeded,
           failed: newFailed,
-          pending: newPending
+          pending: newPending,
         };
       }, 5000); // Update every 5 seconds
     },
@@ -258,45 +284,39 @@ export default {
     },
 
     getNextHourLabel(lastLabel) {
-      const [hour, minute] = lastLabel.split(':').map(Number);
+      const [hour, minute] = lastLabel.split(":").map(Number);
       const nextHour = (hour + 1) % 24;
-      return `${nextHour}:${minute < 10 ? '0' + minute : minute}`;
+      return `${nextHour}:${minute < 10 ? "0" + minute : minute}`;
     },
 
     formatServerStatus(status) {
-      if (!status) return 'Unknown';
+      if (!status) return "Unknown";
 
-      return status === 'healthy' ? 'Healthy' :
-             status === 'warning' ? 'Warning' :
-             status === 'unhealthy' ? 'Unhealthy' : 'Unknown';
+      return status === "healthy" ? "Healthy" : status === "warning" ? "Warning" : status === "unhealthy" ? "Unhealthy" : "Unknown";
     },
     // Get server status color
     getServerStatusColor(status) {
-      if (!status) return 'bg-gray-500';
+      if (!status) return "bg-gray-500";
 
-      return status === 'healthy' ? 'bg-green-500' :
-             status === 'warning' ? 'bg-yellow-500' :
-             status === 'unhealthy' ? 'bg-red-500' : 'bg-gray-500';
+      return status === "healthy" ? "bg-green-500" : status === "warning" ? "bg-yellow-500" : status === "unhealthy" ? "bg-red-500" : "bg-gray-500";
     },
     // Get server response time color
     getServerResponseTimeColor(responseTime) {
       // Assuming response time is a integer in milliseconds
-      if (!responseTime) return 'bg-gray-500';
+      if (!responseTime) return "bg-gray-500";
 
-      return responseTime < 100 ? 'bg-blue-500' :
-             responseTime < 300 ? 'bg-yellow-500' :
-             responseTime >= 300 ? 'bg-red-500' : 'bg-gray-500';
+      return responseTime < 100 ? "bg-blue-500" : responseTime < 300 ? "bg-yellow-500" : responseTime >= 300 ? "bg-red-500" : "bg-gray-500";
     },
     // Format server last checked time
     formatLastChecked(lastChecked) {
       // Assuming lastChecked is a Unix timestamp
-      if (!lastChecked) return 'Unknown';
-      if (lastChecked === 0) return 'Never';
+      if (!lastChecked) return "Unknown";
+      if (lastChecked === 0) return "Never";
 
       // Compare with current time
       const now = Math.floor(Date.now() / 1000);
       const diff = now - lastChecked;
-      if (diff < 60) return 'Just now';
+      if (diff < 60) return "Just now";
       if (diff < 3600) return `${Math.floor(diff / 60)} minutes ago`;
       if (diff < 86400) return `${Math.floor(diff / 3600)} hours ago`;
       return `${Math.floor(diff / 86400)} days ago`;
@@ -304,14 +324,14 @@ export default {
     // Format server uptime
     formatUptime(uptime) {
       // Assuming uptime is in seconds
-      if (!uptime) return 'Unknown';
+      if (!uptime) return "Unknown";
       const days = Math.floor(uptime / (24 * 3600));
       const hours = Math.floor((uptime % (24 * 3600)) / 3600);
-      const minutes = Math.floor((uptime % (24 * 3600)) % 3600 / 60);
+      const minutes = Math.floor(((uptime % (24 * 3600)) % 3600) / 60);
       return `${days} days, ${hours} hours, ${minutes} minutes`;
     },
     viewJobDetails(jobId) {
-      console.log(`Viewing details for job: ${jobId}`)
+      console.log(`Viewing details for job: ${jobId}`);
       // TODO: Navigate to job details page or open modal
     },
 
@@ -321,22 +341,22 @@ export default {
           await jobService.cancelJob(jobId);
 
           // Update job status in the list
-          const job = this.stalledJobs.find(j => j.id === jobId);
+          const job = this.stalledJobs.find((j) => j.id === jobId);
           if (job) {
-            job.status = 'Cancelled';
+            job.status = "Cancelled";
           }
 
           this.$notify({
-            title: 'Success',
+            title: "Success",
             text: `Job ${jobId} was cancelled successfully`,
-            type: 'success'
+            type: "success",
           });
         } catch (error) {
-          console.error('Error cancelling job:', error);
+          console.error("Error cancelling job:", error);
           this.$notify({
-            title: 'Error',
+            title: "Error",
             text: error.message,
-            type: 'error'
+            type: "error",
           });
         }
       }
@@ -348,19 +368,19 @@ export default {
           await jobService.deleteJob(jobId);
 
           // Remove the job from the stalled jobs list
-          this.stalledJobs = this.stalledJobs.filter(job => job.id !== jobId);
+          this.stalledJobs = this.stalledJobs.filter((job) => job.id !== jobId);
 
           this.$notify({
-            title: 'Success',
+            title: "Success",
             text: `Job ${jobId} was deleted successfully`,
-            type: 'success'
+            type: "success",
           });
         } catch (error) {
-          console.error('Error deleting job:', error);
+          console.error("Error deleting job:", error);
           this.$notify({
-            title: 'Error',
+            title: "Error",
             text: error.message,
-            type: 'error'
+            type: "error",
           });
         }
       }
@@ -371,14 +391,14 @@ export default {
         const healthStatus = await healthService.getHealthStatus();
         this.healthStatus = {
           ...this.healthStatus,
-          ...healthStatus
+          ...healthStatus,
         };
       } catch (error) {
-        console.error('Error loading health status:', error);
+        console.error("Error loading health status:", error);
         this.$notify({
-          title: 'Warning',
-          text: 'Failed to load health status',
-          type: 'warn'
+          title: "Warning",
+          text: "Failed to load health status",
+          type: "warn",
         });
       }
     },
@@ -388,14 +408,14 @@ export default {
         const systemInfo = await healthService.getSystemInfo();
         this.systemInfo = {
           ...this.systemInfo,
-          ...systemInfo
+          ...systemInfo,
         };
       } catch (error) {
-        console.error('Error loading system info:', error);
+        console.error("Error loading system info:", error);
         this.$notify({
-          title: 'Warning',
-          text: 'Failed to load system information',
-          type: 'warn'
+          title: "Warning",
+          text: "Failed to load system information",
+          type: "warn",
         });
       }
     },
@@ -405,14 +425,14 @@ export default {
         const resourceUsage = await healthService.getResourceUsage();
         this.resourceUsage = {
           ...this.resourceUsage,
-          ...resourceUsage
+          ...resourceUsage,
         };
       } catch (error) {
-        console.error('Error loading resource usage:', error);
+        console.error("Error loading resource usage:", error);
         this.$notify({
-          title: 'Warning',
-          text: 'Failed to load resource usage',
-          type: 'warn'
+          title: "Warning",
+          text: "Failed to load resource usage",
+          type: "warn",
         });
       }
     },
@@ -422,11 +442,11 @@ export default {
         const stalledJobs = await healthService.getStalledJobs();
         this.stalledJobs = stalledJobs;
       } catch (error) {
-        console.error('Error loading stalled jobs:', error);
+        console.error("Error loading stalled jobs:", error);
         this.$notify({
-          title: 'Warning',
-          text: 'Failed to load stalled jobs',
-          type: 'warn'
+          title: "Warning",
+          text: "Failed to load stalled jobs",
+          type: "warn",
         });
       }
     },
@@ -436,57 +456,46 @@ export default {
         const jobProcessingData = await healthService.getJobProcessingData();
         this.jobProcessingData = {
           ...this.jobProcessingData,
-          ...jobProcessingData
+          ...jobProcessingData,
         };
       } catch (error) {
-        console.error('Error loading job processing data:', error);
+        console.error("Error loading job processing data:", error);
         // Keep simulation if API fails
-        console.log('Falling back to simulation data');
+        console.log("Falling back to simulation data");
       }
     },
 
     async loadAllData() {
-      await Promise.allSettled([
-        this.loadHealthData(),
-        this.loadSystemInfo(),
-        this.loadResourceUsage(),
-        this.loadStalledJobs(),
-        this.loadJobProcessingData()
-      ]);
+      await Promise.allSettled([this.loadHealthData(), this.loadSystemInfo(), this.loadResourceUsage(), this.loadStalledJobs(), this.loadJobProcessingData()]);
     },
 
     openPrometheusDashboard() {
-      console.log('Opening Prometheus dashboard');
+      console.log("Opening Prometheus dashboard");
       // Open Prometheus dashboard in new tab
-      const prometheusUrl = import.meta.env.VITE_PROMETHEUS_URL || '/prometheus';
-      window.open(prometheusUrl, '_blank');
+      const prometheusUrl = import.meta.env.VITE_PROMETHEUS_URL || "/prometheus";
+      window.open(prometheusUrl, "_blank");
     },
 
     async openRawMetricsEndpoint() {
       try {
-        console.log('Opening raw metrics endpoint');
-        const metricsUrl = `${import.meta.env.VITE_API_BASE_URL || '/api'}/metrics/prometheus`;
-        window.open(metricsUrl, '_blank');
+        console.log("Opening raw metrics endpoint");
+        const metricsUrl = `${import.meta.env.VITE_API_BASE_URL || "/api"}/metrics/prometheus`;
+        window.open(metricsUrl, "_blank");
       } catch (error) {
-        console.error('Error opening metrics endpoint:', error);
+        console.error("Error opening metrics endpoint:", error);
         this.$notify({
-          title: 'Error',
-          text: 'Failed to open metrics endpoint',
-          type: 'error'
+          title: "Error",
+          text: "Failed to open metrics endpoint",
+          type: "error",
         });
       }
-    }
-  },
-  async mounted() {
-    // Initialize health monitoring
-    console.log('Health monitoring initialized');
-    this.startJobProcessingSimulation();
+    },
 
-    // Load initial data
-    await this.loadAllData();
+    handleRefreshData() {
+      console.log("Refreshing health data");
+      // Call your health data refresh logic here
+      this.loadAllData && this.loadAllData();
+    },
   },
-  beforeUnmount() {
-    this.stopJobProcessingSimulation();
-  }
-}
+};
 </script>
