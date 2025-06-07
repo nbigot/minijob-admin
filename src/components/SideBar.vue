@@ -108,7 +108,7 @@ export default {
   props: {
     autoRefreshRate: {
       type: Number,
-      default: 8000,
+      default: 30000,
     },
   },
   emits: [
