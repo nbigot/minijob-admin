@@ -1,40 +1,40 @@
-import mock from "../mock.js"
+import mock from "../mock.js";
 
 // Mock data for system operations
 let data = {
   serverStatus: {
-    status: 'running',
+    status: "running",
     uptime: 3600000, // 1 hour in ms
-    version: 'v1.2.3'
-  }
+    version: "v1.2.3",
+  },
 };
 
 // Functions to handle mock data requests
-mock.onPost('/system/restart').reply(() => {
+mock.onPost("/api/v1/admin/server/restart").reply(() => {
   // Simulate server restart
   data.serverStatus.uptime = 0;
-  return [200, { success: true, message: 'Server restart initiated' }];
+  return [200, { success: true, message: "Server restart initiated" }];
 });
 
-mock.onPost('/system/shutdown').reply(() => {
+mock.onPost("/api/v1/admin/server/shutdown").reply(() => {
   // Simulate server shutdown
-  data.serverStatus.status = 'shutting down';
-  return [200, { success: true, message: 'Server shutdown initiated' }];
+  data.serverStatus.status = "shutting down";
+  return [200, { success: true, message: "Server shutdown initiated" }];
 });
 
-mock.onDelete('/system/jobs/all').reply(() => {
+mock.onDelete("/api/v1/jobs/").reply(() => {
   // Simulate deleting all jobs
-  return [200, { success: true, message: 'All jobs deleted successfully', deletedCount: 207 }];
+  return [200, { success: true, message: "All jobs deleted successfully", deletedCount: 207 }];
 });
 
-mock.onPost('/system/queues/clear').reply(() => {
+mock.onPost("/system/queues/clear").reply(() => {
   // Simulate clearing job queues
-  return [200, { success: true, message: 'Job queues cleared successfully', clearedCount: 24 }];
+  return [200, { success: true, message: "Job queues cleared successfully", clearedCount: 24 }];
 });
 
-mock.onPost('/system/resources/unlock-all').reply(() => {
+mock.onPost("/api/v1/resources/unlock").reply(() => {
   // Simulate unlocking all resources
-  return [200, { success: true, message: 'All resources unlocked successfully', unlockedCount: 7 }];
+  return [200, { success: true, message: "All resources unlocked successfully", unlockedCount: 7 }];
 });
 
 // Helper functions for generating dynamic mock data
@@ -46,5 +46,5 @@ export const mockDataHelpers = {
   updateServerStatus(newStatus) {
     data.serverStatus = { ...data.serverStatus, ...newStatus };
     return data.serverStatus;
-  }
+  },
 };

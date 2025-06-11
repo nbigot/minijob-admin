@@ -1,10 +1,10 @@
-import apiClient from './axios.js';
+import apiClient from "./axios.js";
 
 export const jobService = {
   // Get all jobs
   async getJobs(params = {}) {
     try {
-      const response = await apiClient.get('/jobs', { params });
+      const response = await apiClient.get("/jobs", { params });
       return response.data;
     } catch (error) {
       throw new Error(`Failed to fetch jobs: ${error.message}`);
@@ -24,7 +24,7 @@ export const jobService = {
   // Get stalled jobs
   async getStalledJobs() {
     try {
-      const response = await apiClient.get('/jobs/stalled');
+      const response = await apiClient.get("/jobs/stalled");
       return response.data;
     } catch (error) {
       throw new Error(`Failed to fetch stalled jobs: ${error.message}`);
@@ -34,7 +34,7 @@ export const jobService = {
   // Delete job
   async deleteJob(jobId) {
     try {
-      const response = await apiClient.delete(`/jobs/${jobId}`);
+      const response = await apiClient.delete(`/api/v1/job/${jobId}`);
       return response.data;
     } catch (error) {
       throw new Error(`Failed to delete job ${jobId}: ${error.message}`);
@@ -44,7 +44,7 @@ export const jobService = {
   // Cancel job
   async cancelJob(jobId) {
     try {
-      const response = await apiClient.post(`/jobs/${jobId}/cancel`);
+      const response = await apiClient.post(`/api/v1/job/${jobId}/cancel`);
       return response.data;
     } catch (error) {
       throw new Error(`Failed to cancel job ${jobId}: ${error.message}`);
@@ -59,5 +59,5 @@ export const jobService = {
     } catch (error) {
       throw new Error(`Failed to retry job ${jobId}: ${error.message}`);
     }
-  }
+  },
 };

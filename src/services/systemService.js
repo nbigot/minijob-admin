@@ -1,10 +1,10 @@
-import apiClient from './axios.js';
+import apiClient from "./axios.js";
 
 export const systemService = {
   // Server control operations
   async restartServer() {
     try {
-      const response = await apiClient.post('/system/restart');
+      const response = await apiClient.post("/api/v1/admin/server/restart");
       return response.data;
     } catch (error) {
       throw new Error(`Failed to restart server: ${error.message}`);
@@ -13,7 +13,7 @@ export const systemService = {
 
   async shutdownServer() {
     try {
-      const response = await apiClient.post('/system/shutdown');
+      const response = await apiClient.post("/api/v1/admin/server/shutdown");
       return response.data;
     } catch (error) {
       throw new Error(`Failed to shutdown server: ${error.message}`);
@@ -23,7 +23,7 @@ export const systemService = {
   // Bulk operations
   async deleteAllJobs() {
     try {
-      const response = await apiClient.delete('/system/jobs/all');
+      const response = await apiClient.delete("/api/v1/jobs/");
       return response.data;
     } catch (error) {
       throw new Error(`Failed to delete all jobs: ${error.message}`);
@@ -32,7 +32,7 @@ export const systemService = {
 
   async clearJobQueues() {
     try {
-      const response = await apiClient.post('/system/queues/clear');
+      const response = await apiClient.post("/system/queues/clear");
       return response.data;
     } catch (error) {
       throw new Error(`Failed to clear job queues: ${error.message}`);
@@ -41,10 +41,10 @@ export const systemService = {
 
   async unlockAllResources() {
     try {
-      const response = await apiClient.post('/system/resources/unlock-all');
+      const response = await apiClient.post("/api/v1/resources/unlock");
       return response.data;
     } catch (error) {
       throw new Error(`Failed to unlock all resources: ${error.message}`);
     }
-  }
+  },
 };

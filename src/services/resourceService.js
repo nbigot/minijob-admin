@@ -1,10 +1,10 @@
-import apiClient from './axios.js';
+import apiClient from "./axios.js";
 
 export const resourceService = {
   // Get all resources
   async getResources() {
     try {
-      const response = await apiClient.get('/resources');
+      const response = await apiClient.get("/resources");
       return response.data;
     } catch (error) {
       throw new Error(`Failed to fetch resources: ${error.message}`);
@@ -14,7 +14,7 @@ export const resourceService = {
   // Get resource statistics
   async getResourceStats() {
     try {
-      const response = await apiClient.get('/resources/stats');
+      const response = await apiClient.get("/resources/stats");
       return response.data;
     } catch (error) {
       throw new Error(`Failed to fetch resource statistics: ${error.message}`);
@@ -34,10 +34,10 @@ export const resourceService = {
   // Unlock all resources
   async unlockAllResources() {
     try {
-      const response = await apiClient.post('/resources/unlock-all');
+      const response = await apiClient.post("/api/v1/resources/unlock");
       return response.data;
     } catch (error) {
       throw new Error(`Failed to unlock all resources: ${error.message}`);
     }
-  }
+  },
 };
