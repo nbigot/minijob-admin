@@ -188,16 +188,37 @@ export default {
     async loadTopicsData() {
       this.loading = true;
       try {
-        const [topicsResponse, distributionResponse, successRatesResponse] =
-          await Promise.all([
-            topicService.getTopics(),
-            topicService.getTopicDistribution(),
-            topicService.getTopicSuccessRates(),
-          ]);
-
-        this.topicsList = topicsResponse;
-        this.topicDistribution = distributionResponse;
-        this.successRates = successRatesResponse;
+        const statsResponse = await topicService.getTopicsStats();
+        const topics =
+          statsResponse && statsResponse.topics ? statsResponse.topics : [];
+        // Prepare topicDistribution
+        this.topicDistribution = topics.map((t, idx) => ({
+          name: t.topicName,
+          count: t.totalJobs,
+          percentage: t.percentJobs ? t.percentJobs.toFixed(1) : 0,
+          color: [
+            "bg-blue-500",
+            "bg-purple-500",
+            "bg-pink-500",
+            "bg-yellow-500",
+            "bg-green-500",
+            "bg-red-500",
+            "bg-indigo-500",
+            "bg-teal-500",
+          ][idx % 8],
+        }));
+        // Prepare successRates
+        this.successRates = topics.map((t) => ({
+          name: t.topicName,
+          rate: t.successRate ? (t.successRate * 100).toFixed(1) : 0,
+        }));
+        // Prepare topicsList
+        this.topicsList = topics.map((t) => ({
+          name: t.topicName,
+          totalJobs: t.totalJobs,
+          activeJobs: t.activeJobs,
+          successRate: t.successRate ? (t.successRate * 100).toFixed(1) : 0,
+        }));
       } catch (error) {
         console.error("Error loading topics data:", error);
         this.$notify({

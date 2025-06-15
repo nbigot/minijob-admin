@@ -31,9 +31,15 @@ let data = {
 mock.onGet("/api/v1/topics").reply(200, data.topicsList);
 
 mock.onGet("/api/v1/topics/stats").reply(200, {
-  totalTopics: data.topicsList.length,
-  totalJobs: data.topicsList.reduce((sum, topic) => sum + topic.totalJobs, 0),
-  activeJobs: data.topicsList.reduce((sum, topic) => sum + topic.activeJobs, 0),
+  code: 200,
+  message: "success",
+  topics: [
+    { topicName: "data-processing", totalJobs: 87, activeJobs: 12, percentJobs: 42, successRate: 0.92, averageDuration: 0 },
+    { topicName: "email-notifications", totalJobs: 56, activeJobs: 8, percentJobs: 27, successRate: 0.98, averageDuration: 0 },
+    { topicName: "report-generation", totalJobs: 34, activeJobs: 5, percentJobs: 16, successRate: 0.85, averageDuration: 0 },
+    { topicName: "file-uploads", totalJobs: 22, activeJobs: 3, percentJobs: 11, successRate: 0.78, averageDuration: 0 },
+    { topicName: "other", totalJobs: 8, activeJobs: 1, percentJobs: 4, successRate: 0.9, averageDuration: 0 },
+  ],
 });
 
 mock.onGet("/api/v1/topics/distribution").reply(200, data.topicDistribution);
