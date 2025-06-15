@@ -214,11 +214,6 @@ export default {
               this.resourceStats.locked--;
               this.resourceStats.available++;
             }
-            this.openModal(
-              "Success",
-              `Resource ${resourceName} unlocked successfully.`,
-              null
-            );
           } catch (error) {
             console.error("Error unlocking resource:", error);
             this.openModal(

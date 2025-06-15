@@ -31,12 +31,12 @@ let data = {
 };
 
 // Functions to handle mock data requests
-mock.onGet("/resources").reply(200, data.resources);
+mock.onGet("/api/v1/resources").reply(200, data.resources);
 
-mock.onGet("/resources/stats").reply(200, data.resourceStats);
+mock.onGet("/api/v1/resources/stats").reply(200, data.resourceStats);
 
-mock.onPost(/\/resources\/(.+)\/unlock/).reply((config) => {
-  const resourceName = config.url.split("/")[2];
+mock.onPost(/\/api\/v1\/resources\/(.+)\/unlock/).reply((config) => {
+  const resourceName = config.url.split("/")[4];
   const resource = data.resources.find((r) => r.name === resourceName);
 
   if (resource) {

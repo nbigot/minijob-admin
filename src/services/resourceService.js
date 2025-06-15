@@ -4,7 +4,7 @@ export const resourceService = {
   // Get all resources
   async getResources() {
     try {
-      const response = await apiClient.get("/resources");
+      const response = await apiClient.get("/api/v1/resources");
       return response.data;
     } catch (error) {
       throw new Error(`Failed to fetch resources: ${error.message}`);
@@ -14,7 +14,7 @@ export const resourceService = {
   // Get resource statistics
   async getResourceStats() {
     try {
-      const response = await apiClient.get("/resources/stats");
+      const response = await apiClient.get("/api/v1/resources/stats");
       return response.data;
     } catch (error) {
       throw new Error(`Failed to fetch resource statistics: ${error.message}`);
@@ -24,7 +24,7 @@ export const resourceService = {
   // Unlock a specific resource
   async unlockResource(resourceName) {
     try {
-      const response = await apiClient.post(`/resources/${resourceName}/unlock`);
+      const response = await apiClient.post(`/api/v1/resources/${resourceName}/unlock`);
       return response.data;
     } catch (error) {
       throw new Error(`Failed to unlock resource ${resourceName}: ${error.message}`);

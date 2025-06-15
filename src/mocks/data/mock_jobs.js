@@ -139,7 +139,7 @@ let data = {
 data.stalledJobs = data.jobs.filter((job) => job.status === "stalled");
 
 // Functions to handle mock data requests
-mock.onGet("/jobs").reply((config) => {
+mock.onGet("/api/v1/jobs").reply((config) => {
   const { page = 1, limit = 50 } = config.params || {};
   const start = (page - 1) * limit;
   const end = start + limit;
@@ -157,9 +157,9 @@ mock.onGet("/jobs").reply((config) => {
   ];
 });
 
-mock.onGet("/jobs/stalled").reply(200, data.stalledJobs);
+mock.onGet("/api/v1/jobs/stalled").reply(200, data.stalledJobs);
 
-mock.onGet(/\/jobs\/(.+)/).reply((config) => {
+mock.onGet(/\/api\/v1\/job\/(.+)/).reply((config) => {
   const jobId = config.url.split("/").pop();
   const job = data.jobs.find((j) => j.id === jobId);
 
@@ -199,7 +199,7 @@ mock.onPost(/\/api\/v1\/job\/(.+)\/cancel/).reply((config) => {
   }
 });
 
-mock.onPost(/\/jobs\/(.+)\/retry/).reply((config) => {
+mock.onPost(/\/api\/v1\/job\/(.+)\/retry/).reply((config) => {
   const jobId = config.url.split("/")[2];
   const job = data.jobs.find((j) => j.id === jobId);
 

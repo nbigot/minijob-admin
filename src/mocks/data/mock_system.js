@@ -27,7 +27,7 @@ mock.onDelete("/api/v1/jobs/").reply(() => {
   return [200, { success: true, message: "All jobs deleted successfully", deletedCount: 207 }];
 });
 
-mock.onPost("/system/queues/clear").reply(() => {
+mock.onPost("/api/v1/system/queues/clear").reply(() => {
   // Simulate clearing job queues
   return [200, { success: true, message: "Job queues cleared successfully", clearedCount: 24 }];
 });

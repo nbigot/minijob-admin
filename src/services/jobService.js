@@ -4,7 +4,7 @@ export const jobService = {
   // Get all jobs
   async getJobs(params = {}) {
     try {
-      const response = await apiClient.get("/jobs", { params });
+      const response = await apiClient.get("/api/v1/jobs", { params });
       return response.data;
     } catch (error) {
       throw new Error(`Failed to fetch jobs: ${error.message}`);
@@ -14,7 +14,7 @@ export const jobService = {
   // Get job by ID
   async getJobById(jobId) {
     try {
-      const response = await apiClient.get(`/jobs/${jobId}`);
+      const response = await apiClient.get(`/api/v1/jobs/${jobId}`);
       return response.data;
     } catch (error) {
       throw new Error(`Failed to fetch job ${jobId}: ${error.message}`);
@@ -24,7 +24,7 @@ export const jobService = {
   // Get stalled jobs
   async getStalledJobs() {
     try {
-      const response = await apiClient.get("/jobs/stalled");
+      const response = await apiClient.get("/api/v1/jobs/stalled");
       return response.data;
     } catch (error) {
       throw new Error(`Failed to fetch stalled jobs: ${error.message}`);
@@ -54,7 +54,7 @@ export const jobService = {
   // Retry job
   async retryJob(jobId) {
     try {
-      const response = await apiClient.post(`/jobs/${jobId}/retry`);
+      const response = await apiClient.post(`/api/v1/jobs/${jobId}/retry`);
       return response.data;
     } catch (error) {
       throw new Error(`Failed to retry job ${jobId}: ${error.message}`);

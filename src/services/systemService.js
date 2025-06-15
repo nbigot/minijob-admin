@@ -1,7 +1,6 @@
 import apiClient from "./axios.js";
 
 export const systemService = {
-  // Server control operations
   async restartServer() {
     try {
       const response = await apiClient.post("/api/v1/admin/server/restart");
@@ -20,7 +19,6 @@ export const systemService = {
     }
   },
 
-  // Bulk operations
   async deleteAllJobs() {
     try {
       const response = await apiClient.delete("/api/v1/jobs/");
@@ -32,7 +30,7 @@ export const systemService = {
 
   async clearJobQueues() {
     try {
-      const response = await apiClient.post("/system/queues/clear");
+      const response = await apiClient.delete("/api/v1/jobs/queued");
       return response.data;
     } catch (error) {
       throw new Error(`Failed to clear job queues: ${error.message}`);
