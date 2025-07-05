@@ -98,11 +98,26 @@
     </main>
 
     <ConfirmationModal
+      v-if="modalType === 'confirm'"
       :visible="showModal"
       :title="modalTitle"
       :message="modalMessage"
       @confirm="confirmModal"
       @cancel="cancelModal"
+    />
+    <SuccessModal
+      v-if="modalType === 'success'"
+      :visible="showModal"
+      :title="modalTitle"
+      :message="modalMessage"
+      @confirm="cancelModal"
+    />
+    <FailureModal
+      v-if="modalType === 'failure'"
+      :visible="showModal"
+      :title="modalTitle"
+      :message="modalMessage"
+      @confirm="cancelModal"
     />
   </div>
 </template>
@@ -110,29 +125,47 @@
 <script>
 import { systemService } from "../services/index.js";
 import ConfirmationModal from "../components/ConfirmationModal.vue";
+import SuccessModal from "../components/SuccessModal.vue";
+import FailureModal from "../components/FailureModal.vue";
 
 export default {
   name: "System",
-  components: { ConfirmationModal },
+  components: { ConfirmationModal, SuccessModal, FailureModal },
   data() {
     return {
       showModal: false,
       modalTitle: "",
       modalMessage: "",
       modalAction: null,
+      modalType: "confirm",
       loading: false,
     };
   },
   methods: {
-    openModal(title, message, action) {
+    openModal(title, message, action = null) {
       this.modalTitle = title;
       this.modalMessage = message;
       this.modalAction = action;
+      this.modalType = "confirm";
+      this.showModal = true;
+    },
+    openModalSuccess(message, title = "Success") {
+      this.modalTitle = title;
+      this.modalMessage = message;
+      this.modalAction = null;
+      this.modalType = "success";
+      this.showModal = true;
+    },
+    openModalFailure(message, title = "Error") {
+      this.modalTitle = title;
+      this.modalMessage = message;
+      this.modalAction = null;
+      this.modalType = "failure";
       this.showModal = true;
     },
     confirmModal() {
       this.showModal = false;
-      if (this.modalAction) {
+      if (this.modalType === "confirm" && this.modalAction) {
         this.modalAction();
       }
     },
@@ -150,14 +183,10 @@ export default {
       this.loading = true;
       try {
         const response = await systemService.restartServer();
-        this.openModal(
-          "Success",
-          response.message || "Server restart initiated",
-          null
-        );
+        this.openModalSuccess(response.message || "Server restart initiated");
       } catch (error) {
         console.error("Error restarting server:", error);
-        this.openModal("Error", "Failed to restart server", null);
+        this.openModalFailure("Failed to restart server");
       } finally {
         this.loading = false;
       }
@@ -173,14 +202,10 @@ export default {
       this.loading = true;
       try {
         const response = await systemService.shutdownServer();
-        this.openModal(
-          "Success",
-          response.message || "Server shutdown initiated",
-          null
-        );
+        this.openModalSuccess(response.message || "Server shutdown initiated");
       } catch (error) {
         console.error("Error shutting down server:", error);
-        this.openModal("Error", "Failed to shutdown server", null);
+        this.openModalFailure("Failed to shutdown server");
       } finally {
         this.loading = false;
       }
@@ -196,15 +221,13 @@ export default {
       this.loading = true;
       try {
         const response = await systemService.deleteAllJobs();
-        this.openModal(
-          "Success",
+        this.openModalSuccess(
           response.message ||
-            `All jobs deleted successfully (${response.deletedCount} jobs)`,
-          null
+            `All jobs deleted successfully (${response.deletedCount} jobs)`
         );
       } catch (error) {
         console.error("Error deleting all jobs:", error);
-        this.openModal("Error", "Failed to delete all jobs", null);
+        this.openModalFailure("Failed to delete all jobs");
       } finally {
         this.loading = false;
       }
@@ -220,15 +243,13 @@ export default {
       this.loading = true;
       try {
         const response = await systemService.clearJobQueues();
-        this.openModal(
-          "Success",
+        this.openModalSuccess(
           response.message ||
-            `Job queues cleared successfully (${response.clearedCount} items)`,
-          null
+            `Job queues cleared successfully (${response.clearedCount} items)`
         );
       } catch (error) {
         console.error("Error clearing job queues:", error);
-        this.openModal("Error", "Failed to clear job queues", null);
+        this.openModalFailure("Failed to clear job queues");
       } finally {
         this.loading = false;
       }
@@ -244,15 +265,13 @@ export default {
       this.loading = true;
       try {
         const response = await systemService.unlockAllResources();
-        this.openModal(
-          "Success",
+        this.openModalSuccess(
           response.message ||
-            `All resources unlocked successfully (${response.unlockedCount} resources)`,
-          null
+            `All resources unlocked successfully (${response.unlockedCount} resources)`
         );
       } catch (error) {
         console.error("Error unlocking all resources:", error);
-        this.openModal("Error", "Failed to unlock all resources", null);
+        this.openModalFailure("Failed to unlock all resources");
       } finally {
         this.loading = false;
       }
