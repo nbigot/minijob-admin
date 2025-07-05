@@ -142,11 +142,26 @@
     </div>
 
     <ConfirmationModal
+      v-if="modalType === 'confirm'"
       :visible="showModal"
       :title="modalTitle"
       :message="modalMessage"
       @confirm="confirmModal"
       @cancel="cancelModal"
+    />
+    <SuccessModal
+      v-if="modalType === 'success'"
+      :visible="showModal"
+      :title="modalTitle"
+      :message="modalMessage"
+      @confirm="cancelModal"
+    />
+    <FailureModal
+      v-if="modalType === 'failure'"
+      :visible="showModal"
+      :title="modalTitle"
+      :message="modalMessage"
+      @confirm="cancelModal"
     />
   </main>
 </template>
@@ -154,10 +169,12 @@
 <script>
 import { resourceService } from "../services/index.js";
 import ConfirmationModal from "../components/ConfirmationModal.vue";
+import SuccessModal from "../components/SuccessModal.vue";
+import FailureModal from "../components/FailureModal.vue";
 
 export default {
   name: "ResourceManager",
-  components: { ConfirmationModal },
+  components: { ConfirmationModal, SuccessModal, FailureModal },
   data() {
     return {
       loading: false,
@@ -171,6 +188,7 @@ export default {
       modalTitle: "",
       modalMessage: "",
       modalAction: null,
+      modalType: "confirm",
     };
   },
 
@@ -190,7 +208,7 @@ export default {
         this.resourceStats = statsResponse;
       } catch (error) {
         console.error("Error loading resources:", error);
-        this.openModal("Error", "Failed to load resources", null);
+        this.openModalFailure("Failed to load resources");
       } finally {
         this.loading = false;
       }
@@ -214,13 +232,12 @@ export default {
               this.resourceStats.locked--;
               this.resourceStats.available++;
             }
+            this.openModalSuccess(
+              `Resource ${resourceName} unlocked successfully`
+            );
           } catch (error) {
             console.error("Error unlocking resource:", error);
-            this.openModal(
-              "Error",
-              `Failed to unlock resource ${resourceName}.`,
-              null
-            );
+            this.openModalFailure(`Failed to unlock resource ${resourceName}.`);
           } finally {
             this.loading = false;
           }
@@ -228,15 +245,30 @@ export default {
       );
     },
 
-    openModal(title, message, action) {
+    openModal(title, message, action = null) {
       this.modalTitle = title;
       this.modalMessage = message;
       this.modalAction = action;
+      this.modalType = "confirm";
+      this.showModal = true;
+    },
+    openModalSuccess(message, title = "Success") {
+      this.modalTitle = title;
+      this.modalMessage = message;
+      this.modalAction = null;
+      this.modalType = "success";
+      this.showModal = true;
+    },
+    openModalFailure(message, title = "Error") {
+      this.modalTitle = title;
+      this.modalMessage = message;
+      this.modalAction = null;
+      this.modalType = "failure";
       this.showModal = true;
     },
     confirmModal() {
       this.showModal = false;
-      if (this.modalAction) {
+      if (this.modalType === "confirm" && this.modalAction) {
         this.modalAction();
       }
     },
@@ -257,14 +289,12 @@ export default {
             });
             this.resourceStats.locked = 0;
             this.resourceStats.available = this.resourceStats.total;
-            this.openModal(
-              "Success",
-              `All resources unlocked successfully (${response.unlockedCount} resources)`,
-              null
+            this.openModalSuccess(
+              `All resources unlocked successfully (${response.unlockedCount} resources)`
             );
           } catch (error) {
             console.error("Error unlocking all resources:", error);
-            this.openModal("Error", "Failed to unlock all resources", null);
+            this.openModalFailure("Failed to unlock all resources");
           } finally {
             this.loading = false;
           }
@@ -272,7 +302,6 @@ export default {
       );
     },
     handleRefreshData() {
-      //console.log("Refreshing resources data");
       this.loadResources && this.loadResources();
     },
   },
