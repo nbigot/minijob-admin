@@ -508,7 +508,7 @@ import { dashboardService } from "../services/index.js";
 import { getStatusClass } from "../utils/statusClass.js";
 
 export default {
-  name: "Dashboard",
+  name: "DashboardOverview",
   data() {
     return {
       loading: false,

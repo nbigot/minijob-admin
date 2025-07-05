@@ -129,7 +129,7 @@ import SuccessModal from "../components/SuccessModal.vue";
 import FailureModal from "../components/FailureModal.vue";
 
 export default {
-  name: "System",
+  name: "SystemAdmin",
   components: { ConfirmationModal, SuccessModal, FailureModal },
   data() {
     return {

@@ -359,7 +359,7 @@ import { jobService, healthService } from "../services/index.js";
 import { getStatusClass } from "../utils/statusClass.js";
 
 export default {
-  name: "Health",
+  name: "HealthMonitor",
   components: {
     JobProcessingChart,
   },

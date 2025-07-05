@@ -171,7 +171,7 @@
 import { topicService } from "../services/index.js";
 
 export default {
-  name: "Topics",
+  name: "TopicManager",
   data() {
     return {
       loading: false,

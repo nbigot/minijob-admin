@@ -156,7 +156,7 @@ import { resourceService } from "../services/index.js";
 import ConfirmationModal from "../components/ConfirmationModal.vue";
 
 export default {
-  name: "Resources",
+  name: "ResourceManager",
   components: { ConfirmationModal },
   data() {
     return {

@@ -318,7 +318,7 @@ import { jobService } from "../services/index.js";
 import { getStatusClass } from "../utils/statusClass.js";
 
 export default {
-  name: "Jobs",
+  name: "JobManager",
   data() {
     return {
       filters: {
