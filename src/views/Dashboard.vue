@@ -499,6 +499,13 @@
           </div>
         </div>
       </div>
+
+      <FailureModal
+        :visible="failureModal.visible"
+        :title="failureModal.title"
+        :message="failureModal.message"
+        @confirm="failureModal.visible = false"
+      />
     </div>
   </main>
 </template>
@@ -506,9 +513,11 @@
 <script>
 import { dashboardService } from "../services/index.js";
 import { getStatusClass } from "../utils/statusClass.js";
+import FailureModal from "../components/FailureModal.vue";
 
 export default {
   name: "DashboardOverview",
+  components: { FailureModal },
   data() {
     return {
       loading: false,
@@ -523,6 +532,11 @@ export default {
         recentJobs: [],
         lockedResources: [],
         jobsByTopic: {},
+      },
+      failureModal: {
+        visible: false,
+        title: "",
+        message: "",
       },
     };
   },
@@ -548,6 +562,11 @@ export default {
   },
   methods: {
     getStatusClass,
+    notify({ title, text }) {
+      this.failureModal.title = title;
+      this.failureModal.message = text;
+      this.failureModal.visible = true;
+    },
     calculatePercentage(count) {
       return this.totalJobs > 0
         ? Math.round((count / this.totalJobs) * 100)
@@ -589,11 +608,25 @@ export default {
         this.dashboardData = response;
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
-        this.$notify({
-          title: "Error",
-          text: "Failed to load dashboard data",
-          type: "error",
-        });
+        if (
+          error &&
+          (error.message?.includes("ERR_CONNECTION_REFUSED") ||
+            error.toString().includes("ERR_CONNECTION_REFUSED") ||
+            error.message?.includes("Network Error") ||
+            error.toString().includes("Network Error"))
+        ) {
+          this.notify({
+            title: "Connection Error",
+            text: "Cannot connect to the server. Please check your network or server status.",
+            type: "error",
+          });
+        } else {
+          this.notify({
+            title: "Error",
+            text: "Failed to load dashboard data",
+            type: "error",
+          });
+        }
       } finally {
         this.loading = false;
       }
