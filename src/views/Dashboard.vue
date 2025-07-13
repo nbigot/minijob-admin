@@ -161,8 +161,8 @@
                     >Created</span
                   >
                   <span class="text-sm font-medium dark:text-gray-300"
-                    >{{ dashboardData.createdJobs || 24 }} ({{
-                      calculatePercentage(dashboardData.createdJobs || 24)
+                    >{{ dashboardData.createdJobs || 0 }} ({{
+                      calculatePercentage(dashboardData.createdJobs || 0)
                     }}%)</span
                   >
                 </div>
@@ -173,7 +173,7 @@
                     class="bg-blue-500 dark:bg-blue-700 h-2.5 rounded-full"
                     :style="{
                       width:
-                        calculatePercentage(dashboardData.createdJobs || 24) +
+                        calculatePercentage(dashboardData.createdJobs || 0) +
                         '%',
                     }"
                   ></div>
@@ -185,8 +185,8 @@
                     >Queued</span
                   >
                   <span class="text-sm font-medium dark:text-gray-300"
-                    >{{ dashboardData.queuedJobs || 12 }} ({{
-                      calculatePercentage(dashboardData.queuedJobs || 12)
+                    >{{ dashboardData.queuedJobs || 0 }} ({{
+                      calculatePercentage(dashboardData.queuedJobs || 0)
                     }}%)</span
                   >
                 </div>
@@ -197,7 +197,7 @@
                     class="bg-yellow-500 dark:bg-yellow-700 h-2.5 rounded-full"
                     :style="{
                       width:
-                        calculatePercentage(dashboardData.queuedJobs || 12) +
+                        calculatePercentage(dashboardData.queuedJobs || 0) +
                         '%',
                     }"
                   ></div>
@@ -209,8 +209,8 @@
                     >Running</span
                   >
                   <span class="text-sm font-medium dark:text-gray-300"
-                    >{{ dashboardData.runningJobs || 8 }} ({{
-                      calculatePercentage(dashboardData.runningJobs || 8)
+                    >{{ dashboardData.runningJobs || 0 }} ({{
+                      calculatePercentage(dashboardData.runningJobs || 0)
                     }}%)</span
                   >
                 </div>
@@ -221,7 +221,7 @@
                     class="bg-green-500 dark:bg-green-700 h-2.5 rounded-full"
                     :style="{
                       width:
-                        calculatePercentage(dashboardData.runningJobs || 8) +
+                        calculatePercentage(dashboardData.runningJobs || 0) +
                         '%',
                     }"
                   ></div>
@@ -233,8 +233,8 @@
                     >Succeeded</span
                   >
                   <span class="text-sm font-medium dark:text-gray-300"
-                    >{{ dashboardData.succeededJobs || 156 }} ({{
-                      calculatePercentage(dashboardData.succeededJobs || 156)
+                    >{{ dashboardData.succeededJobs || 0 }} ({{
+                      calculatePercentage(dashboardData.succeededJobs || 0)
                     }}%)</span
                   >
                 </div>
@@ -245,9 +245,8 @@
                     class="bg-indigo-500 dark:bg-indigo-700 h-2.5 rounded-full"
                     :style="{
                       width:
-                        calculatePercentage(
-                          dashboardData.succeededJobs || 156
-                        ) + '%',
+                        calculatePercentage(dashboardData.succeededJobs || 0) +
+                        '%',
                     }"
                   ></div>
                 </div>
@@ -258,8 +257,8 @@
                     >Failed</span
                   >
                   <span class="text-sm font-medium dark:text-gray-300"
-                    >{{ dashboardData.failedJobs || 7 }} ({{
-                      calculatePercentage(dashboardData.failedJobs || 7)
+                    >{{ dashboardData.failedJobs || 0 }} ({{
+                      calculatePercentage(dashboardData.failedJobs || 0)
                     }}%)</span
                   >
                 </div>
@@ -270,7 +269,7 @@
                     class="bg-red-500 dark:bg-red-700 h-2.5 rounded-full"
                     :style="{
                       width:
-                        calculatePercentage(dashboardData.failedJobs || 7) +
+                        calculatePercentage(dashboardData.failedJobs || 0) +
                         '%',
                     }"
                   ></div>
