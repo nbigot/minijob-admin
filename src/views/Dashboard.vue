@@ -445,31 +445,31 @@
                   class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700"
                 >
                   <tr
-                    v-for="(resource, index) in dashboardData.lockedResources"
+                    v-for="(resource, index) in dashboardData.resources"
                     :key="index"
                     class="hover:bg-gray-50 dark:hover:bg-gray-700"
                   >
                     <td
                       class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-200"
                     >
-                      {{ resource.name }}
+                      {{ resource.resourceName }}
                     </td>
                     <td
                       class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"
                     >
-                      {{ resource.jobId }}
+                      {{ resource.jobUuid }}
                     </td>
                     <td
                       class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"
                     >
-                      {{ formatDateRelative(resource.lockedSince) }}
+                      {{ formatDuration(resource.lockDuration) + " ago" }}
                     </td>
                     <td
                       class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"
                     >
                       <button
                         class="text-red-600 hover:text-red-900 dark:text-red-700"
-                        @click="unlockResource(resource.id)"
+                        @click="unlockResource(resource.resourceName)"
                       >
                         <font-awesome-icon
                           :icon="['fas', 'unlock']"
@@ -481,8 +481,8 @@
                   </tr>
                   <tr
                     v-if="
-                      !dashboardData.lockedResources ||
-                      dashboardData.lockedResources.length === 0
+                      !dashboardData.resources ||
+                      dashboardData.resources.length === 0
                     "
                   >
                     <td
@@ -499,11 +499,27 @@
         </div>
       </div>
 
+      <ConfirmationModal
+        v-if="modalType === 'confirm'"
+        :visible="showModal"
+        :title="modalTitle"
+        :message="modalMessage"
+        @confirm="confirmModal"
+        @cancel="cancelModal"
+      />
+      <SuccessModal
+        v-if="modalType === 'success'"
+        :visible="showModal"
+        :title="modalTitle"
+        :message="modalMessage"
+        @confirm="cancelModal"
+      />
       <FailureModal
-        :visible="failureModal.visible"
-        :title="failureModal.title"
-        :message="failureModal.message"
-        @confirm="failureModal.visible = false"
+        v-if="modalType === 'failure'"
+        :visible="showModal"
+        :title="modalTitle"
+        :message="modalMessage"
+        @confirm="cancelModal"
       />
     </div>
   </main>
@@ -512,11 +528,13 @@
 <script>
 import { dashboardService } from "../services/index.js";
 import { getStatusClass } from "../utils/statusClass.js";
+import ConfirmationModal from "../components/ConfirmationModal.vue";
+import SuccessModal from "../components/SuccessModal.vue";
 import FailureModal from "../components/FailureModal.vue";
 
 export default {
   name: "DashboardOverview",
-  components: { FailureModal },
+  components: { ConfirmationModal, SuccessModal, FailureModal },
   data() {
     return {
       loading: false,
@@ -532,11 +550,11 @@ export default {
         lockedResources: [],
         jobsByTopic: {},
       },
-      failureModal: {
-        visible: false,
-        title: "",
-        message: "",
-      },
+      showModal: false,
+      modalTitle: "",
+      modalMessage: "",
+      modalAction: null,
+      modalType: "confirm",
     };
   },
   computed: {
@@ -561,11 +579,38 @@ export default {
   },
   methods: {
     getStatusClass,
-    notify({ title, text }) {
-      this.failureModal.title = title;
-      this.failureModal.message = text;
-      this.failureModal.visible = true;
+
+    openModal(title, message, action = null) {
+      this.modalTitle = title;
+      this.modalMessage = message;
+      this.modalAction = action;
+      this.modalType = "confirm";
+      this.showModal = true;
     },
+    openModalSuccess(message, title = "Success") {
+      this.modalTitle = title;
+      this.modalMessage = message;
+      this.modalAction = null;
+      this.modalType = "success";
+      this.showModal = true;
+    },
+    openModalFailure(message, title = "Error") {
+      this.modalTitle = title;
+      this.modalMessage = message;
+      this.modalAction = null;
+      this.modalType = "failure";
+      this.showModal = true;
+    },
+    confirmModal() {
+      this.showModal = false;
+      if (this.modalType === "confirm" && this.modalAction) {
+        this.modalAction();
+      }
+    },
+    cancelModal() {
+      this.showModal = false;
+    },
+
     calculatePercentage(count) {
       return this.totalJobs > 0
         ? Math.round((count / this.totalJobs) * 100)
@@ -614,17 +659,11 @@ export default {
             error.message?.includes("Network Error") ||
             error.toString().includes("Network Error"))
         ) {
-          this.notify({
-            title: "Connection Error",
-            text: "Cannot connect to the server. Please check your network or server status.",
-            type: "error",
-          });
+          this.openModalFailure(
+            "Cannot connect to the server. Please check your network or server status."
+          );
         } else {
-          this.notify({
-            title: "Error",
-            text: "Failed to load dashboard data",
-            type: "error",
-          });
+          this.openModalFailure("Failed to load dashboard data");
         }
       } finally {
         this.loading = false;
@@ -649,12 +688,50 @@ export default {
       }
     },
 
-    unlockResource(resourceId) {
-      // In a real app, this would make an API call
-      console.log(`Unlocking resource with ID: ${resourceId}`);
-      this.dashboardData.lockedResources =
-        this.dashboardData.lockedResources.filter((r) => r.id !== resourceId);
+    formatDuration(duration) {
+      if (!duration || duration === 0) {
+        return "-";
+      }
+
+      // Convert to seconds if duration is in milliseconds
+      const seconds =
+        duration > 10000000000 ? Math.floor(duration / 1000) : duration;
+
+      const days = Math.floor(seconds / 86400);
+      const hours = Math.floor((seconds % 86400) / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      const remainingSeconds = seconds % 60;
+
+      if (days > 0) {
+        return `${days}d ${hours}h ${minutes}m`;
+      } else if (hours > 0) {
+        return `${hours}h ${minutes}m ${remainingSeconds}s`;
+      } else if (minutes > 0) {
+        return `${minutes}m ${remainingSeconds}s`;
+      } else {
+        return `${remainingSeconds}s`;
+      }
     },
+
+    async unlockResource(resourceName) {
+      this.openModal(
+        "Unlock Resource",
+        `Are you sure you want to unlock ${resourceName}? This may affect running jobs.`,
+        async () => {
+          try {
+            await dashboardService.unlockResource(resourceName);
+            this.openModalSuccess(
+              `Resource ${resourceName} unlocked successfully`
+            );
+            await this.fetchDashboardData();
+          } catch (error) {
+            console.error("Error unlocking resource:", error);
+            this.openModalFailure(`Failed to unlock resource ${resourceName}.`);
+          }
+        }
+      );
+    },
+
     handleRefreshData() {
       //console.log("Refreshing dashboard data");
       this.fetchDashboardData && this.fetchDashboardData();

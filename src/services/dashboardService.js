@@ -5,7 +5,14 @@ export const dashboardService = {
   async getDashboardData() {
     try {
       const response = await apiClient.get("/api/v1/dashboard");
-      return response.data;
+      var data = response.data;
+      const responseResources = await apiClient.get("/api/v1/metrics/resources");
+      if (responseResources.status === 200) {
+        data.resources = responseResources.data.resources;
+      } else {
+        data.resources = [];
+      }
+      return data;
     } catch (error) {
       throw new Error("Failed to fetch dashboard data");
     }
@@ -38,6 +45,19 @@ export const dashboardService = {
       return response.data;
     } catch (error) {
       throw new Error("Failed to fetch locked resources");
+    }
+  },
+
+  // Unlock a specific resource
+  async unlockResource(resourceName) {
+    try {
+      const response = await apiClient.post(`/api/v1/resources/${resourceName}/unlock`);
+      if (response.status !== 200) {
+        throw new Error(`Failed to unlock resource ${resourceName}: ${response.data.message}`);
+      }
+      return response.data;
+    } catch (error) {
+      throw new Error(`Failed to unlock resource ${resourceName}: ${error.message}`);
     }
   },
 };

@@ -34,7 +34,7 @@
               Total Resources
             </h4>
             <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200">
-              {{ resourceStats.total }}
+              {{ totalResources }}
             </h3>
           </div>
         </div>
@@ -53,7 +53,7 @@
               Locked Resources
             </h4>
             <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200">
-              {{ resourceStats.locked }}
+              {{ lockedResources }}
             </h3>
           </div>
         </div>
@@ -101,11 +101,11 @@
           <tbody
             class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700"
           >
-            <tr v-for="resource in resources" :key="resource.name">
+            <tr v-for="resource in resourceStats" :key="resource.name">
               <td
                 class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-200"
               >
-                {{ resource.name }}
+                {{ resource.resourceName }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
                 <span
@@ -117,19 +117,19 @@
               <td
                 class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"
               >
-                {{ resource.jobId || "-" }}
+                {{ resource.jobUuid || "-" }}
               </td>
               <td
                 class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"
               >
-                {{ resource.lockedSince || "-" }}
+                {{ formatDuration(resource.lockDuration) + " ago" || "-" }}
               </td>
               <td
                 class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"
               >
                 <button
                   class="text-red-600 hover:text-red-900 dark:text-red-700"
-                  @click="unlockResource(resource.name)"
+                  @click="unlockResource(resource.resourceName)"
                 >
                   <font-awesome-icon :icon="['fas', 'unlock']" class="mr-1" />
                   Unlock
@@ -177,13 +177,10 @@ export default {
   components: { ConfirmationModal, SuccessModal, FailureModal },
   data() {
     return {
-      loading: false,
-      resourceStats: {
-        total: 0,
-        locked: 0,
-        available: 0,
-      },
-      resources: [],
+      resourcesNames: [],
+      resourceStats: [],
+      totalResources: 0,
+      lockedResources: 0,
       showModal: false,
       modalTitle: "",
       modalMessage: "",
@@ -197,20 +194,21 @@ export default {
   },
   methods: {
     async loadResources() {
-      this.loading = true;
       try {
         const [resourcesResponse, statsResponse] = await Promise.all([
           resourceService.getResources(),
           resourceService.getResourceStats(),
         ]);
 
-        this.resources = resourcesResponse;
+        this.resourcesNames = resourcesResponse;
         this.resourceStats = statsResponse;
+        this.totalResources = resourcesResponse.length;
+        this.lockedResources = this.resourceStats.filter(
+          (r) => r.jobId !== null
+        ).length;
       } catch (error) {
         console.error("Error loading resources:", error);
         this.openModalFailure("Failed to load resources");
-      } finally {
-        this.loading = false;
       }
     },
 
@@ -219,27 +217,15 @@ export default {
         "Unlock Resource",
         `Are you sure you want to unlock ${resourceName}? This may affect running jobs.`,
         async () => {
-          this.loading = true;
           try {
             await resourceService.unlockResource(resourceName);
-            // Update local state
-            const resource = this.resources.find(
-              (r) => r.name === resourceName
-            );
-            if (resource) {
-              resource.jobId = null;
-              resource.lockedSince = null;
-              this.resourceStats.locked--;
-              this.resourceStats.available++;
-            }
             this.openModalSuccess(
               `Resource ${resourceName} unlocked successfully`
             );
+            await this.loadResources();
           } catch (error) {
             console.error("Error unlocking resource:", error);
             this.openModalFailure(`Failed to unlock resource ${resourceName}.`);
-          } finally {
-            this.loading = false;
           }
         }
       );
@@ -275,34 +261,49 @@ export default {
     cancelModal() {
       this.showModal = false;
     },
+
     async unlockAllResources() {
       this.openModal(
         "Unlock All Resources",
         "Are you sure you want to unlock all resources? This may affect running jobs.",
         async () => {
-          this.loading = true;
           try {
             const response = await resourceService.unlockAllResources();
-            this.resources.forEach((resource) => {
-              resource.jobId = null;
-              resource.lockedSince = null;
-            });
-            this.resourceStats.locked = 0;
-            this.resourceStats.available = this.resourceStats.total;
-            this.openModalSuccess(
-              `All resources unlocked successfully (${response.unlockedCount} resources)`
-            );
+            this.openModalSuccess(`All resources unlocked successfully`);
+            await this.loadResources();
           } catch (error) {
             console.error("Error unlocking all resources:", error);
             this.openModalFailure("Failed to unlock all resources");
-          } finally {
-            this.loading = false;
           }
         }
       );
     },
     handleRefreshData() {
       this.loadResources && this.loadResources();
+    },
+    formatDuration(duration) {
+      if (!duration || duration === 0) {
+        return "-";
+      }
+
+      // Convert to seconds if duration is in milliseconds
+      const seconds =
+        duration > 10000000000 ? Math.floor(duration / 1000) : duration;
+
+      const days = Math.floor(seconds / 86400);
+      const hours = Math.floor((seconds % 86400) / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      const remainingSeconds = seconds % 60;
+
+      if (days > 0) {
+        return `${days}d ${hours}h ${minutes}m`;
+      } else if (hours > 0) {
+        return `${hours}h ${minutes}m ${remainingSeconds}s`;
+      } else if (minutes > 0) {
+        return `${minutes}m ${remainingSeconds}s`;
+      } else {
+        return `${remainingSeconds}s`;
+      }
     },
   },
 };

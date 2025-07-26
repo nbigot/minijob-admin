@@ -32,11 +32,6 @@ mock.onDelete("/api/v1/jobs/queued").reply(() => {
   return [200, { success: true, message: "Job queues cleared successfully", clearedCount: 24 }];
 });
 
-mock.onPost("/api/v1/resources/unlock").reply(() => {
-  // Simulate unlocking all resources
-  return [200, { success: true, message: "All resources unlocked successfully", unlockedCount: 7 }];
-});
-
 // Helper functions for generating dynamic mock data
 export const mockDataHelpers = {
   getServerStatus() {
