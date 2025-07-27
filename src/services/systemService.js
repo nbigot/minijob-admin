@@ -1,48 +1,35 @@
 import apiClient from "./axios.js";
 
+const makeApiRequest = async (method, url, operation) => {
+  try {
+    const response = await apiClient[method](url);
+    if (response.status !== 200) {
+      throw new Error(`Failed to ${operation}: ${response.data?.message || "unexpected error"}`);
+    }
+    return response.data;
+  } catch (error) {
+    throw new Error(`Failed to ${operation}: ${error.message}`);
+  }
+};
+
 export const systemService = {
   async restartServer() {
-    try {
-      const response = await apiClient.post("/api/v1/admin/server/restart");
-      return response.data;
-    } catch (error) {
-      throw new Error(`Failed to restart server: ${error.message}`);
-    }
+    return makeApiRequest("post", "/api/v1/admin/server/restart", "restart server");
   },
 
   async shutdownServer() {
-    try {
-      const response = await apiClient.post("/api/v1/admin/server/shutdown");
-      return response.data;
-    } catch (error) {
-      throw new Error(`Failed to shutdown server: ${error.message}`);
-    }
+    return makeApiRequest("post", "/api/v1/admin/server/shutdown", "shutdown server");
   },
 
   async deleteAllJobs() {
-    try {
-      const response = await apiClient.delete("/api/v1/jobs/");
-      return response.data;
-    } catch (error) {
-      throw new Error(`Failed to delete all jobs: ${error.message}`);
-    }
+    return makeApiRequest("delete", "/api/v1/jobs/", "delete all jobs");
   },
 
   async clearJobQueues() {
-    try {
-      const response = await apiClient.delete("/api/v1/jobs/queued");
-      return response.data;
-    } catch (error) {
-      throw new Error(`Failed to clear job queues: ${error.message}`);
-    }
+    return makeApiRequest("delete", "/api/v1/jobs/queued", "clear job queues");
   },
 
   async unlockAllResources() {
-    try {
-      const response = await apiClient.post("/api/v1/resources/unlock");
-      return response.data;
-    } catch (error) {
-      throw new Error(`Failed to unlock all resources: ${error.message}`);
-    }
+    return makeApiRequest("post", "/api/v1/resources/unlock", "unlock all resources");
   },
 };

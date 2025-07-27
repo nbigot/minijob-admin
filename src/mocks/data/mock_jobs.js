@@ -218,6 +218,16 @@ mock.onPost(/\/api\/v1\/job\/(.+)\/retry/).reply((config) => {
   }
 });
 
+mock.onDelete("/api/v1/jobs/").reply(() => {
+  // Simulate deleting all jobs
+  return [200, { code: 200, message: "success" }];
+});
+
+mock.onDelete("/api/v1/jobs/queued").reply(() => {
+  // Simulate clearing job queues
+  return [200, { code: 200, message: "success" }];
+});
+
 // Helper functions for generating dynamic mock data
 export const mockDataHelpers = {
   findJobById(jobId) {

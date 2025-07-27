@@ -13,33 +13,11 @@ let data = {
 mock.onPost("/api/v1/admin/server/restart").reply(() => {
   // Simulate server restart
   data.serverStatus.uptime = 0;
-  return [200, { success: true, message: "Server restart initiated" }];
+  return [200, { code: 200, message: "success" }];
 });
 
 mock.onPost("/api/v1/admin/server/shutdown").reply(() => {
   // Simulate server shutdown
   data.serverStatus.status = "shutting down";
-  return [200, { success: true, message: "Server shutdown initiated" }];
+  return [200, { code: 200, message: "success" }];
 });
-
-mock.onDelete("/api/v1/jobs/").reply(() => {
-  // Simulate deleting all jobs
-  return [200, { success: true, message: "All jobs deleted successfully", deletedCount: 207 }];
-});
-
-mock.onDelete("/api/v1/jobs/queued").reply(() => {
-  // Simulate clearing job queues
-  return [200, { success: true, message: "Job queues cleared successfully", clearedCount: 24 }];
-});
-
-// Helper functions for generating dynamic mock data
-export const mockDataHelpers = {
-  getServerStatus() {
-    return data.serverStatus;
-  },
-
-  updateServerStatus(newStatus) {
-    data.serverStatus = { ...data.serverStatus, ...newStatus };
-    return data.serverStatus;
-  },
-};

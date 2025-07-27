@@ -183,7 +183,7 @@ export default {
       this.loading = true;
       try {
         const response = await systemService.restartServer();
-        this.openModalSuccess(response.message || "Server restart initiated");
+        this.openModalSuccess("Server restarted successfully");
       } catch (error) {
         console.error("Error restarting server:", error);
         this.openModalFailure("Failed to restart server");
@@ -202,7 +202,7 @@ export default {
       this.loading = true;
       try {
         const response = await systemService.shutdownServer();
-        this.openModalSuccess(response.message || "Server shutdown initiated");
+        this.openModalSuccess("Server shutdown successfully");
       } catch (error) {
         console.error("Error shutting down server:", error);
         this.openModalFailure("Failed to shutdown server");
@@ -220,11 +220,8 @@ export default {
     async deleteAllJobsAction() {
       this.loading = true;
       try {
-        const response = await systemService.deleteAllJobs();
-        this.openModalSuccess(
-          response.message ||
-            `All jobs deleted successfully (${response.deletedCount} jobs)`
-        );
+        await systemService.deleteAllJobs();
+        this.openModalSuccess("All jobs deleted successfully");
       } catch (error) {
         console.error("Error deleting all jobs:", error);
         this.openModalFailure("Failed to delete all jobs");
@@ -242,11 +239,8 @@ export default {
     async clearJobQueuesAction() {
       this.loading = true;
       try {
-        const response = await systemService.clearJobQueues();
-        this.openModalSuccess(
-          response.message ||
-            `Job queues cleared successfully (${response.clearedCount} items)`
-        );
+        await systemService.clearJobQueues();
+        this.openModalSuccess("Job queues cleared successfully");
       } catch (error) {
         console.error("Error clearing job queues:", error);
         this.openModalFailure("Failed to clear job queues");
@@ -264,11 +258,8 @@ export default {
     async unlockAllResourcesAction() {
       this.loading = true;
       try {
-        const response = await systemService.unlockAllResources();
-        this.openModalSuccess(
-          response.message ||
-            `All resources unlocked successfully (${response.unlockedCount} resources)`
-        );
+        await systemService.unlockAllResources();
+        this.openModalSuccess("All resources unlocked successfully");
       } catch (error) {
         console.error("Error unlocking all resources:", error);
         this.openModalFailure("Failed to unlock all resources");
