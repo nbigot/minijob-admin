@@ -139,7 +139,7 @@ let data = {
 data.stalledJobs = data.jobs.filter((job) => job.status === "stalled");
 
 // Functions to handle mock data requests
-mock.onGet("/api/v1/jobs").reply((config) => {
+mock.onGet("/api/v1/jobs/").reply((config) => {
   const { page = 1, limit = 50 } = config.params || {};
   const start = (page - 1) * limit;
   const end = start + limit;

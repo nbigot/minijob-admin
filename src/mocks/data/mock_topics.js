@@ -30,7 +30,7 @@ let data = {
 // Functions to handle mock data requests
 mock.onGet("/api/v1/topics").reply(200, data.topicsList);
 
-mock.onGet("/api/v1/topics/stats").reply(200, {
+mock.onGet("/api/v1/metrics/topics").reply(200, {
   code: 200,
   message: "success",
   topics: [

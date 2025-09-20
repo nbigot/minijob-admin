@@ -39,10 +39,15 @@
             >
               <option value="">All Statuses</option>
               <option value="created">Created</option>
+              <option value="delayed">Delayed</option>
+              <option value="pending">Pending</option>
               <option value="queued">Queued</option>
               <option value="running">Running</option>
               <option value="succeeded">Succeeded</option>
               <option value="failed">Failed</option>
+              <option value="canceled">Canceled</option>
+              <option value="deleted">Deleted</option>
+              <option value="hidden">Hidden</option>
             </select>
           </div>
           <div>
@@ -74,10 +79,14 @@
               v-model="filters.sort"
               class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50 dark:bg-gray-500 dark:text-gray-300"
             >
-              <option value="created_desc">Created (Newest)</option>
               <option value="created_asc">Created (Oldest)</option>
-              <option value="updated_desc">Updated (Newest)</option>
+              <option value="created_desc">Created (Newest)</option>
+              <option value="priority_asc">Priority (Low to High)</option>
+              <option value="priority_desc">Priority (High to Low)</option>
               <option value="updated_asc">Updated (Oldest)</option>
+              <option value="updated_desc">Updated (Newest)</option>
+              <option value="topic_asc">Topic (A-Z)</option>
+              <option value="topic_desc">Topic (Z-A)</option>
             </select>
           </div>
           <div>

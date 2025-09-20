@@ -32,7 +32,7 @@ let dataResourceMetrics = {
 };
 
 // Functions to handle mock data requests
-mock.onGet("/api/v1/resources").reply(200, dataResourceNames);
+mock.onGet("/api/v1/resources/").reply(200, dataResourceNames);
 
 mock.onGet("/api/v1/metrics/resources").reply(200, dataResourceMetrics);
 

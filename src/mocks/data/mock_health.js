@@ -51,7 +51,7 @@ let data = {
 // Functions to handle mock data requests
 mock.onGet("/api/v1/health/status").reply(200, data.healthStatus);
 mock.onGet("/api/v1/health/system/info").reply(200, data.systemInfo);
-mock.onGet("/api/v1/health/system/resources").reply(200, data.resourceUsage);
+mock.onGet("/api/v1/health/system/resources/").reply(200, data.resourceUsage);
 mock.onGet("/api/v1/health/stalled-jobs").reply(200, data.stalledJobs);
 mock.onGet("/api/v1/health/job-processing-data").reply((config) => {
   const timeRange = config.params?.timeRange || "24h";

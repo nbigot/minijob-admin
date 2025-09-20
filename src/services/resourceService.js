@@ -4,7 +4,7 @@ export const resourceService = {
   // Get all resources
   async getResources() {
     try {
-      const response = await apiClient.get("/api/v1/resources");
+      const response = await apiClient.get("/api/v1/resources/");
       return response.data.resources;
     } catch (error) {
       throw new Error(`Failed to fetch resources: ${error.message}`);

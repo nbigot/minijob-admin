@@ -4,7 +4,7 @@ export const jobService = {
   // Get all jobs
   async getJobs(params = {}) {
     try {
-      const response = await apiClient.get("/api/v1/jobs", { params });
+      const response = await apiClient.get("/api/v1/jobs/", { params });
       return response.data;
     } catch (error) {
       throw new Error(`Failed to fetch jobs: ${error.message}`);
