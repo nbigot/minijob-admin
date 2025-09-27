@@ -60,4 +60,14 @@ export const jobService = {
       throw new Error(`Failed to retry job ${jobId}: ${error.message}`);
     }
   },
+
+  // Create a new job
+  async createJob(jobData) {
+    try {
+      const response = await apiClient.post("/api/v1/job/", jobData);
+      return response.data;
+    } catch (error) {
+      throw new Error(`Failed to create job: ${error.message}`);
+    }
+  },
 };

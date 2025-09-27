@@ -11,7 +11,13 @@
           Fill out the form to create a new job
         </p>
       </div>
-      <div class="mt-4 md:mt-0">
+      <div class="mt-4 md:mt-0 flex gap-2">
+        <button
+          @click="randomizeForm"
+          class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded"
+        >
+          <font-awesome-icon :icon="['fas', 'dice']" class="mr-2" /> Randomize
+        </button>
         <button
           @click="navigateBackToJobs"
           class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
@@ -38,9 +44,8 @@
                 list="topic-options"
                 id="topic"
                 v-model="job.topic"
-                required
                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50"
-                placeholder="Select or enter a new topic"
+                placeholder="Select or enter a topic"
               />
               <datalist id="topic-options">
                 <option v-for="topic in topics" :key="topic" :value="topic">
@@ -62,35 +67,202 @@
             >
             <select
               id="priority"
-              v-model="job.priority"
-              required
+              v-model.number="job.priority"
               class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50"
             >
               <option
                 v-for="(label, value) in priorityOptions"
                 :key="value"
-                :value="value"
+                :value="parseInt(value)"
               >
                 {{ label }}
               </option>
             </select>
+            <p class="text-xs text-gray-500 mt-1">
+              Higher priority jobs are processed first
+            </p>
           </div>
 
-          <!-- Content -->
+          <!-- Name -->
+          <div>
+            <label
+              for="name"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >Job Name</label
+            >
+            <input
+              type="text"
+              id="name"
+              v-model="job.name"
+              placeholder="Enter job name"
+              class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50"
+            />
+            <p class="text-xs text-gray-500 mt-1">
+              Descriptive name to identify this job (example: DataImportJob)
+            </p>
+          </div>
+
+          <!-- User Agent -->
+          <div>
+            <label
+              for="userAgent"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >User Agent</label
+            >
+            <input
+              type="text"
+              id="userAgent"
+              v-model="job.userAgent"
+              placeholder="Program name or identifier"
+              class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50"
+            />
+            <p class="text-xs text-gray-500 mt-1">
+              Name of the application or service creating this job (example:
+              MinijobAdmin/1.0)
+            </p>
+          </div>
+
+          <!-- Requester -->
+          <div>
+            <label
+              for="requester"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >Requester</label
+            >
+            <input
+              type="text"
+              id="requester"
+              v-model="job.requester"
+              placeholder="Job requester identifier"
+              class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50"
+            />
+            <p class="text-xs text-gray-500 mt-1">
+              Identifier of the user or system requesting this job
+            </p>
+          </div>
+
+          <!-- Session ID -->
+          <div>
+            <label
+              for="sessionId"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >Session ID</label
+            >
+            <input
+              type="text"
+              id="sessionId"
+              v-model="job.sessionId"
+              placeholder="Session identifier"
+              class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50"
+            />
+            <p class="text-xs text-gray-500 mt-1">
+              Session ID to group related jobs together (example:
+              6e70464d-85cf-431d-a9c9-a1f9c0ac82dc)
+            </p>
+          </div>
+
+          <!-- Trace ID -->
+          <div>
+            <label
+              for="traceId"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >Trace ID</label
+            >
+            <input
+              type="text"
+              id="traceId"
+              v-model="job.traceId"
+              placeholder="Trace identifier"
+              class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50"
+            />
+            <p class="text-xs text-gray-500 mt-1">
+              Distributed tracing identifier for debugging (example:
+              e7b46b16-c971-464e-8a47-c791be0ce2ed)
+            </p>
+          </div>
+
+          <!-- Callback URL -->
+          <div>
+            <label
+              for="callbackUrl"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >Callback URL</label
+            >
+            <input
+              type="url"
+              id="callbackUrl"
+              v-model="job.callbackUrl"
+              placeholder="https://api.example.localhost/webhook"
+              class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50"
+            />
+            <p class="text-xs text-gray-500 mt-1">
+              Webhook URL to notify when job completes (success or failure)
+            </p>
+          </div>
+
+          <!-- Job Properties -->
           <div class="md:col-span-2">
             <label
-              for="content"
+              for="properties"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-              >Job Content</label
+              >Job Properties <span class="text-red-500">*</span></label
             >
             <textarea
-              id="content"
-              v-model="job.content"
+              id="properties"
+              v-model="job.properties"
               rows="6"
-              placeholder="Enter job content in JSON format..."
+              placeholder="Enter job properties in JSON format..."
               required
+              :class="[
+                'w-full rounded-md shadow-sm focus:ring focus:ring-primary-500 focus:ring-opacity-50 font-mono text-sm',
+                propertiesError
+                  ? 'border-red-300 focus:border-red-500'
+                  : 'border-gray-300 focus:border-primary-500',
+              ]"
+            ></textarea>
+            <p v-if="propertiesError" class="text-xs text-red-500 mt-1">
+              {{ propertiesError }}
+            </p>
+            <p v-else class="text-xs text-gray-500 mt-1">
+              Job configuration and data in JSON format (required)
+            </p>
+          </div>
+
+          <!-- Lock Resources -->
+          <div class="md:col-span-2">
+            <label
+              for="lockResources"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >Lock Resources</label
+            >
+            <textarea
+              id="lockResources"
+              v-model="job.lockResources"
+              rows="4"
+              placeholder="Enter resource names, one per line:&#10;database&#10;file-system&#10;email-service&#10;report-generator"
               class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50 font-mono text-sm"
             ></textarea>
+            <p class="text-xs text-gray-500 mt-1">
+              Enter resource names to lock (one word per line). These resources
+              will be unavailable to other jobs while this job runs.
+            </p>
+            <div class="mt-2 flex flex-wrap gap-2">
+              <span class="text-xs text-gray-600 dark:text-gray-400"
+                >Examples:</span
+              >
+              <span
+                class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+                >database</span
+              >
+              <span
+                class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+                >file-system</span
+              >
+              <span
+                class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+                >email-service</span
+              >
+            </div>
           </div>
 
           <!-- Schedule -->
@@ -106,24 +278,51 @@
               class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50"
             >
               <option value="immediate">Run Immediately</option>
+              <option value="delayed">Delay Start</option>
               <option value="scheduled">Schedule for Later</option>
             </select>
+            <p class="text-xs text-gray-500 mt-1">
+              Choose when to execute this job
+            </p>
+          </div>
+
+          <!-- Delay (conditional) -->
+          <div v-if="job.schedule === 'delayed'">
+            <label
+              for="delay"
+              class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+              >Delay (seconds)</label
+            >
+            <input
+              type="number"
+              id="delay"
+              v-model.number="job.delay"
+              min="0"
+              placeholder="0"
+              class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50"
+            />
+            <p class="text-xs text-gray-500 mt-1">
+              Number of seconds to wait before starting the job
+            </p>
           </div>
 
           <!-- Schedule Time (conditional) -->
           <div v-if="job.schedule === 'scheduled'">
             <label
-              for="scheduleTime"
+              for="startAfter"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-              >Schedule Time</label
+              >Start After</label
             >
             <input
               type="datetime-local"
-              id="scheduleTime"
-              v-model="job.scheduleTime"
+              id="startAfter"
+              v-model="job.startAfterDateTime"
               required
               class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50"
             />
+            <p class="text-xs text-gray-500 mt-1">
+              Specific date and time to start the job
+            </p>
           </div>
         </div>
 
@@ -145,12 +344,33 @@
         </div>
       </form>
     </div>
+
+    <!-- Add Modal Components -->
+    <SuccessModal
+      v-if="modalType === 'success'"
+      :visible="showModal"
+      :title="modalTitle"
+      :message="modalMessage"
+      @confirm="cancelModal"
+    />
+    <FailureModal
+      v-if="modalType === 'failure'"
+      :visible="showModal"
+      :title="modalTitle"
+      :message="modalMessage"
+      @confirm="cancelModal"
+    />
   </main>
 </template>
 
 <script>
+import { jobService } from "../services/index.js";
+import SuccessModal from "../components/SuccessModal.vue";
+import FailureModal from "../components/FailureModal.vue";
+
 export default {
   name: "CreateJob",
+  components: { SuccessModal, FailureModal },
   props: {
     existingTopics: {
       type: Array,
@@ -167,19 +387,33 @@ export default {
   data() {
     return {
       priorityOptions: {
-        low: "Low",
-        medium: "Medium",
-        high: "High",
-        critical: "Critical",
+        0: "Low",
+        1: "Medium",
+        2: "High",
+        3: "Critical",
       },
       job: {
         topic: "",
-        priority: "medium",
-        content: "",
+        priority: 1,
+        properties: "",
+        lockResources: "",
+        userAgent: "",
+        requester: "",
+        name: "",
+        sessionId: "",
+        traceId: "",
+        startAfter: 0,
+        delay: 0,
+        callbackUrl: "",
         schedule: "immediate",
-        scheduleTime: null,
+        startAfterDateTime: null,
       },
       topics: [...this.existingTopics],
+      propertiesError: "",
+      showModal: false,
+      modalTitle: "",
+      modalMessage: "",
+      modalType: "success",
     };
   },
   created() {
@@ -197,14 +431,217 @@ export default {
     }
   },
   methods: {
-    submitJob() {
-      // In a real app, this would send the job data to an API
-      console.log("Submitting job:", this.job);
-      // After successful submission, navigate back to jobs list
-      this.$router.push("/jobs");
+    validateProperties() {
+      this.propertiesError = "";
+
+      if (!this.job.properties.trim()) {
+        this.propertiesError = "Job properties are required";
+        return false;
+      }
+
+      try {
+        JSON.parse(this.job.properties);
+        return true;
+      } catch (error) {
+        this.propertiesError = "Invalid JSON format: " + error.message;
+        return false;
+      }
     },
+
+    async submitJob() {
+      // Validate JSON before submitting
+      if (!this.validateProperties()) {
+        return;
+      }
+
+      // Convert datetime to timestamp if scheduled
+      if (this.job.schedule === "scheduled" && this.job.startAfterDateTime) {
+        this.job.startAfter = new Date(this.job.startAfterDateTime).getTime();
+      }
+
+      // Parse lockResources from line-separated format
+      let lockResourcesArray = [];
+      if (this.job.lockResources.trim()) {
+        lockResourcesArray = this.job.lockResources
+          .split("\n")
+          .map((resource) => resource.trim())
+          .filter((resource) => resource.length > 0);
+      }
+
+      // Parse JSON fields and prepare job data
+      const jobData = {
+        topic: this.job.topic,
+        priority: this.job.priority,
+        properties: JSON.parse(this.job.properties),
+        lockResources: lockResourcesArray,
+        userAgent: this.job.userAgent,
+        requester: this.job.requester,
+        name: this.job.name,
+        sessionId: this.job.sessionId,
+        traceId: this.job.traceId,
+        startAfter: this.job.startAfter,
+        delay: this.job.delay,
+        callbackUrl: this.job.callbackUrl,
+      };
+
+      try {
+        // Clear any previous errors
+        this.propertiesError = "";
+
+        // Submit the job to the server
+        console.log("Submitting job:", jobData);
+        const response = await jobService.createJob(jobData);
+
+        console.log("Job created successfully:", response);
+
+        // Show success modal
+        this.openModalSuccess(
+          `Job created successfully!\nJob ID: ${response.job?.id || "Unknown"}`,
+          "Job Created"
+        );
+      } catch (error) {
+        console.error("Error creating job:", error);
+
+        // Show error modal
+        this.openModalFailure(
+          `Failed to create job: ${error.message}`,
+          "Job Creation Failed"
+        );
+      }
+    },
+
+    openModalSuccess(message, title = "Success") {
+      this.modalTitle = title;
+      this.modalMessage = message;
+      this.modalType = "success";
+      this.showModal = true;
+    },
+
+    openModalFailure(message, title = "Error") {
+      this.modalTitle = title;
+      this.modalMessage = message;
+      this.modalType = "failure";
+      this.showModal = true;
+    },
+
+    cancelModal() {
+      this.showModal = false;
+      // Navigate back to jobs list after closing success modal
+      if (this.modalType === "success") {
+        this.$router.push("/jobs");
+      }
+    },
+
     navigateBackToJobs() {
       this.$router.push("/jobs");
+    },
+    randomizeForm() {
+      // Clear any existing errors
+      this.propertiesError = "";
+
+      // Random values for form fields
+      const randomNames = [
+        "DataProcessingJob",
+        "EmailNotificationTask",
+        "ReportGenerationJob",
+        "FileUploadProcessor",
+        "UserOnboardingTask",
+        "DataBackupJob",
+        "ImageProcessingTask",
+        "DatabaseCleanupJob",
+      ];
+
+      const randomUserAgents = [
+        "MinijobAdmin/1.0",
+        "TaskScheduler/2.1",
+        "JobProcessor/1.5",
+        "WorkflowEngine/3.0",
+        "AutomationBot/2.0",
+      ];
+
+      const randomRequesters = [
+        "admin-user",
+        "automation-service",
+        "scheduler-daemon",
+        "workflow-engine",
+        "batch-processor",
+      ];
+
+      const randomResources = [
+        ["database", "file-system"],
+        ["email-service", "notification-queue"],
+        ["report-engine", "database"],
+        ["file-storage", "processing-queue"],
+        ["user-service", "email-service"],
+        [],
+      ];
+
+      const randomProperties = [
+        { action: "process", type: "data", batch_size: 100 },
+        {
+          recipient: "user@example.com",
+          template: "welcome",
+          priority: "high",
+        },
+        {
+          report_type: "monthly",
+          format: "pdf",
+          recipients: ["admin@example.com"],
+        },
+        {
+          file_path: "/uploads/documents",
+          max_size: "10MB",
+          allowed_types: ["pdf", "doc"],
+        },
+        { user_id: "12345", welcome_email: true, setup_profile: true },
+        { backup_type: "incremental", retention_days: 30, compress: true },
+      ];
+
+      // Set random values
+      this.job.topic =
+        this.topics[Math.floor(Math.random() * this.topics.length)] ||
+        "default";
+      this.job.priority = Math.floor(Math.random() * 4); // 0-3
+      this.job.name =
+        randomNames[Math.floor(Math.random() * randomNames.length)];
+      this.job.userAgent =
+        randomUserAgents[Math.floor(Math.random() * randomUserAgents.length)];
+      this.job.requester =
+        randomRequesters[Math.floor(Math.random() * randomRequesters.length)];
+      this.job.sessionId = Math.random() < 0.7 ? self.crypto.randomUUID() : "";
+      this.job.traceId = Math.random() < 0.6 ? self.crypto.randomUUID() : "";
+      this.job.callbackUrl =
+        Math.random() < 0.5
+          ? `https://api.example.localhost/webhook/${Math.floor(
+              Math.random() * 1000
+            )}`
+          : "";
+
+      // Set random properties (required field)
+      const randomProp =
+        randomProperties[Math.floor(Math.random() * randomProperties.length)];
+      this.job.properties = JSON.stringify(randomProp, null, 2);
+
+      // Set random lock resources
+      const randomResourceSet =
+        randomResources[Math.floor(Math.random() * randomResources.length)];
+      this.job.lockResources = randomResourceSet.join("\n");
+
+      // Random schedule
+      const scheduleTypes = ["immediate", "delayed", "scheduled"];
+      this.job.schedule =
+        scheduleTypes[Math.floor(Math.random() * scheduleTypes.length)];
+
+      if (this.job.schedule === "delayed") {
+        this.job.delay = Math.floor(Math.random() * 300) + 10; // 10-310 seconds
+      } else if (this.job.schedule === "scheduled") {
+        // Set a random future date (within next 7 days)
+        const now = new Date();
+        const futureTime = new Date(
+          now.getTime() + Math.random() * 7 * 24 * 60 * 60 * 1000
+        );
+        this.job.startAfterDateTime = futureTime.toISOString().slice(0, 16);
+      }
     },
   },
 };

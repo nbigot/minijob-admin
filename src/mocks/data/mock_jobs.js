@@ -228,6 +228,40 @@ mock.onDelete("/api/v1/jobs/queued").reply(() => {
   return [200, { code: 200, message: "success" }];
 });
 
+// Add POST handler for creating new jobs
+mock.onPost("/api/v1/job/").reply((config) => {
+  const jobData = JSON.parse(config.data);
+
+  const newJob = {
+    id: String(self.crypto.randomUUID()),
+    topic: jobData.topic || "default",
+    status: "created",
+    created: new Date().toISOString(),
+    updated: new Date().toISOString(),
+    name: jobData.name || "New Job",
+    priority: jobData.priority || "medium",
+    attempts: 0,
+    maxAttempts: jobData.maxAttempts || 3,
+    progress: 0,
+    data: jobData.data || {},
+    duration: null,
+    queue: jobData.queue || jobData.topic || "default",
+    worker: null,
+    ...jobData,
+  };
+
+  data.jobs.unshift(newJob);
+
+  return [
+    201,
+    {
+      success: true,
+      job: newJob,
+      message: "Job created successfully",
+    },
+  ];
+});
+
 // Helper functions for generating dynamic mock data
 export const mockDataHelpers = {
   findJobById(jobId) {
