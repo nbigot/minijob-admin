@@ -60,4 +60,16 @@ export const dashboardService = {
       throw new Error(`Failed to unlock resource ${resourceName}: ${error.message}`);
     }
   },
+
+  // Get job processing data
+  async getJobProcessingData(timeRange = "24h") {
+    try {
+      const response = await apiClient.get("/api/v1/dashboard/job-processing-data", {
+        params: { timeRange },
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error("Failed to fetch job processing data");
+    }
+  },
 };

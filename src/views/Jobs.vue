@@ -62,10 +62,9 @@
               class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50 dark:bg-gray-500 dark:text-gray-300"
             >
               <option value="">All Topics</option>
-              <option value="data-processing">data-processing</option>
-              <option value="email-notifications">email-notifications</option>
-              <option value="report-generation">report-generation</option>
-              <option value="file-uploads">file-uploads</option>
+              <option v-for="topic in topics" :key="topic" :value="topic">
+                {{ topic }}
+              </option>
             </select>
           </div>
           <div>
@@ -193,10 +192,10 @@
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                   <span
-                    :class="getStatusClass(job.status)"
+                    :class="getStateClass(job.state)"
                     class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
                   >
-                    {{ job.status }}
+                    {{ job.state }}
                   </span>
                 </td>
                 <td
@@ -278,7 +277,27 @@
                 <span class="font-medium">{{ totalJobs }}</span> results
               </p>
             </div>
-            <div>
+            <div class="flex items-center gap-4">
+              <div class="flex items-center gap-2">
+                <label
+                  for="itemsPerPage"
+                  class="text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  Items per page:
+                </label>
+                <select
+                  id="itemsPerPage"
+                  v-model.number="itemsPerPage"
+                  @change="changeItemsPerPage"
+                  class="rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50 dark:bg-gray-500 dark:text-gray-300 text-sm"
+                >
+                  <option :value="5">5</option>
+                  <option :value="10">10</option>
+                  <option :value="25">25</option>
+                  <option :value="50">50</option>
+                  <option :value="100">100</option>
+                </select>
+              </div>
               <nav
                 class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
                 aria-label="Pagination"
@@ -319,15 +338,46 @@
         </div>
       </div>
     </div>
+
+    <ConfirmationModal
+      v-if="modalType === 'confirm'"
+      :visible="showModal"
+      :title="modalTitle"
+      :message="modalMessage"
+      @confirm="confirmModal"
+      @cancel="cancelModal"
+    />
+    <SuccessModal
+      v-if="modalType === 'success'"
+      :visible="showModal"
+      :title="modalTitle"
+      :message="modalMessage"
+      @confirm="cancelModal"
+    />
+    <FailureModal
+      v-if="modalType === 'failure'"
+      :visible="showModal"
+      :title="modalTitle"
+      :message="modalMessage"
+      @confirm="cancelModal"
+    />
   </main>
 </template>
 
 <script>
-import { jobService } from "../services/index.js";
-import { getStatusClass } from "../utils/statusClass.js";
+import { jobService, topicService } from "../services/index.js";
+import { getStateClass } from "../utils/stateClass.js";
+import ConfirmationModal from "../components/ConfirmationModal.vue";
+import SuccessModal from "../components/SuccessModal.vue";
+import FailureModal from "../components/FailureModal.vue";
 
 export default {
   name: "JobManager",
+  components: {
+    ConfirmationModal,
+    SuccessModal,
+    FailureModal,
+  },
   data() {
     return {
       filters: {
@@ -337,10 +387,16 @@ export default {
         search: "",
       },
       jobs: [],
+      topics: [],
       currentPage: 1,
       itemsPerPage: 10,
       totalJobs: 0,
       loading: false,
+      showModal: false,
+      modalTitle: "",
+      modalMessage: "",
+      modalAction: null,
+      modalType: "confirm",
     };
   },
   computed: {
@@ -368,11 +424,64 @@ export default {
     },
   },
   async mounted() {
+    // Load topics first
+    await this.loadTopics();
+
+    // Check if there's a topic filter in the query parameters
+    if (this.$route.query.topic) {
+      this.filters.topic = this.$route.query.topic;
+    }
+
     // Load initial job data
     await this.loadJobs();
   },
   methods: {
-    getStatusClass,
+    getStateClass,
+    openModal(title, message, action = null) {
+      this.modalTitle = title;
+      this.modalMessage = message;
+      this.modalAction = action;
+      this.modalType = "confirm";
+      this.showModal = true;
+    },
+    openModalSuccess(message, title = "Success") {
+      this.modalTitle = title;
+      this.modalMessage = message;
+      this.modalAction = null;
+      this.modalType = "success";
+      this.showModal = true;
+    },
+    openModalFailure(message, title = "Error") {
+      this.modalTitle = title;
+      this.modalMessage = message;
+      this.modalAction = null;
+      this.modalType = "failure";
+      this.showModal = true;
+    },
+    confirmModal() {
+      this.showModal = false;
+      if (this.modalType === "confirm" && this.modalAction) {
+        this.modalAction();
+      }
+    },
+    cancelModal() {
+      this.showModal = false;
+    },
+    async loadTopics() {
+      try {
+        const response = await topicService.getTopics();
+        if (response && response.topics && Array.isArray(response.topics)) {
+          this.topics = response.topics;
+        }
+      } catch (error) {
+        console.error("Error loading topics:", error);
+        this.$notify({
+          title: "Error",
+          text: error.message,
+          type: "error",
+        });
+      }
+    },
     async loadJobs() {
       this.loading = true;
       try {
@@ -398,6 +507,11 @@ export default {
     },
 
     async applyFilters() {
+      this.currentPage = 1;
+      await this.loadJobs();
+    },
+
+    async changeItemsPerPage() {
       this.currentPage = 1;
       await this.loadJobs();
     },
@@ -436,61 +550,56 @@ export default {
       this.$router.push(`/job/${id}`);
     },
     async cloneJob(id) {
-      console.log("Clone job", id);
-      // TODO: Implement clone functionality
+      this.$router.push(`/job/create/clone/${id}`);
     },
     async cancelJob(id) {
-      if (confirm(`Are you sure you want to cancel job ${id}?`)) {
-        try {
-          await jobService.cancelJob(id);
+      this.openModal(
+        "Cancel Job",
+        `Are you sure you want to cancel job ${id}?`,
+        () => this.cancelJobAction(id)
+      );
+    },
+    async cancelJobAction(id) {
+      this.loading = true;
+      try {
+        await jobService.cancelJob(id);
 
-          // Update job status in the list
-          const job = this.jobs.find((j) => j.id === id);
-          if (job) {
-            job.status = "Cancelled";
-          }
-
-          this.$notify({
-            title: "Success",
-            text: `Job ${id} was cancelled successfully`,
-            type: "success",
-          });
-        } catch (error) {
-          console.error("Error cancelling job:", error);
-          this.$notify({
-            title: "Error",
-            text: error.message,
-            type: "error",
-          });
+        // Update job status in the list
+        const job = this.jobs.find((j) => j.id === id);
+        if (job) {
+          job.status = "Cancelled";
         }
+
+        this.openModalSuccess(`Job ${id} was cancelled successfully`);
+      } catch (error) {
+        console.error("Error cancelling job:", error);
+        this.openModalFailure(error.message || "Failed to cancel job");
+      } finally {
+        this.loading = false;
       }
     },
     async deleteJob(id) {
-      if (
-        confirm(
-          `Are you sure you want to delete job ${id}? This action cannot be undone.`
-        )
-      ) {
-        try {
-          await jobService.deleteJob(id);
+      this.openModal(
+        "Delete Job",
+        `Are you sure you want to delete job ${id}? This action cannot be undone.`,
+        () => this.deleteJobAction(id)
+      );
+    },
+    async deleteJobAction(id) {
+      this.loading = true;
+      try {
+        await jobService.deleteJob(id);
 
-          // Remove the job from the list
-          this.jobs = this.jobs.filter((job) => job.id !== id);
-          this.totalJobs--;
+        // Remove the job from the list
+        this.jobs = this.jobs.filter((job) => job.id !== id);
+        this.totalJobs--;
 
-          this.$notify({
-            title: "Success",
-            text: `Job ${id} was deleted successfully`,
-            type: "success",
-          });
-        } catch (error) {
-          console.error("Error deleting job:", error);
-          this.$notify({
-            title: "Error",
-            text: error.message,
-            type: "error",
-          });
-        }
+        this.openModalSuccess(`Job ${id} was deleted successfully`);
+      } catch (error) {
+        console.error("Error deleting job:", error);
+        this.openModalFailure(error.message || "Failed to delete job");
+      } finally {
+        this.loading = false;
       }
     },
     navigateToCreateJob() {

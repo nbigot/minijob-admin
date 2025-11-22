@@ -147,6 +147,20 @@
           </div>
         </div>
 
+        <!-- Job Processing Rate -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
+          <h3
+            class="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200"
+          >
+            Job Processing Rate
+          </h3>
+          <div
+            class="h-64 bg-gray-50 rounded-lg border border-gray-200 dark:bg-gray-700 dark:border-gray-600 p-4"
+          >
+            <JobProcessingChart :job-data="jobProcessingData" />
+          </div>
+        </div>
+
         <!-- Charts Row -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           <!-- Job Distribution Chart -->
@@ -379,9 +393,9 @@
                     <td class="px-6 py-4 whitespace-nowrap">
                       <span
                         class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
-                        :class="getStatusClass(job.status)"
+                        :class="getStateClass(job.state)"
                       >
-                        {{ job.status }}
+                        {{ job.state }}
                       </span>
                     </td>
                     <td
@@ -445,7 +459,7 @@
                   class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700"
                 >
                   <tr
-                    v-for="(resource, index) in dashboardData.resources"
+                    v-for="(resource, index) in dashboardData.lockedResources"
                     :key="index"
                     class="hover:bg-gray-50 dark:hover:bg-gray-700"
                   >
@@ -462,7 +476,7 @@
                     <td
                       class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"
                     >
-                      {{ formatDuration(resource.lockDuration) + " ago" }}
+                      {{ formatDuration(resource.lockDuration) }}
                     </td>
                     <td
                       class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"
@@ -481,8 +495,8 @@
                   </tr>
                   <tr
                     v-if="
-                      !dashboardData.resources ||
-                      dashboardData.resources.length === 0
+                      !dashboardData.lockedResources ||
+                      dashboardData.lockedResources.length === 0
                     "
                   >
                     <td
@@ -495,6 +509,121 @@
                 </tbody>
               </table>
             </div>
+          </div>
+        </div>
+
+        <!-- Top Stalled Jobs -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
+          <h3
+            class="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200"
+          >
+            Top Stalled Jobs
+          </h3>
+          <div class="overflow-x-auto">
+            <table
+              class="min-w-full divide-y divide-gray-200 dark:divide-gray-700"
+            >
+              <thead class="bg-gray-50 dark:bg-gray-700">
+                <tr>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400"
+                  >
+                    ID
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400"
+                  >
+                    Topic
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400"
+                  >
+                    Status
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400"
+                  >
+                    Created
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400"
+                  >
+                    Duration
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400"
+                  >
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody
+                class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700"
+              >
+                <tr v-for="job in sortedStalledJobs" :key="job.id">
+                  <td
+                    class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-200"
+                  >
+                    {{ job.id }}
+                  </td>
+                  <td
+                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300"
+                  >
+                    {{ job.topic }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span
+                      class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                      :class="getStateClass(job.state)"
+                      >{{ job.state }}</span
+                    >
+                  </td>
+                  <td
+                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300"
+                  >
+                    {{ job.created }}
+                  </td>
+                  <td
+                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300"
+                  >
+                    {{ job.duration }}
+                  </td>
+                  <td
+                    class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300"
+                  >
+                    <div class="flex space-x-2">
+                      <button
+                        class="text-primary-600 hover:text-primary-900"
+                        title="View Details"
+                        @click="viewJobDetails(job.id)"
+                      >
+                        <font-awesome-icon :icon="['fas', 'eye']" />
+                      </button>
+                      <button
+                        class="text-red-600 hover:text-red-900"
+                        title="Cancel"
+                        @click="cancelJob(job.id)"
+                      >
+                        <font-awesome-icon :icon="['fas', 'stop']" />
+                      </button>
+                      <button
+                        class="text-red-600 hover:text-red-900"
+                        title="Delete"
+                        @click="deleteJob(job.id)"
+                      >
+                        <font-awesome-icon :icon="['fas', 'trash']" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -526,15 +655,25 @@
 </template>
 
 <script>
-import { dashboardService } from "../services/index.js";
-import { getStatusClass } from "../utils/statusClass.js";
+import {
+  dashboardService,
+  jobService,
+  healthService,
+} from "../services/index.js";
+import { getStateClass } from "../utils/stateClass.js";
 import ConfirmationModal from "../components/ConfirmationModal.vue";
 import SuccessModal from "../components/SuccessModal.vue";
 import FailureModal from "../components/FailureModal.vue";
+import JobProcessingChart from "../components/JobProcessingChart.vue";
 
 export default {
   name: "DashboardOverview",
-  components: { ConfirmationModal, SuccessModal, FailureModal },
+  components: {
+    ConfirmationModal,
+    SuccessModal,
+    FailureModal,
+    JobProcessingChart,
+  },
   data() {
     return {
       loading: false,
@@ -550,6 +689,14 @@ export default {
         lockedResources: [],
         jobsByTopic: {},
       },
+      stalledJobs: [],
+      jobProcessingData: {
+        labels: [],
+        succeeded: [],
+        failed: [],
+        pending: [],
+      },
+      simulationInterval: null,
       showModal: false,
       modalTitle: "",
       modalMessage: "",
@@ -573,12 +720,40 @@ export default {
         0
       );
     },
+    sortedStalledJobs() {
+      return [...this.stalledJobs]
+        .sort((a, b) => {
+          const parseTime = (duration) => {
+            if (!duration) return 0;
+
+            let totalMinutes = 0;
+            const dayMatch = duration.match(/(\d+)d/);
+            const hourMatch = duration.match(/(\d+)h/);
+            const minMatch = duration.match(/(\d+)m/);
+
+            if (dayMatch) totalMinutes += parseInt(dayMatch[1]) * 24 * 60;
+            if (hourMatch) totalMinutes += parseInt(hourMatch[1]) * 60;
+            if (minMatch) totalMinutes += parseInt(minMatch[1]);
+
+            return totalMinutes;
+          };
+
+          return parseTime(b.duration) - parseTime(a.duration);
+        })
+        .slice(0, 5);
+    },
   },
   async mounted() {
+    this.startJobProcessingSimulation();
     await this.fetchDashboardData();
+    await this.loadStalledJobs();
+    await this.loadJobProcessingData();
+  },
+  beforeUnmount() {
+    this.stopJobProcessingSimulation();
   },
   methods: {
-    getStatusClass,
+    getStateClass,
 
     openModal(title, message, action = null) {
       this.modalTitle = title;
@@ -735,6 +910,127 @@ export default {
     handleRefreshData() {
       //console.log("Refreshing dashboard data");
       this.fetchDashboardData && this.fetchDashboardData();
+      this.loadStalledJobs && this.loadStalledJobs();
+      this.loadJobProcessingData && this.loadJobProcessingData();
+    },
+
+    // Job processing simulation methods
+    startJobProcessingSimulation() {
+      this.simulationInterval = setInterval(() => {
+        if (this.jobProcessingData.labels.length === 0) return;
+
+        const lastLabel =
+          this.jobProcessingData.labels[
+            this.jobProcessingData.labels.length - 1
+          ];
+        const newLabel = this.getNextHourLabel(lastLabel);
+
+        const newLabels = [...this.jobProcessingData.labels.slice(1), newLabel];
+        const newSucceeded = [
+          ...this.jobProcessingData.succeeded.slice(1),
+          this.getRandomInt(15, 35),
+        ];
+        const newFailed = [
+          ...this.jobProcessingData.failed.slice(1),
+          this.getRandomInt(0, 5),
+        ];
+        const newPending = [
+          ...this.jobProcessingData.pending.slice(1),
+          this.getRandomInt(3, 10),
+        ];
+
+        this.jobProcessingData = {
+          labels: newLabels,
+          succeeded: newSucceeded,
+          failed: newFailed,
+          pending: newPending,
+        };
+      }, 5000);
+    },
+
+    stopJobProcessingSimulation() {
+      if (this.simulationInterval) {
+        clearInterval(this.simulationInterval);
+      }
+    },
+
+    getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    },
+
+    getNextHourLabel(lastLabel) {
+      const [hour, minute] = lastLabel.split(":").map(Number);
+      const nextHour = (hour + 1) % 24;
+      return `${nextHour}:${minute < 10 ? "0" + minute : minute}`;
+    },
+
+    async loadStalledJobs() {
+      try {
+        const stalledJobs = await jobService.getStalledJobs();
+        this.stalledJobs = stalledJobs;
+      } catch (error) {
+        console.error("Error loading stalled jobs:", error);
+      }
+    },
+
+    async loadJobProcessingData() {
+      try {
+        const jobProcessingData = await dashboardService.getJobProcessingData();
+        this.jobProcessingData = {
+          ...this.jobProcessingData,
+          ...jobProcessingData,
+        };
+      } catch (error) {
+        console.error("Error loading job processing data:", error);
+      }
+    },
+
+    async cancelJob(jobId) {
+      this.openModal(
+        "Cancel Job",
+        `Are you sure you want to cancel job ${jobId}?`,
+        async () => {
+          try {
+            await jobService.cancelJob(jobId);
+
+            const job = this.stalledJobs.find((j) => j.id === jobId);
+            if (job) {
+              job.status = "Cancelled";
+            }
+
+            this.openModalSuccess(`Job ${jobId} was cancelled successfully`);
+          } catch (error) {
+            console.error("Error cancelling job:", error);
+            this.openModalFailure(error.message || "Failed to cancel job");
+          }
+        }
+      );
+    },
+
+    async deleteJob(jobId) {
+      this.openModal(
+        "Delete Job",
+        `Are you sure you want to delete job ${jobId}? This action cannot be undone.`,
+        async () => {
+          try {
+            await jobService.deleteJob(jobId);
+
+            this.stalledJobs = this.stalledJobs.filter(
+              (job) => job.id !== jobId
+            );
+
+            this.openModalSuccess(`Job ${jobId} was deleted successfully`);
+          } catch (error) {
+            console.error("Error deleting job:", error);
+            this.openModalFailure(error.message || "Failed to delete job");
+          }
+        }
+      );
+    },
+
+    viewJobDetails(jobId) {
+      console.log(`Viewing details for job: ${jobId}`);
+      this.$router.push(`/job/${jobId}`);
     },
   },
 };

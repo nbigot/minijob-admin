@@ -5,10 +5,14 @@
     >
       <div>
         <h2 class="text-2xl font-bold text-gray-800 dark:text-white">
-          Create New Job
+          {{ isCloning ? "Clone Job" : "Create New Job" }}
         </h2>
         <p class="text-gray-600 dark:text-gray-400">
-          Fill out the form to create a new job
+          {{
+            isCloning
+              ? "Modify the job properties and create a copy"
+              : "Fill out the form to create a new job"
+          }}
         </p>
       </div>
       <div class="mt-4 md:mt-0 flex gap-2">
@@ -383,6 +387,10 @@ export default {
         "mock-data-backup",
       ],
     },
+    cloneJobId: {
+      type: String,
+      default: null,
+    },
   },
   data() {
     return {
@@ -416,7 +424,12 @@ export default {
       modalType: "success",
     };
   },
-  created() {
+  computed: {
+    isCloning() {
+      return !!this.cloneJobId;
+    },
+  },
+  async created() {
     // Check if topics were passed through query params
     if (this.$route.query.topics) {
       try {
@@ -429,8 +442,50 @@ export default {
         console.error("Error parsing topics from route:", e);
       }
     }
+
+    // Handle cloning if cloneJobId is provided
+    if (this.cloneJobId) {
+      await this.loadJobForCloning();
+    }
   },
   methods: {
+    async loadJobForCloning() {
+      try {
+        const response = await jobService.getJobById(this.cloneJobId);
+        if (response.code !== 200) {
+          throw new Error(response.message || "Failed to load job for cloning");
+        }
+
+        const sourceJob = response.job;
+
+        // Populate form with source job data
+        this.job.topic = sourceJob.topic || "";
+        this.job.priority = sourceJob.priority || 1;
+        this.job.properties = JSON.stringify(
+          sourceJob.properties || {},
+          null,
+          2
+        );
+        this.job.lockResources = (sourceJob.lockResources || []).join("\n");
+        this.job.userAgent = sourceJob.userAgent || "";
+        this.job.requester = sourceJob.requester || "";
+        this.job.name = `${sourceJob.name || "Untitled"} (Copy)`;
+        this.job.sessionId = sourceJob.sessionId || "";
+        this.job.traceId = sourceJob.traceId || "";
+        this.job.callbackUrl = sourceJob.callbackUrl || "";
+
+        // Handle scheduling - default to immediate for cloned jobs
+        this.job.schedule = "immediate";
+        this.job.delay = 0;
+        this.job.startAfter = 0;
+        this.job.startAfterDateTime = null;
+      } catch (error) {
+        console.error("Error loading job for cloning:", error);
+        this.openModalFailure(
+          "Failed to load job data for cloning: " + error.message
+        );
+      }
+    },
     validateProperties() {
       this.propertiesError = "";
 

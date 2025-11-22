@@ -11,11 +11,11 @@ let data = {
   ],
 
   successRates: [
-    { name: "data-processing", rate: 92 },
-    { name: "email-notifications", rate: 98 },
-    { name: "report-generation", rate: 85 },
-    { name: "file-uploads", rate: 78 },
-    { name: "other", rate: 90 },
+    { name: "data-processing", successRate: 92 },
+    { name: "email-notifications", successRate: 98 },
+    { name: "report-generation", successRate: 85 },
+    { name: "file-uploads", successRate: 78 },
+    { name: "other", successRate: 90 },
   ],
 
   topicsList: [
@@ -28,17 +28,21 @@ let data = {
 };
 
 // Functions to handle mock data requests
-mock.onGet("/api/v1/topics").reply(200, data.topicsList);
+mock.onGet("/api/v1/topics/").reply(200, {
+  code: 200,
+  message: "success",
+  topics: ["mock-data-processing", "mock-report-generation", "mock-data-backup", "mock-file-uploads", "mock-email-notifications"],
+});
 
 mock.onGet("/api/v1/metrics/topics").reply(200, {
   code: 200,
   message: "success",
   topics: [
-    { topicName: "data-processing", totalJobs: 87, activeJobs: 12, percentJobs: 42, successRate: 0.92, averageDuration: 0 },
-    { topicName: "email-notifications", totalJobs: 56, activeJobs: 8, percentJobs: 27, successRate: 0.98, averageDuration: 0 },
-    { topicName: "report-generation", totalJobs: 34, activeJobs: 5, percentJobs: 16, successRate: 0.85, averageDuration: 0 },
-    { topicName: "file-uploads", totalJobs: 22, activeJobs: 3, percentJobs: 11, successRate: 0.78, averageDuration: 0 },
-    { topicName: "other", totalJobs: 8, activeJobs: 1, percentJobs: 4, successRate: 0.9, averageDuration: 0 },
+    { topicName: "mock-data-processing", totalJobs: 87, activeJobs: 12, percentJobs: 42, successRate: 0.92, averageDuration: 0.015 },
+    { topicName: "mock-email-notifications", totalJobs: 56, activeJobs: 8, percentJobs: 27, successRate: 0.98, averageDuration: 0.8 },
+    { topicName: "mock-report-generation", totalJobs: 34, activeJobs: 5, percentJobs: 16, successRate: 0.85, averageDuration: 62.46 },
+    { topicName: "mock-file-uploads", totalJobs: 22, activeJobs: 3, percentJobs: 11, successRate: 0.78, averageDuration: 123.34 },
+    { topicName: "mock-data-backup", totalJobs: 8, activeJobs: 1, percentJobs: 4, successRate: 0.9, averageDuration: 0 },
   ],
 });
 

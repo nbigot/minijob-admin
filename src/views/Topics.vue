@@ -56,15 +56,18 @@
                 >
                 <span
                   class="text-sm font-medium text-gray-700 dark:text-gray-400"
-                  >{{ topic.rate }}%</span
+                  >{{
+                    topic.successRate !== null ? topic.successRate + "%" : "N/A"
+                  }}</span
                 >
               </div>
               <div
                 class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5"
               >
                 <div
+                  v-if="topic.successRate !== null"
                   class="bg-green-500 dark:bg-green-700 h-2.5 rounded-full"
-                  :style="{ width: topic.rate + '%' }"
+                  :style="{ width: topic.successRate + '%' }"
                 ></div>
               </div>
             </div>
@@ -112,6 +115,12 @@
                 scope="col"
                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400"
               >
+                Avg Duration
+              </th>
+              <th
+                scope="col"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400"
+              >
                 Actions
               </th>
             </tr>
@@ -138,7 +147,10 @@
               <td
                 class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"
               >
-                <div class="flex items-center">
+                <div
+                  class="flex items-center"
+                  v-if="topic.successRate !== null"
+                >
                   <div
                     class="w-16 bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 mr-2"
                   >
@@ -149,6 +161,16 @@
                   </div>
                   <span>{{ topic.successRate }}%</span>
                 </div>
+                <span v-else>N/A</span>
+              </td>
+              <td
+                class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"
+              >
+                {{
+                  topic.averageDuration !== null
+                    ? topic.averageDuration + "s"
+                    : "N/A"
+                }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 <a
@@ -210,14 +232,28 @@ export default {
         // Prepare successRates
         this.successRates = topics.map((t) => ({
           name: t.topicName,
-          rate: t.successRate ? (t.successRate * 100).toFixed(1) : 0,
+          successRate:
+            t.totalJobs === 0 ||
+            t.successRate === null ||
+            t.successRate === undefined
+              ? null
+              : (t.successRate * 100).toFixed(1),
         }));
         // Prepare topicsList
         this.topicsList = topics.map((t) => ({
           name: t.topicName,
           totalJobs: t.totalJobs,
           activeJobs: t.activeJobs,
-          successRate: t.successRate ? (t.successRate * 100).toFixed(1) : 0,
+          successRate:
+            t.totalJobs === 0 ||
+            t.successRate === null ||
+            t.successRate === undefined
+              ? null
+              : (t.successRate * 100).toFixed(1),
+          averageDuration:
+            t.averageDuration !== null && t.averageDuration !== undefined
+              ? t.averageDuration.toFixed(2)
+              : null,
         }));
       } catch (error) {
         console.error("Error loading topics data:", error);

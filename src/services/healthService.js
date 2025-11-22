@@ -3,31 +3,50 @@ import apiClient from "./axios.js";
 export const healthService = {
   // Get health status
   async getHealthStatus() {
+    const startTime = Date.now();
+
     try {
-      const response = await apiClient.get("/api/v1/health/status");
-      return response.data;
+      const response = await apiClient.get("/api/v1/system/health");
+      const responseTime = Date.now() - startTime;
+      const lastChecked = Math.floor(Date.now() / 1000); // Unix timestamp
+
+      if (response.status === 200 && response.data === "OK") {
+        return {
+          server: {
+            status: "healthy",
+          },
+          responseTime,
+          lastChecked,
+        };
+      } else {
+        return {
+          server: {
+            status: "unhealthy",
+          },
+          responseTime,
+          lastChecked,
+        };
+      }
     } catch (error) {
-      throw new Error("Failed to fetch health status");
+      const responseTime = Date.now() - startTime;
+
+      return {
+        server: {
+          status: "unreachable",
+        },
+        responseTime,
+        lastChecked: null, // No successful check time for unreachable status
+      };
     }
   },
 
   // Get system info
   async getSystemInfo() {
     try {
-      const response = await apiClient.get("/api/v1/health/system/info");
-      return response.data;
+      const response = await apiClient.get("/api/v1/system/info");
+      return response.data.systemInfo;
     } catch (error) {
       throw new Error("Failed to fetch system info");
-    }
-  },
-
-  // Get resource usage
-  async getResourceUsage() {
-    try {
-      const response = await apiClient.get("/api/v1/health/system/resources");
-      return response.data;
-    } catch (error) {
-      throw new Error("Failed to fetch resource usage");
     }
   },
 
@@ -50,28 +69,6 @@ export const healthService = {
       return response.data;
     } catch (error) {
       throw new Error("Failed to fetch Prometheus metrics");
-    }
-  },
-
-  // Get job processing data
-  async getJobProcessingData(timeRange = "24h") {
-    try {
-      const response = await apiClient.get("/api/v1/health/job-processing-data", {
-        params: { timeRange },
-      });
-      return response.data;
-    } catch (error) {
-      throw new Error("Failed to fetch job processing data");
-    }
-  },
-
-  // Get stalled jobs
-  async getStalledJobs() {
-    try {
-      const response = await apiClient.get("/api/v1/health/stalled-jobs");
-      return response.data;
-    } catch (error) {
-      throw new Error("Failed to fetch stalled jobs");
     }
   },
 };

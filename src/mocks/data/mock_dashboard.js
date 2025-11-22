@@ -36,22 +36,25 @@ let data = {
 
   lockedResources: [
     {
-      id: 1,
-      name: "database-connection",
-      jobId: "73b6a7e9-51e0-4982-a106-f54c4369271a",
-      lockedSince: new Date(Date.now() - 5 * 60 * 1000),
+      resourceName: "database-connection",
+      jobUuid: "73b6a7e9-51e0-4982-a106-f54c4369271a",
+      topic: "data-processing",
+      startTime: Math.floor(Date.now() / 1000) - 5 * 60, // 5 minutes ago in seconds
+      lockDuration: 5 * 60, // 5 minutes in seconds
     },
     {
-      id: 2,
-      name: "file-system",
-      jobId: "9e7b3fee-84c5-4fd0-b8e6-8e735c7deca1",
-      lockedSince: new Date(Date.now() - 25 * 60 * 1000),
+      resourceName: "file-system",
+      jobUuid: "9e7b3fee-84c5-4fd0-b8e6-8e735c7deca1",
+      topic: "file-uploads",
+      startTime: Math.floor(Date.now() / 1000) - 25 * 60, // 25 minutes ago in seconds
+      lockDuration: 25 * 60, // 25 minutes in seconds
     },
     {
-      id: 3,
-      name: "api-key",
-      jobId: "a8f2e357-1d2c-4b6e-9d0f-e5c7b3461d9a",
-      lockedSince: new Date(Date.now() - 35 * 60 * 1000),
+      resourceName: "api-key",
+      jobUuid: "a8f2e357-1d2c-4b6e-9d0f-e5c7b3461d9a",
+      topic: "email-notifications",
+      startTime: Math.floor(Date.now() / 1000) - 35 * 60, // 35 minutes ago in seconds
+      lockDuration: 35 * 60, // 35 minutes in seconds
     },
   ],
 
@@ -61,6 +64,51 @@ let data = {
     "report-generation": 34,
     "file-uploads": 22,
     other: 8,
+  },
+
+  stalledJobs: [
+    {
+      id: "a8f2e357-1d2c-4b6e-9d0f-e5c7b3461d9a",
+      topic: "data-processing",
+      state: "running",
+      created: "2024-11-20 10:30:45",
+      duration: "1d 14h 25m",
+    },
+    {
+      id: "bd93c8e2-4f57-49e7-b5d8-1a2b3c4d5e6f",
+      topic: "report-generation",
+      state: "running",
+      created: "2024-11-20 08:15:22",
+      duration: "1d 16h 40m",
+    },
+    {
+      id: "c5d4e9f1-2a3b-4c5d-6e7f-8a9b0c1d2e3f",
+      topic: "email-notification",
+      state: "running",
+      created: "2024-11-21 15:45:10",
+      duration: "9h 20m",
+    },
+    {
+      id: "d7e8f9a0-3b4c-5d6e-7f8a-9b0c1d2e3f4a",
+      topic: "data-export",
+      state: "queued",
+      created: "2024-11-21 18:30:00",
+      duration: "6h 35m",
+    },
+    {
+      id: "e9f0a1b2-4c5d-6e7f-8a9b-0c1d2e3f4a5b",
+      topic: "backup-job",
+      state: "running",
+      created: "2024-11-19 22:00:00",
+      duration: "2d 3h 5m",
+    },
+  ],
+
+  jobProcessingData: {
+    labels: ["8:00", "9:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00"],
+    succeeded: [12, 19, 15, 21, 25, 31, 28, 24],
+    failed: [2, 4, 1, 3, 2, 0, 2, 1],
+    pending: [5, 8, 3, 4, 6, 9, 5, 7],
   },
 };
 
@@ -75,11 +123,35 @@ mock.onGet("/api/v1/dashboard").reply(200, {
 mock.onGet("/api/v1/dashboard/job-stats").reply(200, data.jobStats);
 mock.onGet("/api/v1/dashboard/recent-jobs").reply(200, data.recentJobs);
 mock.onGet("/api/v1/dashboard/locked-resources").reply(200, data.lockedResources);
+mock.onGet("/api/v1/metrics/jobs/stalled").reply(200, data.stalledJobs);
+mock.onGet("/api/v1/dashboard/job-processing-data").reply((config) => {
+  const timeRange = config.params?.timeRange || "24h";
+  // Generate dynamic data based on the last label
+  const lastLabel = data.jobProcessingData.labels[data.jobProcessingData.labels.length - 1];
+  const newLabels = Array.from({ length: 8 }, (_, i) => mockDataHelpers.getNextHourLabel(lastLabel));
+
+  return [200, mockDataHelpers.generateRandomJobProcessingData(newLabels)];
+});
 
 // Helper functions for generating dynamic mock data
 export const mockDataHelpers = {
   getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
+  },
+
+  getNextHourLabel(lastLabel) {
+    const [hour, minute] = lastLabel.split(":").map(Number);
+    const nextHour = (hour + 1) % 24;
+    return `${nextHour}:${minute < 10 ? "0" + minute : minute}`;
+  },
+
+  generateRandomJobProcessingData(labels) {
+    return {
+      labels: [...labels],
+      succeeded: labels.map(() => this.getRandomInt(15, 35)),
+      failed: labels.map(() => this.getRandomInt(0, 5)),
+      pending: labels.map(() => this.getRandomInt(3, 10)),
+    };
   },
 
   updateJobStats() {

@@ -47,6 +47,7 @@ import {
   faToggleOn,
   faToggleOff,
   faDice,
+  faQuestionCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
@@ -75,7 +76,6 @@ library.add(
   faPlus,
   faArrowLeft,
   faSave,
-  faGithub,
   faEye,
   faStop,
   faTrash,
@@ -92,7 +92,9 @@ library.add(
   faCopy,
   faToggleOn,
   faToggleOff,
-  faDice
+  faDice,
+  faQuestionCircle,
+  faGithub
 );
 
 // Async function to handle mock setup and app initialization
