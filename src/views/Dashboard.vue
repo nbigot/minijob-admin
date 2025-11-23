@@ -41,7 +41,10 @@
           class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-8"
         >
           <!-- Created Jobs Card -->
-          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+          <div
+            class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            @click="navigateToJobs('created')"
+          >
             <div class="flex items-center">
               <div
                 class="rounded-full bg-blue-100 p-3 flex items-center justify-center w-10 h-10"
@@ -63,7 +66,10 @@
           </div>
 
           <!-- Queued Jobs Card -->
-          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+          <div
+            class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            @click="navigateToJobs('queued')"
+          >
             <div class="flex items-center">
               <div
                 class="rounded-full bg-yellow-100 p-3 flex items-center justify-center w-10 h-10"
@@ -83,7 +89,10 @@
           </div>
 
           <!-- Running Jobs Card -->
-          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+          <div
+            class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            @click="navigateToJobs('running')"
+          >
             <div class="flex items-center">
               <div
                 class="rounded-full bg-green-100 p-3 flex items-center justify-center w-10 h-10"
@@ -105,7 +114,10 @@
           </div>
 
           <!-- Succeeded Jobs Card -->
-          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+          <div
+            class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            @click="navigateToJobs('succeeded')"
+          >
             <div class="flex items-center">
               <div
                 class="rounded-full bg-indigo-100 p-3 flex items-center justify-center w-10 h-10"
@@ -127,7 +139,10 @@
           </div>
 
           <!-- Failed Jobs Card -->
-          <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+          <div
+            class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            @click="navigateToJobs('failed')"
+          >
             <div class="flex items-center">
               <div
                 class="rounded-full bg-red-100 p-3 flex items-center justify-center w-10 h-10"
@@ -168,127 +183,8 @@
             <h3 class="text-lg font-semibold mb-4 dark:text-gray-200">
               Job Status Distribution
             </h3>
-            <div class="space-y-4">
-              <div>
-                <div class="flex justify-between mb-1">
-                  <span class="text-sm font-medium dark:text-gray-300"
-                    >Created</span
-                  >
-                  <span class="text-sm font-medium dark:text-gray-300"
-                    >{{ dashboardData.createdJobs || 0 }} ({{
-                      calculatePercentage(dashboardData.createdJobs || 0)
-                    }}%)</span
-                  >
-                </div>
-                <div
-                  class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5"
-                >
-                  <div
-                    class="bg-blue-500 dark:bg-blue-700 h-2.5 rounded-full"
-                    :style="{
-                      width:
-                        calculatePercentage(dashboardData.createdJobs || 0) +
-                        '%',
-                    }"
-                  ></div>
-                </div>
-              </div>
-              <div>
-                <div class="flex justify-between mb-1">
-                  <span class="text-sm font-medium dark:text-gray-300"
-                    >Queued</span
-                  >
-                  <span class="text-sm font-medium dark:text-gray-300"
-                    >{{ dashboardData.queuedJobs || 0 }} ({{
-                      calculatePercentage(dashboardData.queuedJobs || 0)
-                    }}%)</span
-                  >
-                </div>
-                <div
-                  class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5"
-                >
-                  <div
-                    class="bg-yellow-500 dark:bg-yellow-700 h-2.5 rounded-full"
-                    :style="{
-                      width:
-                        calculatePercentage(dashboardData.queuedJobs || 0) +
-                        '%',
-                    }"
-                  ></div>
-                </div>
-              </div>
-              <div>
-                <div class="flex justify-between mb-1">
-                  <span class="text-sm font-medium dark:text-gray-300"
-                    >Running</span
-                  >
-                  <span class="text-sm font-medium dark:text-gray-300"
-                    >{{ dashboardData.runningJobs || 0 }} ({{
-                      calculatePercentage(dashboardData.runningJobs || 0)
-                    }}%)</span
-                  >
-                </div>
-                <div
-                  class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5"
-                >
-                  <div
-                    class="bg-green-500 dark:bg-green-700 h-2.5 rounded-full"
-                    :style="{
-                      width:
-                        calculatePercentage(dashboardData.runningJobs || 0) +
-                        '%',
-                    }"
-                  ></div>
-                </div>
-              </div>
-              <div>
-                <div class="flex justify-between mb-1">
-                  <span class="text-sm font-medium dark:text-gray-300"
-                    >Succeeded</span
-                  >
-                  <span class="text-sm font-medium dark:text-gray-300"
-                    >{{ dashboardData.succeededJobs || 0 }} ({{
-                      calculatePercentage(dashboardData.succeededJobs || 0)
-                    }}%)</span
-                  >
-                </div>
-                <div
-                  class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5"
-                >
-                  <div
-                    class="bg-indigo-500 dark:bg-indigo-700 h-2.5 rounded-full"
-                    :style="{
-                      width:
-                        calculatePercentage(dashboardData.succeededJobs || 0) +
-                        '%',
-                    }"
-                  ></div>
-                </div>
-              </div>
-              <div>
-                <div class="flex justify-between mb-1">
-                  <span class="text-sm font-medium dark:text-gray-300"
-                    >Failed</span
-                  >
-                  <span class="text-sm font-medium dark:text-gray-300"
-                    >{{ dashboardData.failedJobs || 0 }} ({{
-                      calculatePercentage(dashboardData.failedJobs || 0)
-                    }}%)</span
-                  >
-                </div>
-                <div
-                  class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5"
-                >
-                  <div
-                    class="bg-red-500 dark:bg-red-700 h-2.5 rounded-full"
-                    :style="{
-                      width:
-                        calculatePercentage(dashboardData.failedJobs || 0) +
-                        '%',
-                    }"
-                  ></div>
-                </div>
-              </div>
+            <div class="flex items-center justify-center">
+              <JobStatusChart :job-stats="dashboardData.jobStats" />
             </div>
           </div>
 
@@ -665,6 +561,7 @@ import ConfirmationModal from "../components/ConfirmationModal.vue";
 import SuccessModal from "../components/SuccessModal.vue";
 import FailureModal from "../components/FailureModal.vue";
 import JobProcessingChart from "../components/JobProcessingChart.vue";
+import JobStatusChart from "../components/JobStatusChart.vue";
 
 export default {
   name: "DashboardOverview",
@@ -673,6 +570,7 @@ export default {
     SuccessModal,
     FailureModal,
     JobProcessingChart,
+    JobStatusChart,
   },
   data() {
     return {
@@ -1031,6 +929,10 @@ export default {
     viewJobDetails(jobId) {
       console.log(`Viewing details for job: ${jobId}`);
       this.$router.push(`/job/${jobId}`);
+    },
+
+    navigateToJobs(status) {
+      this.$router.push({ path: "/jobs", query: { status: status } });
     },
   },
 };
