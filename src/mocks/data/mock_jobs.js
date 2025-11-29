@@ -323,6 +323,72 @@ mock.onGet("/api/v1/jobs/").reply((config) => {
 
 mock.onGet("/api/v1/metrics/jobs/stalled").reply(200, data.stalledJobs);
 
+// Get job statistics
+mock.onGet("/api/v1/metrics/jobs/stats").reply(200, {
+  code: 200,
+  message: "success",
+  jobStats: {
+    existingJobs: 215,
+    createdJobs: 24,
+    delayedJobs: 3,
+    pendingJobs: 5,
+    queuedJobs: 12,
+    runningJobs: 8,
+    succeededJobs: 156,
+    failedJobs: 7,
+    hiddenJobs: 2,
+    canceledJobs: 4,
+    deletedJobs: 18,
+  },
+});
+
+// Get recent jobs
+mock.onGet("/api/v1/metrics/jobs/recent").reply(200, {
+  code: 200,
+  message: "success",
+  jobs: [
+    {
+      id: "73b6a7e9-51e0-4982-a106-f54c4369271a",
+      topic: "data-processing",
+      state: "Running",
+      created: "2023-05-15 14:30:45",
+      updated: "2023-05-15 14:35:12",
+    },
+    {
+      id: "f56cf42d-8b8a-4b95-b088-ae42dd9c1b56",
+      topic: "email-notifications",
+      state: "Succeeded",
+      created: "2023-05-15 14:20:33",
+      updated: "2023-05-15 14:25:47",
+    },
+    {
+      id: "3a7f1e5c-d254-4071-beff-9fe72171c6b9",
+      topic: "report-generation",
+      state: "Failed",
+      created: "2023-05-15 14:10:22",
+      updated: "2023-05-15 14:15:36",
+    },
+  ],
+});
+
+// Get job processing data
+mock.onGet("/api/v1/metrics/jobs/processing").reply((config) => {
+  const timeRange = config.params?.timeRange || "24h";
+  const labels = ["8:00", "9:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00"];
+
+  return [
+    200,
+    {
+      code: 200,
+      message: "success",
+      labels: labels,
+      succeeded: labels.map(() => Math.floor(Math.random() * 20) + 15),
+      failed: labels.map(() => Math.floor(Math.random() * 6)),
+      pending: labels.map(() => Math.floor(Math.random() * 8) + 3),
+    },
+  ];
+});
+
 mock.onGet(/\/api\/v1\/job\/(.+)/).reply((config) => {
   // Get job by ID
   const jobId = config.url.split("/").pop();

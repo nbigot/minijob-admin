@@ -14,22 +14,22 @@
       <!-- Loading State -->
       <div
         v-if="loading"
-        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-8"
+        class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 mb-8"
       >
         <div
-          v-for="i in 5"
+          v-for="i in 11"
           :key="i"
           class="bg-white dark:bg-gray-800 rounded-lg shadow animate-pulse p-4"
         >
           <div class="flex items-center">
             <div
-              class="rounded-full bg-gray-200 dark:bg-gray-700 h-12 w-12"
+              class="rounded-full bg-gray-200 dark:bg-gray-700 h-10 w-10"
             ></div>
             <div class="ml-4 flex-1">
               <div
-                class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/4 mb-2"
+                class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/4 mb-2"
               ></div>
-              <div class="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+              <div class="h-5 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
             </div>
           </div>
         </div>
@@ -38,8 +38,31 @@
       <div v-else>
         <!-- Status Cards -->
         <div
-          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-8"
+          class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 mb-8"
         >
+          <!-- Existing Jobs Card -->
+          <div
+            class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            @click="navigateToJobs('all')"
+          >
+            <div class="flex items-center">
+              <div
+                class="rounded-full bg-slate-100 p-3 flex items-center justify-center w-10 h-10"
+              >
+                <font-awesome-icon
+                  :icon="['fas', 'database']"
+                  class="text-slate-500 text-sm"
+                />
+              </div>
+              <div class="ml-4">
+                <h4 class="text-gray-500 text-xs dark:text-gray-400">Total</h4>
+                <h3 class="text-xl font-bold dark:text-gray-200">
+                  {{ dashboardData.jobStats.existingJobs }}
+                </h3>
+              </div>
+            </div>
+          </div>
+
           <!-- Created Jobs Card -->
           <div
             class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
@@ -55,11 +78,61 @@
                 />
               </div>
               <div class="ml-4">
-                <h4 class="text-gray-500 text-sm dark:text-gray-400">
+                <h4 class="text-gray-500 text-xs dark:text-gray-400">
                   Created
                 </h4>
-                <h3 class="text-2xl font-bold dark:text-gray-200">
+                <h3 class="text-xl font-bold dark:text-gray-200">
                   {{ dashboardData.jobStats.createdJobs }}
+                </h3>
+              </div>
+            </div>
+          </div>
+
+          <!-- Delayed Jobs Card -->
+          <div
+            class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            @click="navigateToJobs('delayed')"
+          >
+            <div class="flex items-center">
+              <div
+                class="rounded-full bg-orange-100 p-3 flex items-center justify-center w-10 h-10"
+              >
+                <font-awesome-icon
+                  :icon="['fas', 'hourglass-half']"
+                  class="text-orange-500 text-sm"
+                />
+              </div>
+              <div class="ml-4">
+                <h4 class="text-gray-500 text-xs dark:text-gray-400">
+                  Delayed
+                </h4>
+                <h3 class="text-xl font-bold dark:text-gray-200">
+                  {{ dashboardData.jobStats.delayedJobs }}
+                </h3>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pending Jobs Card -->
+          <div
+            class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            @click="navigateToJobs('pending')"
+          >
+            <div class="flex items-center">
+              <div
+                class="rounded-full bg-amber-100 p-3 flex items-center justify-center w-10 h-10"
+              >
+                <font-awesome-icon
+                  :icon="['fas', 'pause']"
+                  class="text-amber-500 text-sm"
+                />
+              </div>
+              <div class="ml-4">
+                <h4 class="text-gray-500 text-xs dark:text-gray-400">
+                  Pending
+                </h4>
+                <h3 class="text-xl font-bold dark:text-gray-200">
+                  {{ dashboardData.jobStats.pendingJobs }}
                 </h3>
               </div>
             </div>
@@ -80,8 +153,8 @@
                 />
               </div>
               <div class="ml-4">
-                <h4 class="text-gray-500 text-sm dark:text-gray-400">Queued</h4>
-                <h3 class="text-2xl font-bold dark:text-gray-200">
+                <h4 class="text-gray-500 text-xs dark:text-gray-400">Queued</h4>
+                <h3 class="text-xl font-bold dark:text-gray-200">
                   {{ dashboardData.jobStats.queuedJobs }}
                 </h3>
               </div>
@@ -103,10 +176,10 @@
                 />
               </div>
               <div class="ml-4">
-                <h4 class="text-gray-500 text-sm dark:text-gray-400">
+                <h4 class="text-gray-500 text-xs dark:text-gray-400">
                   Running
                 </h4>
-                <h3 class="text-2xl font-bold dark:text-gray-200">
+                <h3 class="text-xl font-bold dark:text-gray-200">
                   {{ dashboardData.jobStats.runningJobs }}
                 </h3>
               </div>
@@ -128,10 +201,10 @@
                 />
               </div>
               <div class="ml-4">
-                <h4 class="text-gray-500 text-sm dark:text-gray-400">
+                <h4 class="text-gray-500 text-xs dark:text-gray-400">
                   Succeeded
                 </h4>
-                <h3 class="text-2xl font-bold dark:text-gray-200">
+                <h3 class="text-xl font-bold dark:text-gray-200">
                   {{ dashboardData.jobStats.succeededJobs }}
                 </h3>
               </div>
@@ -153,9 +226,82 @@
                 />
               </div>
               <div class="ml-4">
-                <h4 class="text-gray-500 text-sm dark:text-gray-400">Failed</h4>
-                <h3 class="text-2xl font-bold dark:text-gray-200">
+                <h4 class="text-gray-500 text-xs dark:text-gray-400">Failed</h4>
+                <h3 class="text-xl font-bold dark:text-gray-200">
                   {{ dashboardData.jobStats.failedJobs }}
+                </h3>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hidden Jobs Card -->
+          <div
+            class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            @click="navigateToJobs('hidden')"
+          >
+            <div class="flex items-center">
+              <div
+                class="rounded-full bg-gray-100 p-3 flex items-center justify-center w-10 h-10"
+              >
+                <font-awesome-icon
+                  :icon="['fas', 'eye-slash']"
+                  class="text-gray-500 text-sm"
+                />
+              </div>
+              <div class="ml-4">
+                <h4 class="text-gray-500 text-xs dark:text-gray-400">Hidden</h4>
+                <h3 class="text-xl font-bold dark:text-gray-200">
+                  {{ dashboardData.jobStats.hiddenJobs }}
+                </h3>
+              </div>
+            </div>
+          </div>
+
+          <!-- Canceled Jobs Card -->
+          <div
+            class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            @click="navigateToJobs('canceled')"
+          >
+            <div class="flex items-center">
+              <div
+                class="rounded-full bg-rose-100 p-3 flex items-center justify-center w-10 h-10"
+              >
+                <font-awesome-icon
+                  :icon="['fas', 'ban']"
+                  class="text-rose-500 text-sm"
+                />
+              </div>
+              <div class="ml-4">
+                <h4 class="text-gray-500 text-xs dark:text-gray-400">
+                  Canceled
+                </h4>
+                <h3 class="text-xl font-bold dark:text-gray-200">
+                  {{ dashboardData.jobStats.canceledJobs }}
+                </h3>
+              </div>
+            </div>
+          </div>
+
+          <!-- Deleted Jobs Card -->
+          <div
+            class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            @click="navigateToJobs('deleted')"
+          >
+            <div class="flex items-center">
+              <div
+                class="rounded-full bg-purple-100 p-3 flex items-center justify-center w-10 h-10"
+              >
+                <font-awesome-icon
+                  :icon="['fas', 'trash']"
+                  class="text-purple-500 text-sm"
+                />
+              </div>
+              <div class="ml-4">
+                <h4 class="text-gray-500 text-xs dark:text-gray-400">
+                  Deleted
+                </h4>
+                <h3 class="text-xl font-bold dark:text-gray-200">
+                  {{ dashboardData.jobStats.deletedJobs }}
                 </h3>
               </div>
             </div>
@@ -355,7 +501,7 @@
                   class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700"
                 >
                   <tr
-                    v-for="(resource, index) in dashboardData.lockedResources"
+                    v-for="(resource, index) in dashboardData.resources"
                     :key="index"
                     class="hover:bg-gray-50 dark:hover:bg-gray-700"
                   >
@@ -391,8 +537,8 @@
                   </tr>
                   <tr
                     v-if="
-                      !dashboardData.lockedResources ||
-                      dashboardData.lockedResources.length === 0
+                      !dashboardData.resources ||
+                      dashboardData.resources.length === 0
                     "
                   >
                     <td
@@ -577,14 +723,20 @@ export default {
       loading: false,
       dashboardData: {
         jobStats: {
+          existingJobs: 0,
           createdJobs: 0,
+          delayedJobs: 0,
+          pendingJobs: 0,
           queuedJobs: 0,
           runningJobs: 0,
           succeededJobs: 0,
           failedJobs: 0,
+          hiddenJobs: 0,
+          canceledJobs: 0,
+          deletedJobs: 0,
         },
         recentJobs: [],
-        lockedResources: [],
+        resources: [],
         jobsByTopic: {},
       },
       stalledJobs: [],
@@ -604,13 +756,7 @@ export default {
   },
   computed: {
     totalJobs() {
-      return (
-        this.dashboardData.jobStats.createdJobs +
-        this.dashboardData.jobStats.queuedJobs +
-        this.dashboardData.jobStats.runningJobs +
-        this.dashboardData.jobStats.succeededJobs +
-        this.dashboardData.jobStats.failedJobs
-      );
+      return this.dashboardData.jobStats.existingJobs || 0;
     },
     totalTopicJobs() {
       return Object.values(this.dashboardData.jobsByTopic).reduce(
@@ -702,7 +848,6 @@ export default {
         "bg-pink-500 dark:bg-pink-700",
         "bg-cyan-500 dark:bg-cyan-700",
         "bg-orange-500 dark:bg-orange-700",
-        "bg-gray-500 dark:bg-gray-700",
         "bg-lime-500 dark:bg-lime-700",
         "bg-teal-500 dark:bg-teal-700",
         "bg-emerald-500 dark:bg-emerald-700",

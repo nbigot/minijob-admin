@@ -48,6 +48,11 @@ import {
   faToggleOff,
   faDice,
   faQuestionCircle,
+  faDatabase,
+  faHourglassHalf,
+  faPause,
+  faEyeSlash,
+  faBan,
 } from "@fortawesome/free-solid-svg-icons";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
@@ -94,6 +99,11 @@ library.add(
   faToggleOff,
   faDice,
   faQuestionCircle,
+  faDatabase,
+  faHourglassHalf,
+  faPause,
+  faEyeSlash,
+  faBan,
   faGithub
 );
 

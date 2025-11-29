@@ -14,21 +14,21 @@ let data = {
     {
       id: "73b6a7e9-51e0-4982-a106-f54c4369271a",
       topic: "data-processing",
-      status: "Running",
+      state: "Running",
       created: "2023-05-15 14:30:45",
       updated: "2023-05-15 14:35:12",
     },
     {
       id: "f56cf42d-8b8a-4b95-b088-ae42dd9c1b56",
       topic: "email-notifications",
-      status: "Succeeded",
+      state: "Succeeded",
       created: "2023-05-15 14:20:33",
       updated: "2023-05-15 14:25:47",
     },
     {
       id: "3a7f1e5c-d254-4071-beff-9fe72171c6b9",
       topic: "report-generation",
-      status: "Failed",
+      state: "Failed",
       created: "2023-05-15 14:10:22",
       updated: "2023-05-15 14:15:36",
     },
@@ -113,25 +113,10 @@ let data = {
 };
 
 // Functions to handle mock data requests
-mock.onGet("/api/v1/dashboard").reply(200, {
-  jobStats: data.jobStats,
-  recentJobs: data.recentJobs,
-  lockedResources: data.lockedResources,
-  jobsByTopic: data.jobsByTopic,
-});
-
-mock.onGet("/api/v1/dashboard/job-stats").reply(200, data.jobStats);
-mock.onGet("/api/v1/dashboard/recent-jobs").reply(200, data.recentJobs);
-mock.onGet("/api/v1/dashboard/locked-resources").reply(200, data.lockedResources);
-mock.onGet("/api/v1/metrics/jobs/stalled").reply(200, data.stalledJobs);
-mock.onGet("/api/v1/dashboard/job-processing-data").reply((config) => {
-  const timeRange = config.params?.timeRange || "24h";
-  // Generate dynamic data based on the last label
-  const lastLabel = data.jobProcessingData.labels[data.jobProcessingData.labels.length - 1];
-  const newLabels = Array.from({ length: 8 }, (_, i) => mockDataHelpers.getNextHourLabel(lastLabel));
-
-  return [200, mockDataHelpers.generateRandomJobProcessingData(newLabels)];
-});
+// Note: Dashboard routes have been migrated to /api/v1/metrics/* endpoints
+// See mock_jobs.js for /api/v1/metrics/jobs/* routes
+// See mock_resources.js for /api/v1/metrics/resources route
+// See mock_topics.js for /api/v1/metrics/topics route
 
 // Helper functions for generating dynamic mock data
 export const mockDataHelpers = {
