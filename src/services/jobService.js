@@ -56,8 +56,8 @@ export const jobService = {
   async getStalledJobs() {
     try {
       const response = await apiClient.get("/api/v1/metrics/jobs/stalled");
-      const enrichedJobs = Array.isArray(response.data) ? response.data.map(enrichJobData) : [];
-      return enrichedJobs;
+      const jobs = response.data.jobs || [];
+      return jobs;
     } catch (error) {
       throw new Error(`Failed to fetch stalled jobs: ${error.message}`);
     }

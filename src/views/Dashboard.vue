@@ -629,12 +629,12 @@
                   <td
                     class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300"
                   >
-                    {{ job.created }}
+                    {{ formatTimestamp(job.created) }}
                   </td>
                   <td
                     class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300"
                   >
-                    {{ job.duration }}
+                    {{ formatDurationMs(job.duration) }}
                   </td>
                   <td
                     class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300"
@@ -767,22 +767,8 @@ export default {
     sortedStalledJobs() {
       return [...this.stalledJobs]
         .sort((a, b) => {
-          const parseTime = (duration) => {
-            if (!duration) return 0;
-
-            let totalMinutes = 0;
-            const dayMatch = duration.match(/(\d+)d/);
-            const hourMatch = duration.match(/(\d+)h/);
-            const minMatch = duration.match(/(\d+)m/);
-
-            if (dayMatch) totalMinutes += parseInt(dayMatch[1]) * 24 * 60;
-            if (hourMatch) totalMinutes += parseInt(hourMatch[1]) * 60;
-            if (minMatch) totalMinutes += parseInt(minMatch[1]);
-
-            return totalMinutes;
-          };
-
-          return parseTime(b.duration) - parseTime(a.duration);
+          // Duration is already in milliseconds, sort descending
+          return (b.duration || 0) - (a.duration || 0);
         })
         .slice(0, 5);
     },
@@ -915,6 +901,34 @@ export default {
       const seconds =
         duration > 10000000000 ? Math.floor(duration / 1000) : duration;
 
+      const days = Math.floor(seconds / 86400);
+      const hours = Math.floor((seconds % 86400) / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      const remainingSeconds = seconds % 60;
+
+      if (days > 0) {
+        return `${days}d ${hours}h ${minutes}m`;
+      } else if (hours > 0) {
+        return `${hours}h ${minutes}m ${remainingSeconds}s`;
+      } else if (minutes > 0) {
+        return `${minutes}m ${remainingSeconds}s`;
+      } else {
+        return `${remainingSeconds}s`;
+      }
+    },
+
+    formatTimestamp(timestamp) {
+      if (!timestamp) return "N/A";
+      const date = new Date(timestamp);
+      return date.toISOString().replace("T", " ").substring(0, 19);
+    },
+
+    formatDurationMs(durationMs) {
+      if (!durationMs || durationMs === 0) {
+        return "-";
+      }
+
+      const seconds = Math.floor(durationMs / 1000);
       const days = Math.floor(seconds / 86400);
       const hours = Math.floor((seconds % 86400) / 3600);
       const minutes = Math.floor((seconds % 3600) / 60);

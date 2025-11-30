@@ -241,36 +241,36 @@ let data = {
       id: "a8f2e357-1d2c-4b6e-9d0f-e5c7b3461d9a",
       topic: "data-processing",
       state: "running",
-      created: "2024-11-20 10:30:45",
-      duration: "1d 14h 25m",
+      created: 1700473845000,
+      duration: 138300000,
     },
     {
       id: "bd93c8e2-4f57-49e7-b5d8-1a2b3c4d5e6f",
       topic: "report-generation",
       state: "running",
-      created: "2024-11-20 08:15:22",
-      duration: "1d 16h 40m",
+      created: 1700465722000,
+      duration: 146400000,
     },
     {
       id: "c5d4e9f1-2a3b-4c5d-6e7f-8a9b0c1d2e3f",
       topic: "email-notification",
       state: "running",
-      created: "2024-11-21 15:45:10",
-      duration: "9h 20m",
+      created: 1700579110000,
+      duration: 33600000,
     },
     {
       id: "d7e8f9a0-3b4c-5d6e-7f8a-9b0c1d2e3f4a",
       topic: "data-export",
       state: "queued",
-      created: "2024-11-21 18:30:00",
-      duration: "6h 35m",
+      created: 1700589000000,
+      duration: 23700000,
     },
     {
       id: "e9f0a1b2-4c5d-6e7f-8a9b-0c1d2e3f4a5b",
       topic: "backup-job",
       state: "running",
-      created: "2024-11-19 22:00:00",
-      duration: "2d 3h 5m",
+      created: 1700428800000,
+      duration: 183900000,
     },
   ],
 };
@@ -321,7 +321,11 @@ mock.onGet("/api/v1/jobs/").reply((config) => {
   ];
 });
 
-mock.onGet("/api/v1/metrics/jobs/stalled").reply(200, data.stalledJobs);
+mock.onGet("/api/v1/metrics/jobs/stalled").reply(200, {
+  code: 200,
+  message: "success",
+  jobs: data.stalledJobs,
+});
 
 // Get job statistics
 mock.onGet("/api/v1/metrics/jobs/stats").reply(200, {
