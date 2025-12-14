@@ -10,7 +10,7 @@ export const healthService = {
       const responseTime = Date.now() - startTime;
       const lastChecked = Math.floor(Date.now() / 1000); // Unix timestamp
 
-      if (response.status === 200 && response.data === "OK") {
+      if (response.status === 200) {
         return {
           server: {
             status: "healthy",
