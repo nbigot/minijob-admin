@@ -35,49 +35,6 @@ export const dashboardService = {
     }
   },
 
-  // Get job statistics
-  async getJobStats() {
-    try {
-      const response = await apiClient.get("/api/v1/metrics/jobs/stats");
-      return response.data.jobStats;
-    } catch (error) {
-      throw new Error("Failed to fetch job statistics");
-    }
-  },
-
-  // Get recent jobs
-  async getRecentJobs() {
-    try {
-      const response = await apiClient.get("/api/v1/metrics/jobs/recent");
-      return response.data.jobs;
-    } catch (error) {
-      throw new Error("Failed to fetch recent jobs");
-    }
-  },
-
-  // Get locked resources
-  async getLockedResources() {
-    try {
-      const response = await apiClient.get("/api/v1/metrics/resources");
-      return response.data.resources;
-    } catch (error) {
-      throw new Error("Failed to fetch locked resources");
-    }
-  },
-
-  // Unlock a specific resource
-  async unlockResource(resourceName) {
-    try {
-      const response = await apiClient.post(`/api/v1/resources/${resourceName}/unlock`);
-      if (response.status !== 200) {
-        throw new Error(`Failed to unlock resource ${resourceName}: ${response.data.message}`);
-      }
-      return response.data;
-    } catch (error) {
-      throw new Error(`Failed to unlock resource ${resourceName}: ${error.message}`);
-    }
-  },
-
   // Get job processing data
   async getJobProcessingData(timeRange = "24h") {
     try {

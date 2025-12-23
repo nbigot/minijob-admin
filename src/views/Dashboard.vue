@@ -700,7 +700,7 @@
 import {
   dashboardService,
   jobService,
-  healthService,
+  resourceService,
 } from "../services/index.js";
 import { getStateClass } from "../utils/stateClass.js";
 import ConfirmationModal from "../components/ConfirmationModal.vue";
@@ -951,7 +951,7 @@ export default {
         `Are you sure you want to unlock ${resourceName}? This may affect running jobs.`,
         async () => {
           try {
-            await dashboardService.unlockResource(resourceName);
+            await resourceService.unlockResource(resourceName);
             this.openModalSuccess(
               `Resource ${resourceName} unlocked successfully`
             );
