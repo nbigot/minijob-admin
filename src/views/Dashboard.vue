@@ -14,10 +14,10 @@
       <!-- Loading State -->
       <div
         v-if="loading"
-        class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 mb-8"
+        class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-10 gap-4 mb-8"
       >
         <div
-          v-for="i in 11"
+          v-for="i in 10"
           :key="i"
           class="bg-white dark:bg-gray-800 rounded-lg shadow animate-pulse p-4"
         >
@@ -38,7 +38,7 @@
       <div v-else>
         <!-- Status Cards -->
         <div
-          class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 mb-8"
+          class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-10 gap-4 mb-8"
         >
           <!-- Existing Jobs Card -->
           <div
@@ -281,44 +281,65 @@
               </div>
             </div>
           </div>
+        </div>
 
-          <!-- Deleted Jobs Card -->
-          <div
-            class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-            @click="navigateToJobs('deleted')"
-          >
-            <div class="flex items-center">
-              <div
-                class="rounded-full bg-purple-100 p-3 flex items-center justify-center w-10 h-10"
-              >
-                <font-awesome-icon
-                  :icon="['fas', 'trash']"
-                  class="text-purple-500 text-sm"
-                />
+        <!-- Job Activity Metrics -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">
+              Job Activity Metrics
+            </h3>
+            <div class="flex items-center gap-4">
+              <div class="flex items-center gap-2">
+                <label
+                  for="pollingInterval"
+                  class="text-sm text-gray-600 dark:text-gray-400"
+                >
+                  Update Frequency:
+                </label>
+                <select
+                  id="pollingInterval"
+                  v-model="selectedPollingInterval"
+                  class="px-3 py-1 text-sm border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  @change="handlePollingIntervalChange"
+                >
+                  <option :value="null">None</option>
+                  <option :value="1000">1 Second</option>
+                  <option :value="5000">5 Seconds</option>
+                  <option :value="10000">10 Seconds</option>
+                  <option :value="30000">30 Seconds</option>
+                  <option :value="60000">1 Minute</option>
+                  <option :value="600000">10 Minutes</option>
+                </select>
               </div>
-              <div class="ml-4">
-                <h4 class="text-gray-500 text-xs dark:text-gray-400">
-                  Deleted
-                </h4>
-                <h3 class="text-xl font-bold dark:text-gray-200">
-                  {{ dashboardData.jobStats.deletedJobs }}
-                </h3>
+              <div class="flex items-center gap-2">
+                <label
+                  for="timeWindow"
+                  class="text-sm text-gray-600 dark:text-gray-400"
+                >
+                  Time Window:
+                </label>
+                <select
+                  id="timeWindow"
+                  v-model="selectedTimeWindow"
+                  class="px-3 py-1 text-sm border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  @change="handleTimeWindowChange"
+                >
+                  <option value="60">1 Minute</option>
+                  <option value="300">5 Minutes</option>
+                  <option value="900">15 Minutes</option>
+                  <option value="3600">1 Hour</option>
+                  <option value="21600">6 Hours</option>
+                  <option value="86400">24 Hours</option>
+                  <option value="604800">1 Week</option>
+                </select>
               </div>
             </div>
           </div>
-        </div>
-
-        <!-- Job Processing Rate -->
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
-          <h3
-            class="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200"
-          >
-            Job Processing Rate
-          </h3>
           <div
             class="h-64 bg-gray-50 rounded-lg border border-gray-200 dark:bg-gray-700 dark:border-gray-600 p-4"
           >
-            <JobProcessingChart :job-data="jobProcessingData" />
+            <JobProcessingChart :activity-data="jobActivityChartData" />
           </div>
         </div>
 
@@ -330,7 +351,7 @@
               Job Status Distribution
             </h3>
             <div class="flex items-center justify-center">
-              <JobStatusChart :job-stats="dashboardData.jobStats" />
+              <JobStatusChart :job-activity="dashboardData.jobStats" />
             </div>
           </div>
 
@@ -735,6 +756,7 @@ export default {
           canceledJobs: 0,
           deletedJobs: 0,
         },
+        jobActivity: {},
         recentJobs: [],
         resources: [],
         jobsByTopic: {},
@@ -746,6 +768,15 @@ export default {
         failed: [],
         pending: [],
       },
+      // Job Activity Metrics
+      selectedTimeWindow: 300, // Default: 5 minutes (in seconds)
+      selectedPollingInterval: null, // Default: None (no auto-update)
+      activityPollingInterval: null,
+      previousActivityData: null,
+      jobActivityChartData: [],
+      activityDataBuffer: [], // Raw data buffer before aggregation
+      screenWidth: window.innerWidth,
+      maxDataPoints: 60, // Maximum data points to show in rolling window
       simulationInterval: null,
       showModal: false,
       modalTitle: "",
@@ -772,15 +803,58 @@ export default {
         })
         .slice(0, 5);
     },
+    numberOfBuckets() {
+      // Determine number of bars based on time window and screen size
+      let baseBuckets;
+
+      // Base number of buckets for time windows
+      if (this.selectedTimeWindow <= 60) {
+        baseBuckets = 6; // 1 minute: 6 bars (10s each)
+      } else if (this.selectedTimeWindow <= 300) {
+        baseBuckets = 10; // 5 minutes: 10 bars (30s each)
+      } else if (this.selectedTimeWindow <= 900) {
+        baseBuckets = 15; // 15 minutes: 15 bars (1min each)
+      } else if (this.selectedTimeWindow <= 3600) {
+        baseBuckets = 12; // 1 hour: 12 bars (5min each)
+      } else if (this.selectedTimeWindow <= 21600) {
+        baseBuckets = 12; // 6 hours: 12 bars (30min each)
+      } else if (this.selectedTimeWindow <= 86400) {
+        baseBuckets = 24; // 24 hours: 24 bars (1hour each)
+      } else {
+        baseBuckets = 14; // 1 week: 14 bars (12 hours each)
+      }
+
+      // Adjust for screen size (responsive)
+      if (this.screenWidth < 640) {
+        // Mobile: reduce by 40%
+        return Math.max(4, Math.floor(baseBuckets * 0.6));
+      } else if (this.screenWidth < 1024) {
+        // Tablet: reduce by 20%
+        return Math.max(6, Math.floor(baseBuckets * 0.8));
+      } else {
+        // Desktop: use full number
+        return baseBuckets;
+      }
+    },
+    bucketDuration() {
+      // Calculate duration of each bucket in seconds
+      return this.selectedTimeWindow / this.numberOfBuckets;
+    },
   },
   async mounted() {
     this.startJobProcessingSimulation();
+    this.startActivityPolling();
     await this.fetchDashboardData();
     await this.loadStalledJobs();
     await this.loadJobProcessingData();
+
+    // Add window resize listener for responsive bucket count
+    window.addEventListener("resize", this.handleResize);
   },
   beforeUnmount() {
     this.stopJobProcessingSimulation();
+    this.stopActivityPolling();
+    window.removeEventListener("resize", this.handleResize);
   },
   methods: {
     getStateClass,
@@ -971,7 +1045,7 @@ export default {
       this.loadJobProcessingData && this.loadJobProcessingData();
     },
 
-    // Job processing simulation methods
+    // Job Activity Metrics simulation methods
     startJobProcessingSimulation() {
       this.simulationInterval = setInterval(() => {
         if (this.jobProcessingData.labels.length === 0) return;
@@ -1032,13 +1106,23 @@ export default {
 
     async loadJobProcessingData() {
       try {
-        const jobProcessingData = await dashboardService.getJobProcessingData();
+        // Note: Backend /api/v1/metrics/jobs/processing returns jobStats, not chart data
+        // Initialize with current time for simulation
+        const now = new Date();
+        const labels = [];
+        for (let i = 7; i >= 0; i--) {
+          const time = new Date(now.getTime() - i * 3600000);
+          labels.push(`${time.getHours()}:00`);
+        }
+
         this.jobProcessingData = {
-          ...this.jobProcessingData,
-          ...jobProcessingData,
+          labels: labels,
+          succeeded: labels.map(() => this.getRandomInt(15, 35)),
+          failed: labels.map(() => this.getRandomInt(0, 5)),
+          pending: labels.map(() => this.getRandomInt(3, 10)),
         };
       } catch (error) {
-        console.error("Error loading job processing data:", error);
+        console.error("Error loading Job Activity Metrics data:", error);
       }
     },
 
@@ -1092,6 +1176,233 @@ export default {
 
     navigateToJobs(status) {
       this.$router.push({ path: "/jobs", query: { status: status } });
+    },
+
+    // Job Activity Metrics methods
+    startActivityPolling() {
+      // Don't start polling if interval is None (null)
+      if (!this.selectedPollingInterval) {
+        return;
+      }
+
+      // Poll immediately
+      this.pollJobActivity();
+      // Then poll at the selected interval
+      this.activityPollingInterval = setInterval(() => {
+        this.pollJobActivity();
+      }, this.selectedPollingInterval);
+    },
+
+    stopActivityPolling() {
+      if (this.activityPollingInterval) {
+        clearInterval(this.activityPollingInterval);
+        this.activityPollingInterval = null;
+      }
+    },
+
+    async pollJobActivity() {
+      try {
+        const currentData = await dashboardService.getJobActivityMetrics();
+
+        if (!this.previousActivityData) {
+          // First poll - initialize with zeros
+          this.previousActivityData = currentData;
+          this.addActivityDataPoint({
+            created: 0,
+            started: 0,
+            succeeded: 0,
+            failed: 0,
+          });
+          return;
+        }
+
+        // Calculate deltas (rate per second)
+        const pollingIntervalSeconds = this.selectedPollingInterval / 1000;
+        const deltaCreated =
+          Math.max(
+            0,
+            (currentData.created || 0) -
+              (this.previousActivityData.created || 0)
+          ) / pollingIntervalSeconds;
+        const deltaStarted =
+          Math.max(
+            0,
+            (currentData.started || 0) -
+              (this.previousActivityData.started || 0)
+          ) / pollingIntervalSeconds;
+        const deltaSucceeded =
+          Math.max(
+            0,
+            (currentData.succeeded || 0) -
+              (this.previousActivityData.succeeded || 0)
+          ) / pollingIntervalSeconds;
+        const deltaFailed =
+          Math.max(
+            0,
+            (currentData.failed || 0) - (this.previousActivityData.failed || 0)
+          ) / pollingIntervalSeconds;
+
+        this.addActivityDataPoint({
+          created: parseFloat(deltaCreated.toFixed(2)),
+          started: parseFloat(deltaStarted.toFixed(2)),
+          succeeded: parseFloat(deltaSucceeded.toFixed(2)),
+          failed: parseFloat(deltaFailed.toFixed(2)),
+        });
+
+        this.previousActivityData = currentData;
+      } catch (error) {
+        console.error("Failed to poll job activity:", error);
+      }
+    },
+
+    addActivityDataPoint(dataPoint) {
+      const now = new Date();
+
+      // Add to raw data buffer with timestamp
+      this.activityDataBuffer.push({
+        timestamp: now.getTime(),
+        created: dataPoint.created,
+        started: dataPoint.started,
+        succeeded: dataPoint.succeeded,
+        failed: dataPoint.failed,
+      });
+
+      // Remove old data points beyond the time window
+      const cutoffTime = now.getTime() - this.selectedTimeWindow * 1000;
+      this.activityDataBuffer = this.activityDataBuffer.filter(
+        (item) => item.timestamp >= cutoffTime
+      );
+
+      // Aggregate data into fixed buckets
+      this.aggregateIntoBuckets();
+    },
+
+    aggregateIntoBuckets() {
+      const now = new Date();
+      const buckets = [];
+      const bucketDurationMs = this.bucketDuration * 1000;
+
+      // Create empty buckets
+      for (let i = 0; i < this.numberOfBuckets; i++) {
+        const bucketEndTime = now.getTime() - i * bucketDurationMs;
+        const bucketStartTime = bucketEndTime - bucketDurationMs;
+
+        buckets.push({
+          startTime: bucketStartTime,
+          endTime: bucketEndTime,
+          created: 0,
+          started: 0,
+          succeeded: 0,
+          failed: 0,
+          count: 0,
+        });
+      }
+
+      // Aggregate data points into buckets
+      this.activityDataBuffer.forEach((dataPoint) => {
+        for (let bucket of buckets) {
+          if (
+            dataPoint.timestamp > bucket.startTime &&
+            dataPoint.timestamp <= bucket.endTime
+          ) {
+            bucket.created += dataPoint.created;
+            bucket.started += dataPoint.started;
+            bucket.succeeded += dataPoint.succeeded;
+            bucket.failed += dataPoint.failed;
+            bucket.count++;
+            break;
+          }
+        }
+      });
+
+      // Reverse to show oldest to newest (left to right)
+      buckets.reverse();
+
+      // Calculate averages and format labels
+      this.jobActivityChartData = buckets.map((bucket) => {
+        const bucketDate = new Date(bucket.endTime);
+        let timeLabel;
+
+        // Format time label based on bucket duration
+        if (this.bucketDuration < 60) {
+          // Less than 1 minute: show seconds
+          timeLabel = bucketDate.toLocaleTimeString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: false,
+          });
+        } else if (this.bucketDuration < 3600) {
+          // Less than 1 hour: show time
+          timeLabel = bucketDate.toLocaleTimeString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+          });
+        } else if (this.bucketDuration < 86400) {
+          // Less than 1 day: show time
+          timeLabel = bucketDate.toLocaleTimeString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+          });
+        } else {
+          // 1 day or more: show date and time
+          timeLabel = bucketDate.toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            hour: "2-digit",
+          });
+        }
+
+        // Calculate average rates per second for the bucket
+        const divisor = bucket.count > 0 ? bucket.count : 1;
+        return {
+          time: timeLabel,
+          created: parseFloat((bucket.created / divisor).toFixed(2)),
+          started: parseFloat((bucket.started / divisor).toFixed(2)),
+          succeeded: parseFloat((bucket.succeeded / divisor).toFixed(2)),
+          failed: parseFloat((bucket.failed / divisor).toFixed(2)),
+        };
+      });
+    },
+
+    handleTimeWindowChange() {
+      // Clear existing data when time window changes
+      this.jobActivityChartData = [];
+      this.activityDataBuffer = [];
+      this.previousActivityData = null;
+
+      // Restart polling to get fresh data
+      this.stopActivityPolling();
+      this.startActivityPolling();
+    },
+
+    handlePollingIntervalChange() {
+      // Stop any existing polling
+      this.stopActivityPolling();
+
+      // If None is selected, just stop polling and keep existing data
+      if (!this.selectedPollingInterval) {
+        return;
+      }
+
+      // Clear existing data when polling interval changes
+      this.jobActivityChartData = [];
+      this.activityDataBuffer = [];
+      this.previousActivityData = null;
+
+      // Restart polling with new interval
+      this.startActivityPolling();
+    },
+
+    handleResize() {
+      // Update screen width for responsive bucket calculation
+      this.screenWidth = window.innerWidth;
+      // Re-aggregate data with new bucket count
+      if (this.activityDataBuffer.length > 0) {
+        this.aggregateIntoBuckets();
+      }
     },
   },
 };

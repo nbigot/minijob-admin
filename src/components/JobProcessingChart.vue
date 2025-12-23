@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { Bar } from 'vue-chartjs'
+import { Bar } from "vue-chartjs";
 import {
   Chart as ChartJS,
   Title,
@@ -23,8 +23,8 @@ import {
   Legend,
   BarElement,
   CategoryScale,
-  LinearScale
-} from 'chart.js'
+  LinearScale,
+} from "chart.js";
 
 ChartJS.register(
   Title,
@@ -33,155 +33,177 @@ ChartJS.register(
   BarElement,
   CategoryScale,
   LinearScale
-)
+);
 
 export default {
-  name: 'JobProcessingChart',
+  name: "JobProcessingChart",
   components: { Bar },
   props: {
     chartId: {
       type: String,
-      default: 'job-processing-chart'
+      default: "job-processing-chart",
     },
     datasetIdKey: {
       type: String,
-      default: 'label'
+      default: "label",
     },
     width: {
       type: Number,
-      default: 400
+      default: 400,
     },
     height: {
       type: Number,
-      default: 400
+      default: 400,
     },
     cssClasses: {
-      default: '',
-      type: String
+      default: "",
+      type: String,
     },
     styles: {
       type: Object,
-      default: () => {}
+      default: () => {},
     },
     plugins: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
-    jobData: {
-      type: Object,
-      required: true
-    }
+    activityData: {
+      type: Array,
+      required: true,
+      default: () => [],
+    },
   },
   data() {
     return {
       chartData: {
         labels: [],
-        datasets: []
+        datasets: [],
       },
       chartOptions: {
         responsive: true,
         maintainAspectRatio: false,
+        animation: false,
         plugins: {
           legend: {
-            position: 'top',
+            position: "top",
           },
           title: {
             display: true,
-            text: 'Job Processing Rate',
+            text: "Job Activity Metrics (Events/sec)",
             font: {
-              size: 16
-            }
+              size: 16,
+            },
           },
           tooltip: {
             callbacks: {
-              label: (context) => `${context.dataset.label}: ${context.formattedValue} jobs`
-            }
-          }
+              label: (context) =>
+                `${context.dataset.label}: ${context.formattedValue} events/sec`,
+            },
+          },
         },
         scales: {
           y: {
             beginAtZero: true,
+            grace: "5%",
             title: {
               display: true,
-              text: 'Jobs Processed'
-            }
+              text: "Events per Second",
+            },
+            ticks: {
+              precision: 1,
+            },
           },
           x: {
             title: {
               display: true,
-              text: 'Time'
-            }
-          }
-        }
-      }
-    }
+              text: "Time",
+            },
+            ticks: {
+              maxRotation: 45,
+              minRotation: 0,
+              autoSkip: true,
+              maxTicksLimit: 12,
+            },
+          },
+        },
+      },
+    };
   },
   watch: {
-    jobData: {
+    activityData: {
       handler(newData) {
         this.updateChartData(newData);
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   mounted() {
-    // Initialize with empty data if jobData is not provided
-    this.updateChartData(this.jobData);
+    this.updateChartData(this.activityData);
   },
   methods: {
     updateChartData(data) {
-      if (!data) {
-        // If data is undefined, set default empty data
+      if (!data || data.length === 0) {
         this.chartData = {
           labels: [],
           datasets: [
             {
-              label: 'Succeeded',
-              backgroundColor: 'rgba(75, 192, 192, 0.7)',
-              data: []
+              label: "Created",
+              backgroundColor: "rgba(54, 162, 235, 0.7)",
+              data: [],
             },
             {
-              label: 'Failed',
-              backgroundColor: 'rgba(255, 99, 132, 0.7)',
-              data: []
+              label: "Started",
+              backgroundColor: "rgba(255, 206, 86, 0.7)",
+              data: [],
             },
             {
-              label: 'Pending',
-              backgroundColor: 'rgba(255, 206, 86, 0.7)',
-              data: []
-            }
-          ]
+              label: "Succeeded",
+              backgroundColor: "rgba(75, 192, 192, 0.7)",
+              data: [],
+            },
+            {
+              label: "Failed",
+              backgroundColor: "rgba(255, 99, 132, 0.7)",
+              data: [],
+            },
+          ],
         };
         return;
       }
 
-      // Use a safer approach to access data properties
-      const labels = Array.isArray(data.labels) ? data.labels : [];
-      const succeeded = Array.isArray(data.succeeded) ? data.succeeded : [];
-      const failed = Array.isArray(data.failed) ? data.failed : [];
-      const pending = Array.isArray(data.pending) ? data.pending : [];
+      // Extract data from the rolling window
+      const labels = data.map((item) => item.time);
+      const created = data.map((item) => item.created);
+      const started = data.map((item) => item.started);
+      const succeeded = data.map((item) => item.succeeded);
+      const failed = data.map((item) => item.failed);
 
       this.chartData = {
         labels: labels,
         datasets: [
           {
-            label: 'Succeeded',
-            backgroundColor: 'rgba(75, 192, 192, 0.7)',
-            data: succeeded
+            label: "Created",
+            backgroundColor: "rgba(54, 162, 235, 0.7)",
+            data: created,
           },
           {
-            label: 'Failed',
-            backgroundColor: 'rgba(255, 99, 132, 0.7)',
-            data: failed
+            label: "Started",
+            backgroundColor: "rgba(255, 206, 86, 0.7)",
+            data: started,
           },
           {
-            label: 'Pending',
-            backgroundColor: 'rgba(255, 206, 86, 0.7)',
-            data: pending
-          }
-        ]
-      }
-    }
-  }
-}
+            label: "Succeeded",
+            backgroundColor: "rgba(75, 192, 192, 0.7)",
+            data: succeeded,
+          },
+          {
+            label: "Failed",
+            backgroundColor: "rgba(255, 99, 132, 0.7)",
+            data: failed,
+          },
+        ],
+      };
+    },
+  },
+};
 </script>

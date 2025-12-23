@@ -328,23 +328,78 @@ mock.onGet("/api/v1/metrics/jobs/stalled").reply(200, {
 });
 
 // Get job statistics
-mock.onGet("/api/v1/metrics/jobs/stats").reply(200, {
+// Cumulative counters for /api/v1/metrics/jobs/activity (total events since server start)
+let jobActivityCounters = {
+  created: 24,
+  delayed: 3,
+  pending: 5,
+  enqueued: 12,
+  started: 8,
+  succeeded: 156,
+  failed: 7,
+  canceled: 4,
+  hidden: 2,
+  deleted: 18,
+  timeout: 1,
+  terminated: 2,
+};
+
+// Current state counters for /api/v1/metrics/jobs/processing (current job counts by status)
+let currentJobStats = {
+  existingJobs: 215,
+  createdJobs: 0,
+  delayedJobs: 3,
+  pendingJobs: 5,
+  queuedJobs: 12,
+  runningJobs: 8,
+  succeededJobs: 156,
+  failedJobs: 7,
+  hiddenJobs: 2,
+  canceledJobs: 4,
+  deletedJobs: 18,
+};
+
+mock.onGet("/api/v1/metrics/jobs/activity").reply(200, {
   code: 200,
   message: "success",
-  jobStats: {
-    existingJobs: 215,
-    createdJobs: 24,
-    delayedJobs: 3,
-    pendingJobs: 5,
-    queuedJobs: 12,
-    runningJobs: 8,
-    succeededJobs: 156,
-    failedJobs: 7,
-    hiddenJobs: 2,
-    canceledJobs: 4,
-    deletedJobs: 18,
+  jobActivity: {
+    created: jobActivityCounters.created,
+    delayed: jobActivityCounters.delayed,
+    pending: jobActivityCounters.pending,
+    enqueued: jobActivityCounters.enqueued,
+    started: jobActivityCounters.started,
+    succeeded: jobActivityCounters.succeeded,
+    failed: jobActivityCounters.failed,
+    canceled: jobActivityCounters.canceled,
+    hidden: jobActivityCounters.hidden,
+    deleted: jobActivityCounters.deleted,
+    timeout: jobActivityCounters.timeout,
+    terminated: jobActivityCounters.terminated,
   },
 });
+
+// Simulate increasing counters for job activity (cumulative)
+setInterval(() => {
+  jobActivityCounters.created += Math.floor(Math.random() * 3);
+  jobActivityCounters.started += Math.floor(Math.random() * 3);
+  jobActivityCounters.succeeded += Math.floor(Math.random() * 4);
+  jobActivityCounters.failed += Math.floor(Math.random() * 2);
+  jobActivityCounters.enqueued += Math.floor(Math.random() * 2);
+  jobActivityCounters.pending += Math.floor(Math.random() * 2);
+  jobActivityCounters.delayed += Math.floor(Math.random() * 1);
+  jobActivityCounters.canceled += Math.floor(Math.random() * 1);
+
+  // Update current state counters to simulate realistic job state changes
+  const newRunning = Math.max(0, currentJobStats.runningJobs + Math.floor(Math.random() * 2) - 1);
+  const completedJobs = currentJobStats.runningJobs - newRunning;
+
+  currentJobStats.runningJobs = newRunning;
+  currentJobStats.succeededJobs += Math.max(0, Math.floor(completedJobs * 0.8));
+  currentJobStats.failedJobs += Math.max(0, Math.floor(completedJobs * 0.2));
+  currentJobStats.queuedJobs = Math.max(0, currentJobStats.queuedJobs + Math.floor(Math.random() * 3) - 1);
+  currentJobStats.existingJobs =
+    currentJobStats.queuedJobs + currentJobStats.runningJobs + currentJobStats.succeededJobs + currentJobStats.failedJobs;
+}, 3000);
 
 // Get recent jobs
 mock.onGet("/api/v1/metrics/jobs/recent").reply(200, {
@@ -375,20 +430,26 @@ mock.onGet("/api/v1/metrics/jobs/recent").reply(200, {
   ],
 });
 
-// Get job processing data
+// Get Job Activity Metrics data
 mock.onGet("/api/v1/metrics/jobs/processing").reply((config) => {
-  const timeRange = config.params?.timeRange || "24h";
-  const labels = ["8:00", "9:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00"];
-
   return [
     200,
     {
       code: 200,
       message: "success",
-      labels: labels,
-      succeeded: labels.map(() => Math.floor(Math.random() * 20) + 15),
-      failed: labels.map(() => Math.floor(Math.random() * 6)),
-      pending: labels.map(() => Math.floor(Math.random() * 8) + 3),
+      jobStats: {
+        existingJobs: currentJobStats.existingJobs,
+        createdJobs: currentJobStats.createdJobs,
+        delayedJobs: currentJobStats.delayedJobs,
+        pendingJobs: currentJobStats.pendingJobs,
+        queuedJobs: currentJobStats.queuedJobs,
+        runningJobs: currentJobStats.runningJobs,
+        succeededJobs: currentJobStats.succeededJobs,
+        failedJobs: currentJobStats.failedJobs,
+        hiddenJobs: currentJobStats.hiddenJobs,
+        canceledJobs: currentJobStats.canceledJobs,
+        deletedJobs: currentJobStats.deletedJobs,
+      },
     },
   ];
 });

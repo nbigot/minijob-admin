@@ -61,7 +61,7 @@ export default {
   name: "JobStatusChart",
   components: { Doughnut },
   props: {
-    jobStats: {
+    jobActivity: {
       type: Object,
       required: true,
       default: () => ({
@@ -103,11 +103,11 @@ export default {
   computed: {
     totalJobs() {
       return (
-        (this.jobStats.createdJobs || 0) +
-        (this.jobStats.queuedJobs || 0) +
-        (this.jobStats.runningJobs || 0) +
-        (this.jobStats.succeededJobs || 0) +
-        (this.jobStats.failedJobs || 0)
+        (this.jobActivity.createdJobs || 0) +
+        (this.jobActivity.queuedJobs || 0) +
+        (this.jobActivity.runningJobs || 0) +
+        (this.jobActivity.succeededJobs || 0) +
+        (this.jobActivity.failedJobs || 0)
       );
     },
     stats() {
@@ -115,27 +115,27 @@ export default {
       const data = [
         {
           label: "Created",
-          value: this.jobStats.createdJobs || 0,
+          value: this.jobActivity.createdJobs || 0,
           color: "#3B82F6",
         },
         {
           label: "Queued",
-          value: this.jobStats.queuedJobs || 0,
+          value: this.jobActivity.queuedJobs || 0,
           color: "#EAB308",
         },
         {
           label: "Running",
-          value: this.jobStats.runningJobs || 0,
+          value: this.jobActivity.runningJobs || 0,
           color: "#22C55E",
         },
         {
           label: "Succeeded",
-          value: this.jobStats.succeededJobs || 0,
+          value: this.jobActivity.succeededJobs || 0,
           color: "#6366F1",
         },
         {
           label: "Failed",
-          value: this.jobStats.failedJobs || 0,
+          value: this.jobActivity.failedJobs || 0,
           color: "#EF4444",
         },
       ];
@@ -158,11 +158,11 @@ export default {
               "#EF4444", // Red-500
             ],
             data: [
-              this.jobStats.createdJobs || 0,
-              this.jobStats.queuedJobs || 0,
-              this.jobStats.runningJobs || 0,
-              this.jobStats.succeededJobs || 0,
-              this.jobStats.failedJobs || 0,
+              this.jobActivity.createdJobs || 0,
+              this.jobActivity.queuedJobs || 0,
+              this.jobActivity.runningJobs || 0,
+              this.jobActivity.succeededJobs || 0,
+              this.jobActivity.failedJobs || 0,
             ],
             hoverOffset: 4,
             borderWidth: 0,

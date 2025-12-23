@@ -4,9 +4,13 @@ export const dashboardService = {
   // Get dashboard data
   async getDashboardData() {
     try {
-      // Fetch job stats
-      const responseJobStats = await apiClient.get("/api/v1/metrics/jobs/stats");
+      // Fetch job stats (job counts by status)
+      const responseJobStats = await apiClient.get("/api/v1/metrics/jobs/processing");
       const jobStats = responseJobStats.data.jobStats || {};
+
+      // Fetch job activity metrics (cumulative event counts)
+      const responseJobActivity = await apiClient.get("/api/v1/metrics/jobs/activity");
+      const jobActivity = responseJobActivity.data.jobActivity || {};
 
       // Fetch recent jobs (limit to first 5)
       const responseRecentJobs = await apiClient.get("/api/v1/metrics/jobs/recent");
@@ -26,6 +30,7 @@ export const dashboardService = {
 
       return {
         jobStats,
+        jobActivity,
         recentJobs,
         resources,
         jobsByTopic,
@@ -35,15 +40,23 @@ export const dashboardService = {
     }
   },
 
-  // Get job processing data
-  async getJobProcessingData(timeRange = "24h") {
+  // Get Job Stats (current job counts by status) - Note: This duplicates getDashboardData's job stats fetch
+  async getJobProcessingData() {
     try {
-      const response = await apiClient.get("/api/v1/metrics/jobs/processing", {
-        params: { timeRange },
-      });
-      return response.data;
+      const response = await apiClient.get("/api/v1/metrics/jobs/processing");
+      return response.data.jobStats || {};
     } catch (error) {
-      throw new Error("Failed to fetch job processing data");
+      throw new Error("Failed to fetch job stats data");
+    }
+  },
+
+  // Get Job Activity Metrics (cumulative event counts)
+  async getJobActivityMetrics() {
+    try {
+      const response = await apiClient.get("/api/v1/metrics/jobs/activity");
+      return response.data.jobActivity || {};
+    } catch (error) {
+      throw new Error("Failed to fetch job activity metrics");
     }
   },
 };
