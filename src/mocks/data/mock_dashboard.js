@@ -10,7 +10,7 @@ let data = {
     failedJobs: 7,
   },
 
-  recentJobs: [
+  newlyActiveJobs: [
     {
       id: "73b6a7e9-51e0-4982-a106-f54c4369271a",
       topic: "data-processing",

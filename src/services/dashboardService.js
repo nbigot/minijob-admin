@@ -12,9 +12,9 @@ export const dashboardService = {
       const responseJobActivity = await apiClient.get("/api/v1/metrics/jobs/activity");
       const jobActivity = responseJobActivity.data.jobActivity || {};
 
-      // Fetch recent jobs (limit to first 5)
-      const responseRecentJobs = await apiClient.get("/api/v1/metrics/jobs/recent");
-      const recentJobs = (responseRecentJobs.data.jobs || []).slice(0, 5);
+      // Fetch newly active jobs (limit to first 5)
+      const responseNewlyActiveJobs = await apiClient.get("/api/v1/metrics/jobs/recent");
+      const newlyActiveJobs = (responseNewlyActiveJobs.data.jobs || []).slice(0, 5);
 
       // Fetch locked resources (limit to first 5)
       const responseResources = await apiClient.get("/api/v1/metrics/resources");
@@ -31,7 +31,7 @@ export const dashboardService = {
       return {
         jobStats,
         jobActivity,
-        recentJobs,
+        newlyActiveJobs,
         resources,
         jobsByTopic,
       };

@@ -387,15 +387,15 @@
           </div>
         </div>
 
-        <!-- Recent Jobs and Resources -->
+        <!-- Newly Active Jobs and Resources -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <!-- Recent Jobs -->
+          <!-- Newly Active Jobs -->
           <div
             class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden"
           >
             <div class="p-4 border-b flex justify-between items-center">
               <h3 class="text-lg font-semibold dark:text-gray-200">
-                Recent Jobs
+                Newly Active Jobs
               </h3>
               <router-link
                 to="/jobs"
@@ -439,7 +439,7 @@
                   class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700"
                 >
                   <tr
-                    v-for="job in dashboardData.recentJobs"
+                    v-for="job in dashboardData.newlyActiveJobs"
                     :key="job.id"
                     class="hover:bg-gray-50 dark:hover:bg-gray-700"
                   >
@@ -757,7 +757,7 @@ export default {
           deletedJobs: 0,
         },
         jobActivity: {},
-        recentJobs: [],
+        newlyActiveJobs: [],
         resources: [],
         jobsByTopic: {},
       },
@@ -792,7 +792,7 @@ export default {
     totalTopicJobs() {
       return Object.values(this.dashboardData.jobsByTopic).reduce(
         (sum, count) => sum + count,
-        0
+        0,
       );
     },
     sortedStalledJobs() {
@@ -938,7 +938,7 @@ export default {
             error.toString().includes("Network Error"))
         ) {
           this.openModalFailure(
-            "Cannot connect to the server. Please check your network or server status."
+            "Cannot connect to the server. Please check your network or server status.",
           );
         } else {
           this.openModalFailure("Failed to load dashboard data");
@@ -1027,14 +1027,14 @@ export default {
           try {
             await resourceService.unlockResource(resourceName);
             this.openModalSuccess(
-              `Resource ${resourceName} unlocked successfully`
+              `Resource ${resourceName} unlocked successfully`,
             );
             await this.fetchDashboardData();
           } catch (error) {
             console.error("Error unlocking resource:", error);
             this.openModalFailure(`Failed to unlock resource ${resourceName}.`);
           }
-        }
+        },
       );
     },
 
@@ -1144,7 +1144,7 @@ export default {
             console.error("Error cancelling job:", error);
             this.openModalFailure(error.message || "Failed to cancel job");
           }
-        }
+        },
       );
     },
 
@@ -1157,7 +1157,7 @@ export default {
             await jobService.deleteJob(jobId);
 
             this.stalledJobs = this.stalledJobs.filter(
-              (job) => job.id !== jobId
+              (job) => job.id !== jobId,
             );
 
             this.openModalSuccess(`Job ${jobId} was deleted successfully`);
@@ -1165,7 +1165,7 @@ export default {
             console.error("Error deleting job:", error);
             this.openModalFailure(error.message || "Failed to delete job");
           }
-        }
+        },
       );
     },
 
@@ -1222,24 +1222,24 @@ export default {
           Math.max(
             0,
             (currentData.created || 0) -
-              (this.previousActivityData.created || 0)
+              (this.previousActivityData.created || 0),
           ) / pollingIntervalSeconds;
         const deltaStarted =
           Math.max(
             0,
             (currentData.started || 0) -
-              (this.previousActivityData.started || 0)
+              (this.previousActivityData.started || 0),
           ) / pollingIntervalSeconds;
         const deltaSucceeded =
           Math.max(
             0,
             (currentData.succeeded || 0) -
-              (this.previousActivityData.succeeded || 0)
+              (this.previousActivityData.succeeded || 0),
           ) / pollingIntervalSeconds;
         const deltaFailed =
           Math.max(
             0,
-            (currentData.failed || 0) - (this.previousActivityData.failed || 0)
+            (currentData.failed || 0) - (this.previousActivityData.failed || 0),
           ) / pollingIntervalSeconds;
 
         this.addActivityDataPoint({
@@ -1270,7 +1270,7 @@ export default {
       // Remove old data points beyond the time window
       const cutoffTime = now.getTime() - this.selectedTimeWindow * 1000;
       this.activityDataBuffer = this.activityDataBuffer.filter(
-        (item) => item.timestamp >= cutoffTime
+        (item) => item.timestamp >= cutoffTime,
       );
 
       // Aggregate data into fixed buckets

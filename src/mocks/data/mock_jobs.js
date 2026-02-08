@@ -299,7 +299,7 @@ mock.onGet("/api/v1/jobs/").reply((config) => {
       (job) =>
         job.id.toLowerCase().includes(searchLower) ||
         (job.name && job.name.toLowerCase().includes(searchLower)) ||
-        job.topic.toLowerCase().includes(searchLower)
+        job.topic.toLowerCase().includes(searchLower),
     );
   }
 
@@ -359,23 +359,28 @@ let currentJobStats = {
   deletedJobs: 18,
 };
 
-mock.onGet("/api/v1/metrics/jobs/activity").reply(200, {
-  code: 200,
-  message: "success",
-  jobActivity: {
-    created: jobActivityCounters.created,
-    delayed: jobActivityCounters.delayed,
-    pending: jobActivityCounters.pending,
-    enqueued: jobActivityCounters.enqueued,
-    started: jobActivityCounters.started,
-    succeeded: jobActivityCounters.succeeded,
-    failed: jobActivityCounters.failed,
-    canceled: jobActivityCounters.canceled,
-    hidden: jobActivityCounters.hidden,
-    deleted: jobActivityCounters.deleted,
-    timeout: jobActivityCounters.timeout,
-    terminated: jobActivityCounters.terminated,
-  },
+mock.onGet("/api/v1/metrics/jobs/activity").reply(() => {
+  return [
+    200,
+    {
+      code: 200,
+      message: "success",
+      jobActivity: {
+        created: jobActivityCounters.created,
+        delayed: jobActivityCounters.delayed,
+        pending: jobActivityCounters.pending,
+        enqueued: jobActivityCounters.enqueued,
+        started: jobActivityCounters.started,
+        succeeded: jobActivityCounters.succeeded,
+        failed: jobActivityCounters.failed,
+        canceled: jobActivityCounters.canceled,
+        hidden: jobActivityCounters.hidden,
+        deleted: jobActivityCounters.deleted,
+        timeout: jobActivityCounters.timeout,
+        terminated: jobActivityCounters.terminated,
+      },
+    },
+  ];
 });
 
 // Simulate increasing counters for job activity (cumulative)
@@ -401,7 +406,7 @@ setInterval(() => {
     currentJobStats.queuedJobs + currentJobStats.runningJobs + currentJobStats.succeededJobs + currentJobStats.failedJobs;
 }, 3000);
 
-// Get recent jobs
+// Get newly active jobs
 mock.onGet("/api/v1/metrics/jobs/recent").reply(200, {
   code: 200,
   message: "success",
