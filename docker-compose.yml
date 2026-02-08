@@ -1,0 +1,30 @@
+services:
+  minijob-admin:
+    build:
+      context: .
+    ports:
+      - "8081:80"
+    environment:
+      - BACKEND_URL=http://host.docker.internal:8080
+      - PROMETHEUS_URL=http://host.docker.internal:9090
+    volumes:
+      - ./nginx.conf.template:/etc/nginx/templates/default.conf.template
+    restart: unless-stopped
+    # Map minijob-backend hostname to host machine
+    # Set HOST_IP environment variable or it will default to 192.168.1.100
+    extra_hosts:
+      # - "minijob-backend:${HOST_IP:-192.168.1.100}"
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost/health",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
