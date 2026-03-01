@@ -2,7 +2,11 @@
   <div class="code-block-wrapper">
     <div class="code-block-header">
       <span class="code-block-lang">{{ lang }}</span>
-      <button class="copy-button" @click="copyCode" :class="{ copied }">
+      <button
+        class="copy-button"
+        :class="{ copied }"
+        @click="copyCode"
+      >
         <span v-if="!copied">Copy</span>
         <span v-else>Copied!</span>
       </button>

@@ -389,7 +389,7 @@ Example metrics to track:
 
 ### Prometheus Queries
 
-```promql
+```
 # Response time
 minijob_health_response_time_ms
 

@@ -1,8 +1,20 @@
 <template>
   <div class="screenshot-wrapper">
-    <div class="screenshot-container" @click="toggleZoom">
-      <img :src="src" :alt="alt" :class="{ zoomed: isZoomed }" />
-      <div v-if="caption" class="screenshot-caption">{{ caption }}</div>
+    <div
+      class="screenshot-container"
+      @click="toggleZoom"
+    >
+      <img
+        :src="src"
+        :alt="alt"
+        :class="{ zoomed: isZoomed }"
+      >
+      <div
+        v-if="caption"
+        class="screenshot-caption"
+      >
+        {{ caption }}
+      </div>
     </div>
   </div>
 </template>

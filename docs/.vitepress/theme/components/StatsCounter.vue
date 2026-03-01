@@ -1,8 +1,16 @@
 <template>
   <div class="stats-grid">
-    <div v-for="stat in stats" :key="stat.label" class="stat-card">
-      <div class="stat-number">{{ animatedValue(stat.value) }}</div>
-      <div class="stat-label">{{ stat.label }}</div>
+    <div
+      v-for="stat in stats"
+      :key="stat.label"
+      class="stat-card"
+    >
+      <div class="stat-number">
+        {{ animatedValue(stat.value) }}
+      </div>
+      <div class="stat-label">
+        {{ stat.label }}
+      </div>
     </div>
   </div>
 </template>

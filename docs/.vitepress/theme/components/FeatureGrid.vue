@@ -1,9 +1,20 @@
 <template>
   <div class="feature-grid">
-    <div v-for="feature in features" :key="feature.title" class="feature-card">
-      <div class="feature-icon" v-html="feature.icon"></div>
-      <h3 class="feature-title">{{ feature.title }}</h3>
-      <p class="feature-description">{{ feature.description }}</p>
+    <div
+      v-for="feature in features"
+      :key="feature.title"
+      class="feature-card"
+    >
+      <div
+        class="feature-icon"
+        v-html="feature.icon"
+      />
+      <h3 class="feature-title">
+        {{ feature.title }}
+      </h3>
+      <p class="feature-description">
+        {{ feature.description }}
+      </p>
     </div>
   </div>
 </template>
