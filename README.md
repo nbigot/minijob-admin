@@ -1,5 +1,18 @@
 # MiniJob Admin Dashboard
 
+A modern web-based administration interface for MiniJob - a distributed job queue system. Built with Vue.js 3, TailwindCSS, and designed for performance and usability.
+
+## 📚 Documentation
+
+**Complete documentation available at:** [https://nbigot.github.io/minijob-admin/](https://nbigot.github.io/minijob-admin/)
+
+- [Getting Started Guide](https://nbigot.github.io/minijob-admin/guide/getting-started.html)
+- [Configuration Reference](https://nbigot.github.io/minijob-admin/guide/configuration.html)
+- [Deployment Guide](https://nbigot.github.io/minijob-admin/guide/deployment.html)
+- [API Reference](https://nbigot.github.io/minijob-admin/reference/api.html)
+
+---
+
 A web application built with:
 
 - Vue.js 3
