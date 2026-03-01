@@ -1,13 +1,23 @@
 <template>
   <main class="flex-1 p-4 md:p-6">
-    <div v-if="loading" class="text-center py-8">
-      <p class="text-gray-600 dark:text-gray-400">Loading job details...</p>
+    <div
+      v-if="loading"
+      class="text-center py-8"
+    >
+      <p class="text-gray-600 dark:text-gray-400">
+        Loading job details...
+      </p>
     </div>
-    <div v-else-if="error" class="text-center py-8">
-      <p class="text-red-600">{{ error }}</p>
+    <div
+      v-else-if="error"
+      class="text-center py-8"
+    >
+      <p class="text-red-600">
+        {{ error }}
+      </p>
       <button
-        @click="goBack"
         class="mt-4 text-primary-600 hover:text-primary-800"
+        @click="goBack"
       >
         <font-awesome-icon :icon="['fas', 'arrow-left']" /> Back to Jobs
       </button>
@@ -20,8 +30,8 @@
           <div class="flex items-center">
             <a
               href="#"
-              @click.prevent="goBack"
               class="text-primary-600 hover:text-primary-800 mr-2"
+              @click.prevent="goBack"
             >
               <font-awesome-icon :icon="['fas', 'arrow-left']" />
             </a>
@@ -29,27 +39,38 @@
               Job Detail: {{ job.name }}
             </h2>
           </div>
-          <p class="text-gray-600 dark:text-gray-400">{{ job.id }}</p>
+          <p class="text-gray-600 dark:text-gray-400">
+            {{ job.id }}
+          </p>
         </div>
         <div class="mt-4 md:mt-0 flex flex-wrap gap-2">
           <button
-            @click="cloneJob"
             class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded"
+            @click="cloneJob"
           >
-            <font-awesome-icon :icon="['fas', 'copy']" class="mr-2" /> Clone
+            <font-awesome-icon
+              :icon="['fas', 'copy']"
+              class="mr-2"
+            /> Clone
           </button>
           <button
             v-if="canCancel"
-            @click="cancelJob"
             class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded"
+            @click="cancelJob"
           >
-            <font-awesome-icon :icon="['fas', 'stop']" class="mr-2" /> Cancel
+            <font-awesome-icon
+              :icon="['fas', 'stop']"
+              class="mr-2"
+            /> Cancel
           </button>
           <button
-            @click="deleteJob"
             class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+            @click="deleteJob"
           >
-            <font-awesome-icon :icon="['fas', 'trash']" class="mr-2" /> Delete
+            <font-awesome-icon
+              :icon="['fas', 'trash']"
+              class="mr-2"
+            /> Delete
           </button>
         </div>
       </div>
@@ -79,25 +100,19 @@
           </div>
           <div class="flex flex-col">
             <div class="flex items-center mb-2">
-              <span class="text-gray-500 dark:text-gray-400 w-32"
-                >Created:</span
-              >
+              <span class="text-gray-500 dark:text-gray-400 w-32">Created:</span>
               <span class="font-medium text-gray-800 dark:text-gray-200">{{
                 formatTimestamp(getCreatedTimestamp())
               }}</span>
             </div>
             <div class="flex items-center mb-2">
-              <span class="text-gray-500 dark:text-gray-400 w-32"
-                >Updated:</span
-              >
+              <span class="text-gray-500 dark:text-gray-400 w-32">Updated:</span>
               <span class="font-medium text-gray-800 dark:text-gray-200">{{
                 formatTimestamp(getUpdatedTimestamp())
               }}</span>
             </div>
             <div class="flex items-center">
-              <span class="text-gray-500 dark:text-gray-400 w-32"
-                >Duration:</span
-              >
+              <span class="text-gray-500 dark:text-gray-400 w-32">Duration:</span>
               <span class="font-medium text-gray-800 dark:text-gray-200">{{
                 getDuration()
               }}</span>
@@ -112,37 +127,37 @@
           <nav class="flex -mb-px">
             <a
               href="#"
-              @click.prevent="activeTab = 'details'"
               :class="[
                 activeTab === 'details'
                   ? 'text-primary-600 border-primary-500 border-b-2'
                   : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:border-gray-300 border-b border-transparent',
                 'whitespace-nowrap py-4 px-6 font-medium text-sm',
               ]"
+              @click.prevent="activeTab = 'details'"
             >
               Details
             </a>
             <a
               href="#"
-              @click.prevent="activeTab = 'history'"
               :class="[
                 activeTab === 'history'
                   ? 'text-primary-600 border-primary-500 border-b-2'
                   : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:border-gray-300 border-b border-transparent',
                 'whitespace-nowrap py-4 px-6 font-medium text-sm',
               ]"
+              @click.prevent="activeTab = 'history'"
             >
               History
             </a>
             <a
               href="#"
-              @click.prevent="activeTab = 'resources'"
               :class="[
                 activeTab === 'resources'
                   ? 'text-primary-600 border-primary-500 border-b-2'
                   : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:border-gray-300 border-b border-transparent',
                 'whitespace-nowrap py-4 px-6 font-medium text-sm',
               ]"
+              @click.prevent="activeTab = 'resources'"
             >
               Resources
             </a>
@@ -201,8 +216,7 @@
                       <span
                         :class="getStateClass(job.state)"
                         class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full capitalize"
-                        >{{ job.state }}</span
-                      >
+                      >{{ job.state }}</span>
                     </td>
                   </tr>
                   <tr>
@@ -281,8 +295,7 @@
                         :href="job.callbackUrl"
                         target="_blank"
                         class="text-primary-600 hover:text-primary-800"
-                        >{{ job.callbackUrl }}</a
-                      >
+                      >{{ job.callbackUrl }}</a>
                     </td>
                   </tr>
                 </tbody>
@@ -297,13 +310,15 @@
               <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-md">
                 <pre
                   class="text-sm text-gray-800 dark:text-gray-200 whitespace-pre-wrap"
-                  >{{ formatProperties(job.properties) }}</pre
-                >
+                >{{ formatProperties(job.properties) }}</pre>
               </div>
             </div>
           </div>
 
-          <div v-if="activeTab === 'resources'" class="overflow-x-auto">
+          <div
+            v-if="activeTab === 'resources'"
+            class="overflow-x-auto"
+          >
             <table
               class="min-w-full divide-y divide-gray-200 dark:divide-gray-700"
             >
@@ -334,7 +349,10 @@
                     No locked resources
                   </td>
                 </tr>
-                <tr v-for="resource in job.lockResources" :key="resource">
+                <tr
+                  v-for="resource in job.lockResources"
+                  :key="resource"
+                >
                   <td
                     class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-300"
                   >
@@ -345,15 +363,17 @@
                   >
                     <span
                       class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800"
-                      >Locked</span
-                    >
+                    >Locked</span>
                   </td>
                 </tr>
               </tbody>
             </table>
           </div>
 
-          <div v-if="activeTab === 'history'" class="overflow-x-auto">
+          <div
+            v-if="activeTab === 'history'"
+            class="overflow-x-auto"
+          >
             <table
               class="min-w-full divide-y divide-gray-200 dark:divide-gray-700"
             >
@@ -384,7 +404,10 @@
                     No history available
                   </td>
                 </tr>
-                <tr v-for="(event, index) in job.history" :key="index">
+                <tr
+                  v-for="(event, index) in job.history"
+                  :key="index"
+                >
                   <td
                     class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"
                   >

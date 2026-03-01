@@ -21,7 +21,7 @@
               <font-awesome-icon
                 :icon="['fas', 'server']"
                 class="text-green-500"
-              ></font-awesome-icon>
+              />
             </div>
             <div class="ml-4">
               <h4 class="text-gray-500 text-sm dark:text-gray-300">
@@ -31,7 +31,7 @@
                 <span
                   class="h-3 w-3 rounded-full mr-2"
                   :class="getServerStatusColor(healthStatus.server.status)"
-                ></span>
+                />
                 <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200">
                   {{ formatServerStatus(healthStatus.server.status) }}
                 </h3>
@@ -46,7 +46,7 @@
               <font-awesome-icon
                 :icon="['fas', 'tachometer-alt']"
                 class="text-blue-500"
-              ></font-awesome-icon>
+              />
             </div>
             <div class="ml-4">
               <h4 class="text-gray-500 text-sm dark:text-gray-300">
@@ -56,7 +56,7 @@
                 <span
                   class="h-3 w-3 rounded-full mr-2"
                   :class="getServerResponseTimeColor(healthStatus.responseTime)"
-                ></span>
+                />
                 <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200">
                   {{ healthStatus.responseTime }}ms
                 </h3>
@@ -71,7 +71,7 @@
               <font-awesome-icon
                 :icon="['fas', 'clock']"
                 class="text-purple-500"
-              ></font-awesome-icon>
+              />
             </div>
             <div class="ml-4">
               <h4 class="text-gray-500 text-sm dark:text-gray-300">
@@ -117,8 +117,7 @@
                       <font-awesome-icon
                         icon="fa-brands fa-github"
                         class="mr-2"
-                      />MiniJob {{ systemInfo.version }}</a
-                    >
+                      />MiniJob {{ systemInfo.version }}</a>
                   </td>
                 </tr>
                 <tr>
@@ -171,7 +170,10 @@
                 class="bg-primary-600 hover:bg-primary-700 dark:bg-primary-700 dark:hover:bg-primary-800 text-white dark:text-gray-300 font-bold py-2 px-4 rounded text-center"
                 @click="openPrometheusDashboard"
               >
-                <font-awesome-icon :icon="['fas', 'chart-line']" class="mr-2" />
+                <font-awesome-icon
+                  :icon="['fas', 'chart-line']"
+                  class="mr-2"
+                />
                 View Prometheus Dashboard
               </a>
               <a
@@ -179,7 +181,10 @@
                 class="bg-gray-600 hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-800 text-white dark:text-gray-300 font-bold py-2 px-4 rounded text-center"
                 @click="openRawMetricsEndpoint"
               >
-                <font-awesome-icon :icon="['fas', 'code']" class="mr-2" /> Raw
+                <font-awesome-icon
+                  :icon="['fas', 'code']"
+                  class="mr-2"
+                /> Raw
                 Metrics Endpoint
               </a>
             </div>

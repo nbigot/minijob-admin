@@ -32,7 +32,7 @@ ChartJS.register(
   Legend,
   BarElement,
   CategoryScale,
-  LinearScale
+  LinearScale,
 );
 
 export default {
@@ -69,7 +69,6 @@ export default {
     },
     activityData: {
       type: Array,
-      required: true,
       default: () => [],
     },
   },

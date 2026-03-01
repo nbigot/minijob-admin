@@ -17,16 +17,22 @@
       </div>
       <div class="mt-4 md:mt-0 flex gap-2">
         <button
-          @click="randomizeForm"
           class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded"
+          @click="randomizeForm"
         >
-          <font-awesome-icon :icon="['fas', 'dice']" class="mr-2" /> Randomize
+          <font-awesome-icon
+            :icon="['fas', 'dice']"
+            class="mr-2"
+          /> Randomize
         </button>
         <button
-          @click="navigateBackToJobs"
           class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
+          @click="navigateBackToJobs"
         >
-          <font-awesome-icon :icon="['fas', 'arrow-left']" class="mr-2" /> Back
+          <font-awesome-icon
+            :icon="['fas', 'arrow-left']"
+            class="mr-2"
+          /> Back
           to Jobs
         </button>
       </div>
@@ -41,18 +47,21 @@
             <label
               for="topic"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-              >Topic</label
-            >
+            >Topic</label>
             <div class="relative">
               <input
-                list="topic-options"
                 id="topic"
                 v-model="job.topic"
+                list="topic-options"
                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50"
                 placeholder="Select or enter a topic"
-              />
+              >
               <datalist id="topic-options">
-                <option v-for="topic in topics" :key="topic" :value="topic">
+                <option
+                  v-for="topic in topics"
+                  :key="topic"
+                  :value="topic"
+                >
                   {{ topic }}
                 </option>
               </datalist>
@@ -67,8 +76,7 @@
             <label
               for="priority"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-              >Priority</label
-            >
+            >Priority</label>
             <select
               id="priority"
               v-model.number="job.priority"
@@ -92,15 +100,14 @@
             <label
               for="name"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-              >Job Name</label
-            >
+            >Job Name</label>
             <input
-              type="text"
               id="name"
               v-model="job.name"
+              type="text"
               placeholder="Enter job name"
               class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50"
-            />
+            >
             <p class="text-xs text-gray-500 mt-1">
               Descriptive name to identify this job (example: DataImportJob)
             </p>
@@ -111,15 +118,14 @@
             <label
               for="userAgent"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-              >User Agent</label
-            >
+            >User Agent</label>
             <input
-              type="text"
               id="userAgent"
               v-model="job.userAgent"
+              type="text"
               placeholder="Program name or identifier"
               class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50"
-            />
+            >
             <p class="text-xs text-gray-500 mt-1">
               Name of the application or service creating this job (example:
               MinijobAdmin/1.0)
@@ -131,15 +137,14 @@
             <label
               for="requester"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-              >Requester</label
-            >
+            >Requester</label>
             <input
-              type="text"
               id="requester"
               v-model="job.requester"
+              type="text"
               placeholder="Job requester identifier"
               class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50"
-            />
+            >
             <p class="text-xs text-gray-500 mt-1">
               Identifier of the user or system requesting this job
             </p>
@@ -150,15 +155,14 @@
             <label
               for="sessionId"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-              >Session ID</label
-            >
+            >Session ID</label>
             <input
-              type="text"
               id="sessionId"
               v-model="job.sessionId"
+              type="text"
               placeholder="Session identifier"
               class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50"
-            />
+            >
             <p class="text-xs text-gray-500 mt-1">
               Session ID to group related jobs together (example:
               6e70464d-85cf-431d-a9c9-a1f9c0ac82dc)
@@ -170,15 +174,14 @@
             <label
               for="traceId"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-              >Trace ID</label
-            >
+            >Trace ID</label>
             <input
-              type="text"
               id="traceId"
               v-model="job.traceId"
+              type="text"
               placeholder="Trace identifier"
               class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50"
-            />
+            >
             <p class="text-xs text-gray-500 mt-1">
               Distributed tracing identifier for debugging (example:
               e7b46b16-c971-464e-8a47-c791be0ce2ed)
@@ -190,15 +193,14 @@
             <label
               for="callbackUrl"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-              >Callback URL</label
-            >
+            >Callback URL</label>
             <input
-              type="url"
               id="callbackUrl"
               v-model="job.callbackUrl"
+              type="url"
               placeholder="https://api.example.localhost/webhook"
               class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50"
-            />
+            >
             <p class="text-xs text-gray-500 mt-1">
               Webhook URL to notify when job completes (success or failure)
             </p>
@@ -209,8 +211,7 @@
             <label
               for="properties"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-              >Job Properties <span class="text-red-500">*</span></label
-            >
+            >Job Properties <span class="text-red-500">*</span></label>
             <textarea
               id="properties"
               v-model="job.properties"
@@ -223,11 +224,17 @@
                   ? 'border-red-300 focus:border-red-500'
                   : 'border-gray-300 focus:border-primary-500',
               ]"
-            ></textarea>
-            <p v-if="propertiesError" class="text-xs text-red-500 mt-1">
+            />
+            <p
+              v-if="propertiesError"
+              class="text-xs text-red-500 mt-1"
+            >
               {{ propertiesError }}
             </p>
-            <p v-else class="text-xs text-gray-500 mt-1">
+            <p
+              v-else
+              class="text-xs text-gray-500 mt-1"
+            >
               Job configuration and data in JSON format (required)
             </p>
           </div>
@@ -237,35 +244,29 @@
             <label
               for="lockResources"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-              >Lock Resources</label
-            >
+            >Lock Resources</label>
             <textarea
               id="lockResources"
               v-model="job.lockResources"
               rows="4"
               placeholder="Enter resource names, one per line:&#10;database&#10;file-system&#10;email-service&#10;report-generator"
               class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50 font-mono text-sm"
-            ></textarea>
+            />
             <p class="text-xs text-gray-500 mt-1">
               Enter resource names to lock (one word per line). These resources
               will be unavailable to other jobs while this job runs.
             </p>
             <div class="mt-2 flex flex-wrap gap-2">
-              <span class="text-xs text-gray-600 dark:text-gray-400"
-                >Examples:</span
-              >
+              <span class="text-xs text-gray-600 dark:text-gray-400">Examples:</span>
               <span
                 class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
-                >database</span
-              >
+              >database</span>
               <span
                 class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
-                >file-system</span
-              >
+              >file-system</span>
               <span
                 class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
-                >email-service</span
-              >
+              >email-service</span>
             </div>
           </div>
 
@@ -274,16 +275,21 @@
             <label
               for="schedule"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-              >Schedule</label
-            >
+            >Schedule</label>
             <select
               id="schedule"
               v-model="job.schedule"
               class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50"
             >
-              <option value="immediate">Run Immediately</option>
-              <option value="delayed">Delay Start</option>
-              <option value="scheduled">Schedule for Later</option>
+              <option value="immediate">
+                Run Immediately
+              </option>
+              <option value="delayed">
+                Delay Start
+              </option>
+              <option value="scheduled">
+                Schedule for Later
+              </option>
             </select>
             <p class="text-xs text-gray-500 mt-1">
               Choose when to execute this job
@@ -295,16 +301,15 @@
             <label
               for="delay"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-              >Delay (seconds)</label
-            >
+            >Delay (seconds)</label>
             <input
-              type="number"
               id="delay"
               v-model.number="job.delay"
+              type="number"
               min="0"
               placeholder="0"
               class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50"
-            />
+            >
             <p class="text-xs text-gray-500 mt-1">
               Number of seconds to wait before starting the job
             </p>
@@ -315,15 +320,14 @@
             <label
               for="startAfter"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-              >Start After</label
-            >
+            >Start After</label>
             <input
-              type="datetime-local"
               id="startAfter"
               v-model="job.startAfterDateTime"
+              type="datetime-local"
               required
               class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50"
-            />
+            >
             <p class="text-xs text-gray-500 mt-1">
               Specific date and time to start the job
             </p>
@@ -333,8 +337,8 @@
         <div class="mt-6 flex justify-end">
           <button
             type="button"
-            @click="navigateBackToJobs"
             class="bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 font-medium py-2 px-4 rounded mr-2"
+            @click="navigateBackToJobs"
           >
             Cancel
           </button>
@@ -342,7 +346,10 @@
             type="submit"
             class="bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded"
           >
-            <font-awesome-icon :icon="['fas', 'save']" class="mr-2" /> Create
+            <font-awesome-icon
+              :icon="['fas', 'save']"
+              class="mr-2"
+            /> Create
             Job
           </button>
         </div>

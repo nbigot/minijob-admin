@@ -24,12 +24,12 @@
           <div class="flex items-center">
             <div
               class="rounded-full bg-gray-200 dark:bg-gray-700 h-10 w-10"
-            ></div>
+            />
             <div class="ml-4 flex-1">
               <div
                 class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/4 mb-2"
-              ></div>
-              <div class="h-5 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+              />
+              <div class="h-5 bg-gray-200 dark:bg-gray-700 rounded w-1/2" />
             </div>
           </div>
         </div>
@@ -55,7 +55,9 @@
                 />
               </div>
               <div class="ml-4">
-                <h4 class="text-gray-500 text-xs dark:text-gray-400">Total</h4>
+                <h4 class="text-gray-500 text-xs dark:text-gray-400">
+                  Total
+                </h4>
                 <h3 class="text-xl font-bold dark:text-gray-200">
                   {{ dashboardData.jobStats.existingJobs }}
                 </h3>
@@ -153,7 +155,9 @@
                 />
               </div>
               <div class="ml-4">
-                <h4 class="text-gray-500 text-xs dark:text-gray-400">Queued</h4>
+                <h4 class="text-gray-500 text-xs dark:text-gray-400">
+                  Queued
+                </h4>
                 <h3 class="text-xl font-bold dark:text-gray-200">
                   {{ dashboardData.jobStats.queuedJobs }}
                 </h3>
@@ -226,7 +230,9 @@
                 />
               </div>
               <div class="ml-4">
-                <h4 class="text-gray-500 text-xs dark:text-gray-400">Failed</h4>
+                <h4 class="text-gray-500 text-xs dark:text-gray-400">
+                  Failed
+                </h4>
                 <h3 class="text-xl font-bold dark:text-gray-200">
                   {{ dashboardData.jobStats.failedJobs }}
                 </h3>
@@ -249,7 +255,9 @@
                 />
               </div>
               <div class="ml-4">
-                <h4 class="text-gray-500 text-xs dark:text-gray-400">Hidden</h4>
+                <h4 class="text-gray-500 text-xs dark:text-gray-400">
+                  Hidden
+                </h4>
                 <h3 class="text-xl font-bold dark:text-gray-200">
                   {{ dashboardData.jobStats.hiddenJobs }}
                 </h3>
@@ -303,13 +311,27 @@
                   class="px-3 py-1 text-sm border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   @change="handlePollingIntervalChange"
                 >
-                  <option :value="null">None</option>
-                  <option :value="1000">1 Second</option>
-                  <option :value="5000">5 Seconds</option>
-                  <option :value="10000">10 Seconds</option>
-                  <option :value="30000">30 Seconds</option>
-                  <option :value="60000">1 Minute</option>
-                  <option :value="600000">10 Minutes</option>
+                  <option :value="null">
+                    None
+                  </option>
+                  <option :value="1000">
+                    1 Second
+                  </option>
+                  <option :value="5000">
+                    5 Seconds
+                  </option>
+                  <option :value="10000">
+                    10 Seconds
+                  </option>
+                  <option :value="30000">
+                    30 Seconds
+                  </option>
+                  <option :value="60000">
+                    1 Minute
+                  </option>
+                  <option :value="600000">
+                    10 Minutes
+                  </option>
                 </select>
               </div>
               <div class="flex items-center gap-2">
@@ -325,13 +347,27 @@
                   class="px-3 py-1 text-sm border border-gray-300 rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   @change="handleTimeWindowChange"
                 >
-                  <option value="60">1 Minute</option>
-                  <option value="300">5 Minutes</option>
-                  <option value="900">15 Minutes</option>
-                  <option value="3600">1 Hour</option>
-                  <option value="21600">6 Hours</option>
-                  <option value="86400">24 Hours</option>
-                  <option value="604800">1 Week</option>
+                  <option value="60">
+                    1 Minute
+                  </option>
+                  <option value="300">
+                    5 Minutes
+                  </option>
+                  <option value="900">
+                    15 Minutes
+                  </option>
+                  <option value="3600">
+                    1 Hour
+                  </option>
+                  <option value="21600">
+                    6 Hours
+                  </option>
+                  <option value="86400">
+                    24 Hours
+                  </option>
+                  <option value="604800">
+                    1 Week
+                  </option>
                 </select>
               </div>
             </div>
@@ -369,9 +405,7 @@
                   <span class="text-sm font-medium dark:text-gray-300">{{
                     topic
                   }}</span>
-                  <span class="text-sm font-medium dark:text-gray-300"
-                    >{{ count }} ({{ calculateTopicPercentage(count) }}%)</span
-                  >
+                  <span class="text-sm font-medium dark:text-gray-300">{{ count }} ({{ calculateTopicPercentage(count) }}%)</span>
                 </div>
                 <div
                   class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5"
@@ -380,7 +414,7 @@
                     :class="getTopicColorClass(index)"
                     class="h-2.5 rounded-full"
                     :style="{ width: calculateTopicPercentage(count) + '%' }"
-                  ></div>
+                  />
                 </div>
               </div>
             </div>
@@ -400,8 +434,9 @@
               <router-link
                 to="/jobs"
                 class="text-primary-600 hover:text-primary-800 text-sm dark:text-blue-400"
-                >View All</router-link
               >
+                View All
+              </router-link>
             </div>
             <div class="overflow-x-auto">
               <table
@@ -483,8 +518,9 @@
               <router-link
                 to="/resources"
                 class="text-primary-600 hover:text-primary-800 text-sm dark:text-blue-400"
-                >View All</router-link
               >
+                View All
+              </router-link>
             </div>
             <div class="overflow-x-auto">
               <table
@@ -559,7 +595,7 @@
                   <tr
                     v-if="
                       !dashboardData.resources ||
-                      dashboardData.resources.length === 0
+                        dashboardData.resources.length === 0
                     "
                   >
                     <td
@@ -629,7 +665,10 @@
               <tbody
                 class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700"
               >
-                <tr v-for="job in sortedStalledJobs" :key="job.id">
+                <tr
+                  v-for="job in sortedStalledJobs"
+                  :key="job.id"
+                >
                   <td
                     class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-200"
                   >
@@ -644,8 +683,7 @@
                     <span
                       class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
                       :class="getStateClass(job.state)"
-                      >{{ job.state }}</span
-                    >
+                    >{{ job.state }}</span>
                   </td>
                   <td
                     class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300"

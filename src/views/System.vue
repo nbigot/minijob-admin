@@ -20,14 +20,20 @@
             class="bg-yellow-500 hover:bg-yellow-600 dark:bg-yellow-600 dark:hover:bg-yellow-700 text-white dark:text-gray-200 font-bold py-2 px-4 rounded"
             @click="restartServer"
           >
-            <font-awesome-icon :icon="['fas', 'sync-alt']" class="mr-2" />
+            <font-awesome-icon
+              :icon="['fas', 'sync-alt']"
+              class="mr-2"
+            />
             Restart Server
           </button>
           <button
             class="bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600 text-white dark:text-gray-200 font-bold py-2 px-4 rounded"
             @click="shutdownServer"
           >
-            <font-awesome-icon :icon="['fas', 'power-off']" class="mr-2" />
+            <font-awesome-icon
+              :icon="['fas', 'power-off']"
+              class="mr-2"
+            />
             Shutdown Server
           </button>
         </div>
@@ -53,7 +59,10 @@
               class="bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600 text-white dark:text-gray-200 font-bold py-2 px-4 rounded"
               @click="deleteAllJobs"
             >
-              <font-awesome-icon :icon="['fas', 'trash-alt']" class="mr-2" />
+              <font-awesome-icon
+                :icon="['fas', 'trash-alt']"
+                class="mr-2"
+              />
               Delete All Jobs
             </button>
           </div>
@@ -71,7 +80,10 @@
               class="bg-yellow-500 hover:bg-yellow-600 dark:bg-yellow-600 dark:hover:bg-yellow-700 text-white dark:text-gray-200 font-bold py-2 px-4 rounded"
               @click="clearJobQueues"
             >
-              <font-awesome-icon :icon="['fas', 'broom']" class="mr-2" /> Clear
+              <font-awesome-icon
+                :icon="['fas', 'broom']"
+                class="mr-2"
+              /> Clear
               Queues
             </button>
           </div>
@@ -89,7 +101,10 @@
               class="bg-yellow-500 hover:bg-yellow-600 dark:bg-yellow-600 dark:hover:bg-yellow-700 text-white dark:text-gray-200 font-bold py-2 px-4 rounded"
               @click="unlockAllResources"
             >
-              <font-awesome-icon :icon="['fas', 'unlock-alt']" class="mr-2" />
+              <font-awesome-icon
+                :icon="['fas', 'unlock-alt']"
+                class="mr-2"
+              />
               Unlock All Resources
             </button>
           </div>

@@ -9,8 +9,14 @@
     />
     <div class="flex-1 overflow-auto">
       <router-view v-slot="{ Component }">
-        <transition name="fade" mode="out-in">
-          <component :is="Component" ref="routedView" />
+        <transition
+          name="fade"
+          mode="out-in"
+        >
+          <component
+            :is="Component"
+            ref="routedView"
+          />
         </transition>
       </router-view>
     </div>

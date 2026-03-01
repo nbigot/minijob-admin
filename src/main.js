@@ -104,7 +104,7 @@ library.add(
   faPause,
   faEyeSlash,
   faBan,
-  faGithub
+  faGithub,
 );
 
 // Async function to handle mock setup and app initialization
@@ -120,7 +120,7 @@ async function initializeApp() {
   const app = createApp(App);
 
   // Register Font Awesome component globally
-  app.component("font-awesome-icon", FontAwesomeIcon);
+  app.component("FontAwesomeIcon", FontAwesomeIcon);
 
   // Use router
   app.use(router);

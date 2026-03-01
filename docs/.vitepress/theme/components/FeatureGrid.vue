@@ -1,14 +1,9 @@
 <template>
   <div class="feature-grid">
-    <div
-      v-for="feature in features"
-      :key="feature.title"
-      class="feature-card"
-    >
-      <div
-        class="feature-icon"
-        v-html="feature.icon"
-      />
+    <div v-for="feature in features" :key="feature.title" class="feature-card">
+      <!-- eslint-disable vue/no-v-html -->
+      <div class="feature-icon" v-html="feature.icon" />
+      <!-- eslint-enable vue/no-v-html -->
       <h3 class="feature-title">
         {{ feature.title }}
       </h3>

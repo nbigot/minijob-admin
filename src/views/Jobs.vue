@@ -14,10 +14,13 @@
         </div>
         <div class="mt-4 md:mt-0">
           <button
-            @click="navigateToCreateJob"
             class="bg-primary-600 dark:bg-primary-900 hover:bg-primary-700 dark:hover:bg-primary-700 text-white font-bold py-2 px-4 rounded"
+            @click="navigateToCreateJob"
           >
-            <font-awesome-icon :icon="['fas', 'plus']" class="mr-2" /> Create
+            <font-awesome-icon
+              :icon="['fas', 'plus']"
+              class="mr-2"
+            /> Create
             New Job
           </button>
         </div>
@@ -30,39 +33,65 @@
             <label
               for="status"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-              >Status</label
-            >
+            >Status</label>
             <select
               id="status"
               v-model="filters.status"
               class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50 dark:bg-gray-500 dark:text-gray-300"
             >
-              <option value="">All Statuses</option>
-              <option value="created">Created</option>
-              <option value="delayed">Delayed</option>
-              <option value="pending">Pending</option>
-              <option value="queued">Queued</option>
-              <option value="running">Running</option>
-              <option value="succeeded">Succeeded</option>
-              <option value="failed">Failed</option>
-              <option value="canceled">Canceled</option>
-              <option value="deleted">Deleted</option>
-              <option value="hidden">Hidden</option>
+              <option value="">
+                All Statuses
+              </option>
+              <option value="created">
+                Created
+              </option>
+              <option value="delayed">
+                Delayed
+              </option>
+              <option value="pending">
+                Pending
+              </option>
+              <option value="queued">
+                Queued
+              </option>
+              <option value="running">
+                Running
+              </option>
+              <option value="succeeded">
+                Succeeded
+              </option>
+              <option value="failed">
+                Failed
+              </option>
+              <option value="canceled">
+                Canceled
+              </option>
+              <option value="deleted">
+                Deleted
+              </option>
+              <option value="hidden">
+                Hidden
+              </option>
             </select>
           </div>
           <div>
             <label
               for="topic"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-              >Topic</label
-            >
+            >Topic</label>
             <select
               id="topic"
               v-model="filters.topic"
               class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50 dark:bg-gray-500 dark:text-gray-300"
             >
-              <option value="">All Topics</option>
-              <option v-for="topic in topics" :key="topic" :value="topic">
+              <option value="">
+                All Topics
+              </option>
+              <option
+                v-for="topic in topics"
+                :key="topic"
+                :value="topic"
+              >
                 {{ topic }}
               </option>
             </select>
@@ -71,37 +100,51 @@
             <label
               for="sort"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-              >Sort By</label
-            >
+            >Sort By</label>
             <select
               id="sort"
               v-model="filters.sort"
               class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50 dark:bg-gray-500 dark:text-gray-300"
             >
-              <option value="created_asc">Created (Oldest)</option>
-              <option value="created_desc">Created (Newest)</option>
-              <option value="priority_asc">Priority (Low to High)</option>
-              <option value="priority_desc">Priority (High to Low)</option>
-              <option value="updated_asc">Updated (Oldest)</option>
-              <option value="updated_desc">Updated (Newest)</option>
-              <option value="topic_asc">Topic (A-Z)</option>
-              <option value="topic_desc">Topic (Z-A)</option>
+              <option value="created_asc">
+                Created (Oldest)
+              </option>
+              <option value="created_desc">
+                Created (Newest)
+              </option>
+              <option value="priority_asc">
+                Priority (Low to High)
+              </option>
+              <option value="priority_desc">
+                Priority (High to Low)
+              </option>
+              <option value="updated_asc">
+                Updated (Oldest)
+              </option>
+              <option value="updated_desc">
+                Updated (Newest)
+              </option>
+              <option value="topic_asc">
+                Topic (A-Z)
+              </option>
+              <option value="topic_desc">
+                Topic (Z-A)
+              </option>
             </select>
           </div>
           <div>
             <label
               for="search"
               class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-              >Search</label
-            >
+            >Search</label>
             <div class="relative">
               <input
-                type="text"
                 id="search"
                 v-model="filters.search"
+                type="text"
                 placeholder="Search by ID or content..."
                 class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50 pl-10 dark:bg-gray-500"
-              />
+              >
               <div
                 class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
               >
@@ -115,17 +158,23 @@
         </div>
         <div class="mt-4 flex justify-end">
           <button
-            @click="applyFilters"
             class="bg-gray-200 hover:bg-gray-300 dark:bg-gray-300 dark:hover:bg-gray-200 text-gray-700 font-medium py-2 px-4 rounded mr-2"
+            @click="applyFilters"
           >
-            <font-awesome-icon :icon="['fas', 'filter']" class="mr-2" /> Apply
+            <font-awesome-icon
+              :icon="['fas', 'filter']"
+              class="mr-2"
+            /> Apply
             Filters
           </button>
           <button
-            @click="resetFilters"
             class="bg-gray-200 hover:bg-gray-300 dark:bg-gray-300 dark:hover:bg-gray-200 text-gray-700 font-medium py-2 px-4 rounded"
+            @click="resetFilters"
           >
-            <font-awesome-icon :icon="['fas', 'redo']" class="mr-2" /> Reset
+            <font-awesome-icon
+              :icon="['fas', 'redo']"
+              class="mr-2"
+            /> Reset
           </button>
         </div>
       </div>
@@ -179,7 +228,10 @@
             <tbody
               class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700"
             >
-              <tr v-for="job in jobs" :key="job.id">
+              <tr
+                v-for="job in jobs"
+                :key="job.id"
+              >
                 <td
                   class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-300"
                 >
@@ -213,31 +265,31 @@
                 >
                   <div class="flex space-x-2">
                     <button
-                      @click="viewJob(job.id)"
                       class="text-primary-600 hover:text-primary-900"
                       title="View Details"
+                      @click="viewJob(job.id)"
                     >
                       <font-awesome-icon :icon="['fas', 'eye']" />
                     </button>
                     <button
-                      @click="cloneJob(job.id)"
                       class="text-yellow-600 hover:text-yellow-900"
                       title="Clone"
+                      @click="cloneJob(job.id)"
                     >
                       <font-awesome-icon :icon="['fas', 'copy']" />
                     </button>
                     <button
                       v-if="job.status === 'Running'"
-                      @click="cancelJob(job.id)"
                       class="text-red-600 hover:text-red-900"
                       title="Cancel"
+                      @click="cancelJob(job.id)"
                     >
                       <font-awesome-icon :icon="['fas', 'stop']" />
                     </button>
                     <button
-                      @click="deleteJob(job.id)"
                       class="text-red-600 hover:text-red-900"
                       title="Delete"
+                      @click="deleteJob(job.id)"
                     >
                       <font-awesome-icon :icon="['fas', 'trash']" />
                     </button>
@@ -253,15 +305,15 @@
           <div class="flex-1 flex justify-between sm:hidden">
             <a
               href="#"
-              @click.prevent="prevPage"
               class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+              @click.prevent="prevPage"
             >
               Previous
             </a>
             <a
               href="#"
-              @click.prevent="nextPage"
               class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+              @click.prevent="nextPage"
             >
               Next
             </a>
@@ -288,14 +340,24 @@
                 <select
                   id="itemsPerPage"
                   v-model.number="itemsPerPage"
-                  @change="changeItemsPerPage"
                   class="rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring focus:ring-primary-500 focus:ring-opacity-50 dark:bg-gray-500 dark:text-gray-300 text-sm"
+                  @change="changeItemsPerPage"
                 >
-                  <option :value="5">5</option>
-                  <option :value="10">10</option>
-                  <option :value="25">25</option>
-                  <option :value="50">50</option>
-                  <option :value="100">100</option>
+                  <option :value="5">
+                    5
+                  </option>
+                  <option :value="10">
+                    10
+                  </option>
+                  <option :value="25">
+                    25
+                  </option>
+                  <option :value="50">
+                    50
+                  </option>
+                  <option :value="100">
+                    100
+                  </option>
                 </select>
               </div>
               <nav
@@ -304,8 +366,8 @@
               >
                 <a
                   href="#"
-                  @click.prevent="prevPage"
                   class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 dark:bg-gray-400"
+                  @click.prevent="prevPage"
                 >
                   <span class="sr-only">Previous</span>
                   <font-awesome-icon :icon="['fas', 'chevron-left']" />
@@ -314,20 +376,20 @@
                   v-for="page in displayedPages"
                   :key="page"
                   href="#"
-                  @click.prevent="goToPage(page)"
                   :class="[
                     currentPage === page
                       ? 'z-10 bg-primary-50 border-primary-500 text-primary-600 dark:bg-gray-200 dark:border-primary-800 dark:text-primary-900'
                       : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50 dark:bg-gray-300',
                     'relative inline-flex items-center px-4 py-2 border text-sm font-medium',
                   ]"
+                  @click.prevent="goToPage(page)"
                 >
                   {{ page }}
                 </a>
                 <a
                   href="#"
-                  @click.prevent="nextPage"
                   class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 dark:bg-gray-400"
+                  @click.prevent="nextPage"
                 >
                   <span class="sr-only">Next</span>
                   <font-awesome-icon :icon="['fas', 'chevron-right']" />

@@ -20,16 +20,17 @@
             Job Distribution by Topic
           </h4>
           <div class="space-y-4">
-            <div v-for="topic in topicDistribution" :key="topic.name">
+            <div
+              v-for="topic in topicDistribution"
+              :key="topic.name"
+            >
               <div class="flex justify-between mb-1">
                 <span
                   class="text-sm font-medium text-gray-700 dark:text-gray-400"
-                  >{{ topic.name }}</span
-                >
+                >{{ topic.name }}</span>
                 <span
                   class="text-sm font-medium text-gray-700 dark:text-gray-400"
-                  >{{ topic.count }} ({{ topic.percentage }}%)</span
-                >
+                >{{ topic.count }} ({{ topic.percentage }}%)</span>
               </div>
               <div
                 class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5"
@@ -38,7 +39,7 @@
                   class="h-2.5 rounded-full"
                   :class="topic.color"
                   :style="{ width: topic.percentage + '%' }"
-                ></div>
+                />
               </div>
             </div>
           </div>
@@ -48,18 +49,19 @@
             Success Rate by Topic
           </h4>
           <div class="space-y-4">
-            <div v-for="topic in successRates" :key="topic.name">
+            <div
+              v-for="topic in successRates"
+              :key="topic.name"
+            >
               <div class="flex justify-between mb-1">
                 <span
                   class="text-sm font-medium text-gray-700 dark:text-gray-400"
-                  >{{ topic.name }}</span
-                >
+                >{{ topic.name }}</span>
                 <span
                   class="text-sm font-medium text-gray-700 dark:text-gray-400"
-                  >{{
-                    topic.successRate !== null ? topic.successRate + "%" : "N/A"
-                  }}</span
-                >
+                >{{
+                  topic.successRate !== null ? topic.successRate + "%" : "N/A"
+                }}</span>
               </div>
               <div
                 class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5"
@@ -68,7 +70,7 @@
                   v-if="topic.successRate !== null"
                   class="bg-green-500 dark:bg-green-700 h-2.5 rounded-full"
                   :style="{ width: topic.successRate + '%' }"
-                ></div>
+                />
               </div>
             </div>
           </div>
@@ -128,7 +130,10 @@
           <tbody
             class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700"
           >
-            <tr v-for="topic in topicsList" :key="topic.name">
+            <tr
+              v-for="topic in topicsList"
+              :key="topic.name"
+            >
               <td
                 class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-400"
               >
@@ -148,8 +153,8 @@
                 class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"
               >
                 <div
-                  class="flex items-center"
                   v-if="topic.successRate !== null"
+                  class="flex items-center"
                 >
                   <div
                     class="w-16 bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 mr-2"
@@ -157,7 +162,7 @@
                     <div
                       class="bg-green-500 dark:bg-green-700 h-2.5 rounded-full"
                       :style="{ width: topic.successRate + '%' }"
-                    ></div>
+                    />
                   </div>
                   <span>{{ topic.successRate }}%</span>
                 </div>
@@ -174,10 +179,13 @@
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 <a
-                  @click="viewTopicJobs(topic.name)"
                   class="text-primary-600 hover:text-primary-900 cursor-pointer"
+                  @click="viewTopicJobs(topic.name)"
                 >
-                  <font-awesome-icon :icon="['fas', 'eye']" class="mr-1" /> View
+                  <font-awesome-icon
+                    :icon="['fas', 'eye']"
+                    class="mr-1"
+                  /> View
                   Jobs
                 </a>
               </td>

@@ -32,7 +32,7 @@
           <div
             class="w-3 h-3 rounded-full shadow-sm"
             :style="{ backgroundColor: stat.color }"
-          ></div>
+          />
           <span class="font-medium text-gray-700 dark:text-gray-200 text-sm">{{
             stat.label
           }}</span>
@@ -63,7 +63,6 @@ export default {
   props: {
     jobActivity: {
       type: Object,
-      required: true,
       default: () => ({
         createdJobs: 0,
         queuedJobs: 0,
@@ -77,28 +76,6 @@ export default {
     return {
       isDark: false,
     };
-  },
-  mounted() {
-    this.checkTheme();
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.attributeName === "class") {
-          this.checkTheme();
-        }
-      });
-    });
-    observer.observe(document.documentElement, { attributes: true });
-    this.observer = observer;
-  },
-  beforeUnmount() {
-    if (this.observer) {
-      this.observer.disconnect();
-    }
-  },
-  methods: {
-    checkTheme() {
-      this.isDark = document.documentElement.classList.contains("dark");
-    },
   },
   computed: {
     totalJobs() {
@@ -184,6 +161,28 @@ export default {
         },
         cutout: "75%",
       };
+    },
+  },
+  mounted() {
+    this.checkTheme();
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === "class") {
+          this.checkTheme();
+        }
+      });
+    });
+    observer.observe(document.documentElement, { attributes: true });
+    this.observer = observer;
+  },
+  beforeUnmount() {
+    if (this.observer) {
+      this.observer.disconnect();
+    }
+  },
+  methods: {
+    checkTheme() {
+      this.isDark = document.documentElement.classList.contains("dark");
     },
   },
 };

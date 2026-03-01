@@ -16,7 +16,10 @@
           class="bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600 text-white dark:text-gray-200 font-bold py-2 px-4 rounded"
           @click="unlockAllResources"
         >
-          <font-awesome-icon :icon="['fas', 'unlock-alt']" class="mr-2" />
+          <font-awesome-icon
+            :icon="['fas', 'unlock-alt']"
+            class="mr-2"
+          />
           Unlock All Resources
         </button>
       </div>
@@ -27,7 +30,10 @@
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
         <div class="flex items-center">
           <div class="rounded-full bg-blue-100 p-3">
-            <font-awesome-icon :icon="['fas', 'lock']" class="text-blue-500" />
+            <font-awesome-icon
+              :icon="['fas', 'lock']"
+              class="text-blue-500"
+            />
           </div>
           <div class="ml-4">
             <h4 class="text-gray-500 dark:text-gray-300 text-sm">
@@ -101,7 +107,10 @@
           <tbody
             class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700"
           >
-            <tr v-for="resource in resourceStats" :key="resource.name">
+            <tr
+              v-for="resource in resourceStats"
+              :key="resource.name"
+            >
               <td
                 class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-200"
               >
@@ -131,7 +140,10 @@
                   class="text-red-600 hover:text-red-900 dark:text-red-700"
                   @click="unlockResource(resource.resourceName)"
                 >
-                  <font-awesome-icon :icon="['fas', 'unlock']" class="mr-1" />
+                  <font-awesome-icon
+                    :icon="['fas', 'unlock']"
+                    class="mr-1"
+                  />
                   Unlock
                 </button>
               </td>

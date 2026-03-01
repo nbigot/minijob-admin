@@ -2,6 +2,9 @@ import pluginVue from "eslint-plugin-vue";
 import globals from "globals";
 
 export default [
+  {
+    ignores: ["docs/.vitepress/cache/**", "docs/.vitepress/dist/**"],
+  },
   // add more generic rulesets here, such as:
   // js.configs.recommended,
   ...pluginVue.configs["flat/recommended"],

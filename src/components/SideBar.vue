@@ -10,13 +10,16 @@
     <div
       class="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between"
     >
-      <h1 class="text-xl font-bold truncate" v-show="!isCollapsed">
+      <h1
+        v-show="!isCollapsed"
+        class="text-xl font-bold truncate"
+      >
         MiniJob Admin
       </h1>
       <button
-        @click="toggleCollapse"
         class="p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition"
         :class="{ 'ml-auto': !isCollapsed }"
+        @click="toggleCollapse"
       >
         <font-awesome-icon
           :icon="isCollapsed ? 'chevron-right' : 'chevron-left'"
@@ -26,7 +29,10 @@
 
     <nav class="p-4 flex-1">
       <ul class="space-y-2">
-        <li v-for="item in menuItems" :key="item.path">
+        <li
+          v-for="item in menuItems"
+          :key="item.path"
+        >
           <router-link
             :to="item.path"
             class="p-2 rounded-md transition flex items-center hover:bg-primary-700 dark:hover:bg-gray-700"
@@ -48,9 +54,9 @@
     <!-- Auto Refresh toggle -->
     <div class="p-4 border-t border-gray-200 dark:border-gray-700">
       <button
-        @click="toggleAutoRefresh"
-        class="w-full p-2 rounded-md flex items-center justify-center transition mb-3 hover:bg-primary-700 dark:hover:bg-gray-700"
         v-tooltip="isCollapsed ? 'Auto Refresh' : ''"
+        class="w-full p-2 rounded-md flex items-center justify-center transition mb-3 hover:bg-primary-700 dark:hover:bg-gray-700"
+        @click="toggleAutoRefresh"
       >
         <font-awesome-icon
           :icon="autoRefresh ? ['fas', 'toggle-on'] : ['fas', 'toggle-off']"
@@ -68,11 +74,11 @@
 
       <!-- Theme toggle button -->
       <button
-        @click="toggleTheme"
-        class="w-full p-2 rounded-md flex items-center justify-center transition hover:bg-primary-700 dark:hover:bg-gray-700"
         v-tooltip="
           isCollapsed ? (isDarkTheme ? 'Dark Theme' : 'Light Theme') : ''
         "
+        class="w-full p-2 rounded-md flex items-center justify-center transition hover:bg-primary-700 dark:hover:bg-gray-700"
+        @click="toggleTheme"
       >
         <font-awesome-icon
           :icon="isDarkTheme ? 'moon' : 'sun'"
