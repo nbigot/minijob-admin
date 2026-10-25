@@ -1,4 +1,7 @@
+import { readFileSync } from "node:fs";
 import { defineConfig } from "vitepress";
+
+const { version } = JSON.parse(readFileSync(new URL("../../package.json", import.meta.url), "utf-8"));
 
 export default defineConfig({
   title: "MiniJob Admin Dashboard",
@@ -13,7 +16,7 @@ export default defineConfig({
       { text: "Guide", link: "/guide/getting-started" },
       { text: "Reference", link: "/reference/job-states" },
       {
-        text: "v1.0.1",
+        text: `v${version}`,
         items: [
           { text: "Changelog", link: "https://github.com/nbigot/minijob-admin/releases" },
           { text: "Contributing", link: "/guide/contributing" },

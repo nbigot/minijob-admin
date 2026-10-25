@@ -88,6 +88,14 @@
           isDarkTheme ? "Dark Theme" : "Light Theme"
         }}</span>
       </button>
+
+      <!-- App version -->
+      <p
+        v-show="!isCollapsed"
+        class="mt-3 text-xs text-center opacity-70"
+      >
+        v{{ appVersion }}
+      </p>
     </div>
   </aside>
 </template>
@@ -130,6 +138,7 @@ export default {
       refreshInterval: null,
       isCollapsed: false,
       remainingTime: 0,
+      appVersion: import.meta.env.VITE_APP_VERSION,
       // Navigation items definition with Font Awesome icons
       menuItems: [
         { name: "Dashboard", path: "/", icon: "tachometer-alt" },

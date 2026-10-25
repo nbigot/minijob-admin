@@ -455,6 +455,27 @@ Screenshots, mockups, or examples.
 - Medium changes: 3-7 days
 - Large changes: 1-2 weeks
 
+## Releasing
+
+For maintainers. The version is written in one place, `package.json`.
+
+1. On a branch, bump the version and open a pull request:
+
+   ```bash
+   npm version patch --no-git-tag-version # or minor, major
+   ```
+
+2. Once CI passes, merge it.
+3. Tag `main` with the new version and push the tag:
+
+   ```bash
+   git switch main && git pull
+   git tag -a v1.0.2 -m "v1.0.2"
+   git push origin v1.0.2
+   ```
+
+The tag starts the release workflow: it checks the tag matches `package.json`, publishes the image to `ghcr.io/nbigot/minijob-admin` and creates the GitHub release.
+
 ## License
 
 By contributing, you agree that your contributions will be licensed under the MIT License.
