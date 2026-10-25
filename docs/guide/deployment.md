@@ -15,6 +15,8 @@ MiniJob Admin Dashboard offers flexible deployment options to suit your infrastr
 
 ### Quick Start
 
+Each release publishes an image to the GitHub Container Registry, `ghcr.io/nbigot/minijob-admin`, for linux/amd64 and linux/arm64. It is tagged with the release version (for example `1.0.1`), its minor version (`1.0`) and `latest`.
+
 The simplest way to deploy:
 
 ```bash
@@ -22,7 +24,7 @@ docker run \
   -e BACKEND_URL="http://your-backend:8080" \
   -e PROMETHEUS_URL="http://your-prometheus:9090" \
   -p 8081:80 \
-  nbigot/minijob-admin
+  ghcr.io/nbigot/minijob-admin
 ```
 
 Access at `http://localhost:8081`
@@ -33,7 +35,7 @@ Access at `http://localhost:8081`
 docker run \
   -e BACKEND_URL="http://your-backend:8080" \
   -p 9000:80 \
-  nbigot/minijob-admin
+  ghcr.io/nbigot/minijob-admin
 ```
 
 Access at `http://localhost:9000`
@@ -47,7 +49,7 @@ docker run \
   -e BACKEND_URL="http://host.docker.internal:8080" \
   -e PROMETHEUS_URL="http://host.docker.internal:9090" \
   -p 8081:80 \
-  nbigot/minijob-admin
+  ghcr.io/nbigot/minijob-admin
 ```
 
 ::: tip
@@ -72,7 +74,7 @@ docker run \
   --network minijob-network \
   -e BACKEND_URL="http://minijob-backend:8080" \
   -p 8081:80 \
-  nbigot/minijob-admin
+  ghcr.io/nbigot/minijob-admin
 ```
 
 ## Docker Compose Deployment
@@ -96,7 +98,7 @@ version: "3.8"
 
 services:
   minijob-admin:
-    image: nbigot/minijob-admin:latest
+    image: ghcr.io/nbigot/minijob-admin:latest
     ports:
       - "8081:80"
     environment:
@@ -286,7 +288,7 @@ spec:
     spec:
       containers:
         - name: minijob-admin
-          image: nbigot/minijob-admin:latest
+          image: ghcr.io/nbigot/minijob-admin:latest
           ports:
             - containerPort: 80
           env:
@@ -477,15 +479,16 @@ After deployment, verify:
 ### Docker Rollback
 
 ```bash
-# Tag current version
-docker tag nbigot/minijob-admin:latest nbigot/minijob-admin:backup
+# Pull the previous version (see the releases page for the versions)
+docker pull ghcr.io/nbigot/minijob-admin:1.0.1
 
-# Pull previous version
-docker pull nbigot/minijob-admin:1.0.0
-
-# Restart with previous version
+# Replace the running container with the previous version
 docker stop minijob-admin
-docker run -d --name minijob-admin nbigot/minijob-admin:1.0.0
+docker rm minijob-admin
+docker run -d --name minijob-admin \
+  -e BACKEND_URL="http://your-backend:8080" \
+  -p 8081:80 \
+  ghcr.io/nbigot/minijob-admin:1.0.1
 ```
 
 ### Kubernetes Rollback

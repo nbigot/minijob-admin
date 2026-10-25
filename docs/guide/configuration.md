@@ -117,7 +117,7 @@ docker run \
   -e BACKEND_URL="http://backend:8080" \
   -e PROMETHEUS_URL="http://prometheus:9090" \
   -p 8081:80 \
-  nbigot/minijob-admin
+  ghcr.io/nbigot/minijob-admin
 ```
 
 These environment variables are injected into the nginx configuration at container startup using `envsubst`.
@@ -141,7 +141,7 @@ version: "3.8"
 
 services:
   minijob-admin:
-    image: nbigot/minijob-admin
+    image: ghcr.io/nbigot/minijob-admin
     ports:
       - "8081:80"
     environment:

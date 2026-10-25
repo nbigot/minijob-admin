@@ -253,7 +253,7 @@ Maps to nginx backend proxy configuration.
 docker run \
   -e BACKEND_URL="http://backend:8080" \
   -p 8081:80 \
-  nbigot/minijob-admin
+  ghcr.io/nbigot/minijob-admin
 ```
 
 **Not the same as `VITE_API_BASE_URL`:**
@@ -269,7 +269,7 @@ Maps to nginx Prometheus proxy configuration.
 docker run \
   -e PROMETHEUS_URL="http://prometheus:9090" \
   -p 8081:80 \
-  nbigot/minijob-admin
+  ghcr.io/nbigot/minijob-admin
 ```
 
 ### Build Arguments
@@ -473,7 +473,7 @@ docker run \
   -e BACKEND_URL="http://localhost:8080" \
   -e PROMETHEUS_URL="http://localhost:9090" \
   -p 8081:80 \
-  nbigot/minijob-admin
+  ghcr.io/nbigot/minijob-admin
 
 # Check nginx config in container
 docker exec <container> cat /etc/nginx/conf.d/default.conf
@@ -526,7 +526,7 @@ VITE_USE_MOCK_API=false
 version: "3.8"
 services:
   minijob-admin:
-    image: nbigot/minijob-admin
+    image: ghcr.io/nbigot/minijob-admin
     environment:
       - BACKEND_URL=http://minijob-backend:8080
       - PROMETHEUS_URL=http://prometheus:9090
