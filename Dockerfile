@@ -1,5 +1,6 @@
 # Build stage
-FROM node:18-alpine AS builder
+# The output is static files: build them once, on the native platform, for every image platform
+FROM --platform=$BUILDPLATFORM node:24-alpine AS builder
 
 WORKDIR /app
 
