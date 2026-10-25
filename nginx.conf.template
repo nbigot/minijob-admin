@@ -50,6 +50,12 @@ server {
         }
     }
 
+    # Raw Prometheus metrics of the server (linked from the Health page)
+    location = /metrics {
+        proxy_pass ${BACKEND_URL}/metrics;
+        proxy_set_header Host $host;
+    }
+
     # Prometheus metrics redirect
     location /prometheus/ {
         return 302 ${PROMETHEUS_URL}/;

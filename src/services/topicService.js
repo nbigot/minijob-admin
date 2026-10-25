@@ -1,4 +1,4 @@
-import apiClient from "./axios.js";
+import apiClient, { errorMessage } from "./axios.js";
 
 export const topicService = {
   // Get all topics
@@ -7,7 +7,7 @@ export const topicService = {
       const response = await apiClient.get("/api/v1/topics/");
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to fetch topics: ${error.message}`);
+      throw new Error(`Failed to fetch topics: ${errorMessage(error)}`);
     }
   },
 

@@ -179,6 +179,14 @@
         </div>
       </div>
 
+      <!-- Shown in the page: auto-refresh reloads the list while a modal may be open -->
+      <p
+        v-if="loadError"
+        class="mb-4 text-red-600"
+      >
+        {{ loadError }}
+      </p>
+
       <!-- Jobs Table -->
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
         <div class="overflow-x-auto">
@@ -279,7 +287,7 @@
                       <font-awesome-icon :icon="['fas', 'copy']" />
                     </button>
                     <button
-                      v-if="job.status === 'Running'"
+                      v-if="isCancellable(job.state)"
                       class="text-red-600 hover:text-red-900"
                       title="Cancel"
                       @click="cancelJob(job.id)"
@@ -429,6 +437,7 @@
 <script>
 import { jobService, topicService } from "../services/index.js";
 import { getStateClass } from "../utils/stateClass.js";
+import { isCancellable } from "../utils/jobState.js";
 import ConfirmationModal from "../components/ConfirmationModal.vue";
 import SuccessModal from "../components/SuccessModal.vue";
 import FailureModal from "../components/FailureModal.vue";
@@ -454,6 +463,7 @@ export default {
       itemsPerPage: 10,
       totalJobs: 0,
       loading: false,
+      loadError: "",
       showModal: false,
       modalTitle: "",
       modalMessage: "",
@@ -499,6 +509,7 @@ export default {
   },
   methods: {
     getStateClass,
+    isCancellable,
     openModal(title, message, action = null) {
       this.modalTitle = title;
       this.modalMessage = message;
@@ -537,11 +548,7 @@ export default {
         }
       } catch (error) {
         console.error("Error loading topics:", error);
-        this.$notify({
-          title: "Error",
-          text: error.message,
-          type: "error",
-        });
+        this.openModalFailure(error.message);
       }
     },
     async loadJobs() {
@@ -556,13 +563,10 @@ export default {
         const response = await jobService.getJobs(params);
         this.jobs = response.jobs || [];
         this.totalJobs = response.total || 0;
+        this.loadError = "";
       } catch (error) {
         console.error("Error loading jobs:", error);
-        this.$notify({
-          title: "Error",
-          text: "Failed to load jobs",
-          type: "error",
-        });
+        this.loadError = error.message || "Failed to load jobs";
       } finally {
         this.loading = false;
       }
@@ -626,11 +630,8 @@ export default {
       try {
         await jobService.cancelJob(id);
 
-        // Update job status in the list
-        const job = this.jobs.find((j) => j.id === id);
-        if (job) {
-          job.status = "Cancelled";
-        }
+        // Reload the list: the server enqueues the cancelled job again
+        await this.loadJobs();
 
         this.openModalSuccess(`Job ${id} was cancelled successfully`);
       } catch (error) {

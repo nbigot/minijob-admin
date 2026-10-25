@@ -375,7 +375,7 @@
 </template>
 
 <script>
-import { jobService } from "../services/index.js";
+import { jobService, topicService } from "../services/index.js";
 import SuccessModal from "../components/SuccessModal.vue";
 import FailureModal from "../components/FailureModal.vue";
 
@@ -385,14 +385,7 @@ export default {
   props: {
     existingTopics: {
       type: Array,
-      default: () => [
-        "mock-data-processing",
-        "mock-email-notifications",
-        "mock-report-generation",
-        "mock-file-uploads",
-        "mock-user-onboarding",
-        "mock-data-backup",
-      ],
+      default: () => [],
     },
     cloneJobId: {
       type: String,
@@ -449,6 +442,7 @@ export default {
         console.error("Error parsing topics from route:", e);
       }
     }
+    await this.loadTopics();
 
     // Handle cloning if cloneJobId is provided
     if (this.cloneJobId) {
@@ -456,6 +450,15 @@ export default {
     }
   },
   methods: {
+    async loadTopics() {
+      try {
+        // Offer every topic known to the server, plus those already listed
+        const response = await topicService.getTopics();
+        this.topics = [...new Set([...this.topics, ...(response.topics || [])])];
+      } catch (error) {
+        console.error("Error loading topics:", error);
+      }
+    },
     async loadJobForCloning() {
       try {
         const response = await jobService.getJobById(this.cloneJobId);
@@ -467,7 +470,7 @@ export default {
 
         // Populate form with source job data
         this.job.topic = sourceJob.topic || "";
-        this.job.priority = sourceJob.priority || 1;
+        this.job.priority = sourceJob.priority ?? 1;
         this.job.properties = JSON.stringify(
           sourceJob.properties || {},
           null,
@@ -541,8 +544,9 @@ export default {
         name: this.job.name,
         sessionId: this.job.sessionId,
         traceId: this.job.traceId,
-        startAfter: this.job.startAfter,
-        delay: this.job.delay,
+        // Only the chosen schedule applies; an emptied number input gives ""
+        startAfter: this.job.schedule === "scheduled" ? this.job.startAfter : 0,
+        delay: this.job.schedule === "delayed" ? Number(this.job.delay) || 0 : 0,
         callbackUrl: this.job.callbackUrl,
       };
 

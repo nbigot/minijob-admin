@@ -1,10 +1,8 @@
-import apiClient from "./axios.js";
+import apiClient, { errorMessage } from "./axios.js";
 
 // Helper function to compute display properties from job data
 function enrichJobData(job) {
-  // Compute status from history
   const lastEvent = job.history?.[job.history.length - 1];
-  const status = lastEvent ? lastEvent.eventType.toLowerCase() : "unknown";
 
   // Compute created timestamp (first CREATE event)
   const createEvent = job.history?.find((e) => e.eventType === "CREATE");
@@ -13,9 +11,9 @@ function enrichJobData(job) {
   // Compute updated timestamp (last event)
   const updated = lastEvent ? new Date(lastEvent.timestamp).toISOString().replace("T", " ").substring(0, 19) : created;
 
+  // The job's state comes from the server (job.state)
   return {
     ...job,
-    status,
     created,
     updated,
   };
@@ -35,7 +33,7 @@ export const jobService = {
         jobs: enrichedJobs,
       };
     } catch (error) {
-      throw new Error(`Failed to fetch jobs: ${error.message}`);
+      throw new Error(`Failed to fetch jobs: ${errorMessage(error)}`);
     }
   },
 
@@ -48,7 +46,7 @@ export const jobService = {
       }
       return enrichJobData(response.data);
     } catch (error) {
-      throw new Error(`Failed to fetch job ${jobId}: ${error.message}`);
+      throw new Error(`Failed to fetch job ${jobId}: ${errorMessage(error)}`);
     }
   },
 
@@ -69,7 +67,7 @@ export const jobService = {
       const response = await apiClient.delete(`/api/v1/job/${jobId}`);
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to delete job ${jobId}: ${error.message}`);
+      throw new Error(`Failed to delete job ${jobId}: ${errorMessage(error)}`);
     }
   },
 
@@ -79,7 +77,7 @@ export const jobService = {
       const response = await apiClient.post(`/api/v1/job/${jobId}/cancel`);
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to cancel job ${jobId}: ${error.message}`);
+      throw new Error(`Failed to cancel job ${jobId}: ${errorMessage(error)}`);
     }
   },
 
@@ -99,7 +97,7 @@ export const jobService = {
       const response = await apiClient.post("/api/v1/job/", jobData);
       return response.data;
     } catch (error) {
-      throw new Error(`Failed to create job: ${error.message}`);
+      throw new Error(`Failed to create job: ${errorMessage(error)}`);
     }
   },
 };

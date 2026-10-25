@@ -24,7 +24,7 @@ export const resourceService = {
   // Unlock a specific resource
   async unlockResource(resourceName) {
     try {
-      const response = await apiClient.post(`/api/v1/resources/${resourceName}/unlock`);
+      const response = await apiClient.post(`/api/v1/resource/${encodeURIComponent(resourceName)}/unlock`);
       if (response.status !== 200) {
         throw new Error(`Failed to unlock resource ${resourceName}: ${response.data.message}`);
       }

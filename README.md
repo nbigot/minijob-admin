@@ -26,15 +26,27 @@ A web application built with:
 npm install
 ```
 
-## Simulation
+## Demo mode (without a server)
 
-Is not using a real minijob backend server but use hardcoded mock data.
+Demo mode runs the UI with fake data, so you can try it without a minijob server.
+The API calls are answered in the browser by the mocks in `src/mocks`, which hold sample jobs, topics and resources.
 
 ```bash
 npm run dev -- --mode simul
 ```
 
-Is using the file `.env.simul` file to load env vars.
+Then open http://localhost:3000.
+
+- The settings come from `.env.simul`, where `VITE_USE_MOCK_API=true` turns the mocks on.
+- The fake data lives in the page: after a reload, the jobs you created, cancelled or deleted are back to the sample data.
+- The dashboard counters change every few seconds, to look like a busy server.
+- Links that leave the UI, such as the raw Prometheus metrics, need a real server.
+
+To use the mocks with the development settings instead, set `VITE_USE_MOCK_API=true` in `.env.development`, or for a single run:
+
+```bash
+VITE_USE_MOCK_API=true npm run dev
+```
 
 ## Development
 
@@ -42,13 +54,18 @@ Is using the file `.env.simul` file to load env vars.
 npm run dev
 ```
 
-To run the program with demo mode enabled:
+## Tests
 
 ```bash
-VITE_USE_MOCK_API=true npm run dev
-```
+# Unit tests
+npm test
 
-or change the `.env.development` file.
+# Integration tests: the UI services and views against a running minijob server
+MINIJOB_URL=http://127.0.0.1:8080 npm run test:integration
+
+# Also run the tests that wipe the server (delete all jobs, clear queues, unlock all resources)
+MINIJOB_DESTRUCTIVE=1 npm run test:integration
+```
 
 ## Build
 
@@ -117,4 +134,5 @@ docker build --build-arg VITE_APP_VERSION=1.2.3 -t nbigot/minijob-admin .
 ## Modes Summary
 
 - **Dev Mode**: `npm run dev` - Runs on port 3000 with hot reload
+- **Demo Mode**: `npm run dev -- --mode simul` - Runs on port 3000 with fake data, no server needed
 - **Docker Mode**: `npm run docker:compose` - Runs on port 8081 with nginx as web server

@@ -1,4 +1,4 @@
-import { defineConfig } from "vitest/config";
+import { configDefaults, defineConfig } from "vitest/config";
 import vue from "@vitejs/plugin-vue";
 
 // https://vitejs.dev/config/
@@ -23,5 +23,7 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     globals: true,
+    // Integration tests need a live server: see vitest.integration.config.js
+    exclude: [...configDefaults.exclude, "tests/integration/**"],
   },
 });

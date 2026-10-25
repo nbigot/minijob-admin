@@ -13,6 +13,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "vitest",
+    "test:integration": "vitest run --config vitest.integration.config.js",
     "docker:build": "docker build -t nbigot/minijob-admin .",
     "docker:compose": "docker-compose up -d",
     "docker:run": "docker run --rm --name minijob-admin -e BACKEND_URL=\"http://host.docker.internal:8080\" -e PROMETHEUS_URL=\"http://host.docker.internal:9090\" -p 8081:80 nbigot/minijob-admin:latest",
