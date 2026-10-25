@@ -47,8 +47,8 @@ VITE_APP_TITLE=My Custom Job Dashboard
 #### `VITE_APP_VERSION`
 
 - **Type**: `string`
-- **Default**: `1.0.1`
-- **Description**: Application version displayed in the UI
+- **Default**: the `version` in `package.json`
+- **Description**: Application version displayed at the bottom of the sidebar
 
 ```bash
 VITE_APP_VERSION=1.2.3
@@ -74,7 +74,6 @@ Used when running `npm run dev`:
 VITE_API_BASE_URL=http://localhost:8080
 VITE_PROMETHEUS_URL=http://localhost:9090
 VITE_APP_TITLE=MiniJob Admin Dashboard
-VITE_APP_VERSION=1.0.0
 VITE_USE_MOCK_API=false
 ```
 
@@ -86,7 +85,6 @@ Used when running `npm run dev -- --mode simul`:
 VITE_API_BASE_URL=http://localhost:8080
 VITE_PROMETHEUS_URL=http://localhost:9090
 VITE_APP_TITLE=MiniJob Admin Dashboard (Simulation)
-VITE_APP_VERSION=1.0.0
 VITE_USE_MOCK_API=true
 ```
 
@@ -98,7 +96,6 @@ Used when running `npm run build`:
 VITE_API_BASE_URL=https://api.example.com
 VITE_PROMETHEUS_URL=https://prometheus.example.com
 VITE_APP_TITLE=MiniJob Admin Dashboard
-VITE_APP_VERSION=1.0.0
 VITE_USE_MOCK_API=false
 ```
 

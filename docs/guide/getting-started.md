@@ -92,7 +92,6 @@ VITE_PROMETHEUS_URL=http://localhost:9090
 
 # Application Settings
 VITE_APP_TITLE=MiniJob Admin Dashboard
-VITE_APP_VERSION=1.0.0
 
 # Enable/Disable Mock API
 VITE_USE_MOCK_API=false

@@ -117,21 +117,16 @@ VITE_APP_TITLE=MiniJob Admin (Development)
 ### `VITE_APP_VERSION`
 
 **Type:** `string`  
-**Default:** `1.0.1`  
+**Default:** the `version` in `package.json`  
 **Required:** No
 
-Application version number displayed in:
-
-- UI footer
-- About page
-- Meta tags
+Application version number displayed at the bottom of the sidebar.
 
 **Format:** Semantic versioning (`major.minor.patch`)
 
 **Examples:**
 
 ```bash
-VITE_APP_VERSION=1.0.0
 VITE_APP_VERSION=1.2.3
 VITE_APP_VERSION=2.0.0-beta.1
 ```
@@ -191,7 +186,6 @@ Used when running `npm run dev`
 VITE_API_BASE_URL=http://localhost:8080
 VITE_PROMETHEUS_URL=http://localhost:9090
 VITE_APP_TITLE=MiniJob Admin Dashboard
-VITE_APP_VERSION=1.0.0
 VITE_USE_MOCK_API=false
 ```
 
@@ -203,7 +197,6 @@ Used when running `npm run dev -- --mode simul`
 VITE_API_BASE_URL=http://localhost:8080
 VITE_PROMETHEUS_URL=http://localhost:9090
 VITE_APP_TITLE=MiniJob Admin Dashboard (Simulation)
-VITE_APP_VERSION=1.0.0
 VITE_USE_MOCK_API=true
 ```
 
@@ -215,7 +208,6 @@ Used when running `npm run build`
 VITE_API_BASE_URL=https://api.example.com
 VITE_PROMETHEUS_URL=https://prometheus.example.com
 VITE_APP_TITLE=MiniJob Admin Dashboard
-VITE_APP_VERSION=1.0.0
 VITE_USE_MOCK_API=false
 ```
 
@@ -504,7 +496,6 @@ docker exec <container> cat /etc/nginx/conf.d/default.conf
 VITE_API_BASE_URL=http://localhost:8080
 VITE_PROMETHEUS_URL=http://localhost:9090
 VITE_APP_TITLE=MiniJob Admin Dashboard (Dev)
-VITE_APP_VERSION=1.0.0-dev
 VITE_USE_MOCK_API=false
 ```
 
@@ -516,7 +507,6 @@ VITE_USE_MOCK_API=false
 VITE_API_BASE_URL=https://api.example.com
 VITE_PROMETHEUS_URL=https://prometheus.example.com
 VITE_APP_TITLE=MiniJob Admin Dashboard
-VITE_APP_VERSION=1.0.0
 VITE_USE_MOCK_API=false
 ```
 
