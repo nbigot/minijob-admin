@@ -47,7 +47,7 @@ VITE_APP_TITLE=My Custom Job Dashboard
 #### `VITE_APP_VERSION`
 
 - **Type**: `string`
-- **Default**: `1.0.0`
+- **Default**: `1.0.1`
 - **Description**: Application version displayed in the UI
 
 ```bash

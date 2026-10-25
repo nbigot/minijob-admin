@@ -117,7 +117,7 @@ VITE_APP_TITLE=MiniJob Admin (Development)
 ### `VITE_APP_VERSION`
 
 **Type:** `string`  
-**Default:** `1.0.0`  
+**Default:** `1.0.1`  
 **Required:** No
 
 Application version number displayed in:

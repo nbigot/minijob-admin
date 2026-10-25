@@ -17,7 +17,7 @@ COPY . .
 # Application Configuration
 ENV VITE_APP_TITLE="MiniJob Admin"
 # Allow overriding the app version at docker build time via --build-arg VITE_APP_VERSION=...
-ARG VITE_APP_VERSION=1.0.0
+ARG VITE_APP_VERSION=1.0.1
 ENV VITE_APP_VERSION=${VITE_APP_VERSION}
 ENV VITE_USE_MOCK_API=false
 ENV VITE_API_BASE_URL=""
