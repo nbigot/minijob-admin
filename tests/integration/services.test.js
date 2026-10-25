@@ -121,9 +121,10 @@ describe("jobService", () => {
   });
 
   it("surfaces the server error message when creation is rejected", async () => {
-    // The server only accepts a number for "delay"
+    // The server only accepts a number for "delay". With JSON schema validation on (the Docker
+    // image config), the schema rejects it; with it off, the decoding does.
     await expect(jobService.createJob({ topic: uniqueTopic(), properties: {}, delay: "" })).rejects.toThrow(
-      /cannot create job from request/,
+      /^Failed to create job: (invalid json content|cannot create job from request)/,
     );
   });
 
