@@ -75,6 +75,15 @@ npm run build
 
 ## Docker Container Mode
 
+### Run the published image:
+
+Each release publishes an image for linux/amd64 and linux/arm64, tagged with its version and `latest`:
+
+```bash
+docker run -e BACKEND_URL="http://host.docker.internal:8080" \
+	-e PROMETHEUS_URL="http://host.docker.internal:9090" -p 8081:80 ghcr.io/nbigot/minijob-admin
+```
+
 ### Build with Docker:
 
 ```bash
@@ -115,7 +124,7 @@ npm run docker:run
 
 # Or run manually:
 docker run -e BACKEND_URL="http://host.docker.internal:8080" \
-	-e PROMETHEUS_URL="http://host.docker.internal:9090" -p 8081:80 minijob-admin
+	-e PROMETHEUS_URL="http://host.docker.internal:9090" -p 8081:80 nbigot/minijob-admin
 ```
 
 Notes:

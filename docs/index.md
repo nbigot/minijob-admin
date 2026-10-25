@@ -79,7 +79,7 @@ Get up and running in under 5 minutes:
 # Run with runtime configuration
 docker run -e BACKEND_URL="http://localhost:8080" \
   -e PROMETHEUS_URL="http://localhost:9090" \
-  -p 8081:80 nbigot/minijob-admin
+  -p 8081:80 ghcr.io/nbigot/minijob-admin
 ```
 
 Access the dashboard at `http://localhost:8081`

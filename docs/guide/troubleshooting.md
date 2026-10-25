@@ -279,7 +279,7 @@ docker logs <container-id>
 
 ```bash
 # Use different port
-docker run -p 8082:80 nbigot/minijob-admin
+docker run -p 8082:80 ghcr.io/nbigot/minijob-admin
 
 # Check nginx logs
 docker exec <container-id> cat /var/log/nginx/error.log
@@ -307,10 +307,10 @@ docker run \
   -e BACKEND_URL="http://localhost:8080" \
   -e PROMETHEUS_URL="http://localhost:9090" \
   -p 8081:80 \
-  nbigot/minijob-admin
+  ghcr.io/nbigot/minijob-admin
 
 # Or use env file
-docker run --env-file .env.docker -p 8081:80 nbigot/minijob-admin
+docker run --env-file .env.docker -p 8081:80 ghcr.io/nbigot/minijob-admin
 ```
 
 ### Can't Connect to Backend from Docker
@@ -324,7 +324,7 @@ Use `host.docker.internal` instead of `localhost`:
 docker run \
   -e BACKEND_URL="http://host.docker.internal:8080" \
   -p 8081:80 \
-  nbigot/minijob-admin
+  ghcr.io/nbigot/minijob-admin
 ```
 
 ## Performance Issues

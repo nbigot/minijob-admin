@@ -57,7 +57,7 @@ For production deployment with runtime configuration:
 # Pull and run the image
 docker run -e BACKEND_URL="http://your-backend:8080" \
   -e PROMETHEUS_URL="http://your-prometheus:9090" \
-  -p 8081:80 nbigot/minijob-admin
+  -p 8081:80 ghcr.io/nbigot/minijob-admin
 ```
 
 Access the dashboard at `http://localhost:8081`
@@ -139,7 +139,7 @@ If port 3000 (dev) or 8081 (Docker) is already in use:
 npm run dev -- --port 3001
 
 # For Docker, map to a different port
-docker run -p 8082:80 nbigot/minijob-admin
+docker run -p 8082:80 ghcr.io/nbigot/minijob-admin
 ```
 
 ### Backend Connection Issues
