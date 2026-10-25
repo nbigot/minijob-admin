@@ -457,6 +457,7 @@
 <script>
 import { jobService } from "../services/index.js";
 import { getStateClass } from "../utils/stateClass.js";
+import { isCancellable } from "../utils/jobState.js";
 import ConfirmationModal from "./ConfirmationModal.vue";
 import SuccessModal from "./SuccessModal.vue";
 import FailureModal from "./FailureModal.vue";
@@ -489,9 +490,7 @@ export default {
       return this.jobId || this.$route.params.id;
     },
     canCancel() {
-      return (
-        this.job && ["pending", "enqueue", "running"].includes(this.job.status)
-      );
+      return this.job && isCancellable(this.job.state);
     },
   },
   async mounted() {
@@ -518,39 +517,40 @@ export default {
     goBack() {
       this.$router.push("/jobs");
     },
+    // Keyed by job state (created, delayed, pending, queued, running, ...)
     getStatusIcon(status) {
       const statusIcons = {
-        create: "plus-circle",
-        delay: "clock",
+        created: "plus-circle",
+        delayed: "clock",
         pending: "hourglass-half",
-        enqueue: "list",
+        queued: "list",
         running: "play",
-        completed: "check-circle",
+        succeeded: "check-circle",
         failed: "times-circle",
-        cancelled: "ban",
+        canceled: "ban",
       };
       return ["fas", statusIcons[status] || "question-circle"];
     },
     getStatusIconClass(status) {
       const classes = {
-        create: "bg-blue-100",
-        delay: "bg-purple-100",
+        created: "bg-blue-100",
+        delayed: "bg-purple-100",
         pending: "bg-yellow-100",
-        enqueue: "bg-indigo-100",
+        queued: "bg-indigo-100",
         running: "bg-green-100",
-        completed: "bg-green-100",
+        succeeded: "bg-green-100",
         failed: "bg-red-100",
-        cancelled: "bg-gray-100",
+        canceled: "bg-gray-100",
       };
       const iconClasses = {
-        create: "text-blue-500",
-        delay: "text-purple-500",
+        created: "text-blue-500",
+        delayed: "text-purple-500",
         pending: "text-yellow-500",
-        enqueue: "text-indigo-500",
+        queued: "text-indigo-500",
         running: "text-green-500",
-        completed: "text-green-500",
+        succeeded: "text-green-500",
         failed: "text-red-500",
-        cancelled: "text-gray-500",
+        canceled: "text-gray-500",
       };
       return `${classes[status] || "bg-gray-100"} ${
         iconClasses[status] || "text-gray-500"

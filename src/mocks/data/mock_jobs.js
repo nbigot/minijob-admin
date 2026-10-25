@@ -486,18 +486,20 @@ mock.onDelete(/\/api\/v1\/job\/(.+)/).reply((config) => {
 });
 
 mock.onPost(/\/api\/v1\/job\/(.+)\/cancel/).reply((config) => {
-  const jobId = config.url.split("/")[2];
+  // "/api/v1/job/:id/cancel"
+  const jobId = config.url.split("/")[4];
   const job = data.jobs.find((j) => j.id === jobId);
 
-  if (job) {
-    job.status = "cancelled";
-    job.updatedAt = new Date().toISOString();
-    // Update stalled jobs list
-    data.stalledJobs = data.jobs.filter((job) => job.status === "stalled");
-    return [200, { success: true, job }];
-  } else {
-    return [404, { error: "Job not found" }];
+  // Like the server: only a running job can be cancelled, and it is enqueued again
+  if (!job) {
+    return [400, { error: "job not found", code: 1008, jobUUID: jobId }];
   }
+  if (job.state !== "running") {
+    return [400, { error: "job is not running", code: 1008, jobUUID: jobId }];
+  }
+  job.state = "queued";
+  job.history.push({ eventType: "CANCEL", timestamp: Date.now() }, { eventType: "ENQUEUE", timestamp: Date.now() });
+  return [200, { code: 200, message: "success" }];
 });
 
 mock.onPost(/\/api\/v1\/job\/(.+)\/retry/).reply((config) => {

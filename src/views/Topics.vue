@@ -265,11 +265,6 @@ export default {
         }));
       } catch (error) {
         console.error("Error loading topics data:", error);
-        this.$notify({
-          title: "Error",
-          text: "Failed to load topics data",
-          type: "error",
-        });
       } finally {
         this.loading = false;
       }

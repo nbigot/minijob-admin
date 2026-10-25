@@ -1,4 +1,4 @@
-import apiClient from "./axios.js";
+import apiClient, { errorMessage } from "./axios.js";
 
 export const dashboardService = {
   // Get dashboard data
@@ -36,7 +36,7 @@ export const dashboardService = {
         jobsByTopic,
       };
     } catch (error) {
-      throw new Error("Failed to fetch dashboard data");
+      throw new Error(`Failed to fetch dashboard data: ${errorMessage(error)}`);
     }
   },
 

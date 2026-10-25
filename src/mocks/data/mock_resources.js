@@ -36,7 +36,7 @@ mock.onGet("/api/v1/resources/").reply(200, dataResourceNames);
 
 mock.onGet("/api/v1/metrics/resources").reply(200, dataResourceMetrics);
 
-mock.onPost(/\/api\/v1\/resources\/(.+)\/unlock/).reply((config) => {
+mock.onPost(/\/api\/v1\/resource\/(.+)\/unlock/).reply((config) => {
   const resourceName = config.url.split("/")[4];
   const resource = dataResourceMetrics.resources.find((r) => r.resourceName === resourceName);
 

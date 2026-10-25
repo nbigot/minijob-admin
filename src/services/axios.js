@@ -18,4 +18,10 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+// The reason given by the server (`{"error": "job is not running", ...}`), else the axios message
+export function errorMessage(error) {
+  const data = error.response?.data;
+  return data?.error || data?.message || error.message;
+}
+
 export default apiClient;

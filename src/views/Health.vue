@@ -196,7 +196,7 @@
 </template>
 
 <script>
-import { healthService } from "../services/index.js";
+import { apiClient, healthService } from "../services/index.js";
 
 export default {
   name: "HealthMonitor",
@@ -289,11 +289,6 @@ export default {
         };
       } catch (error) {
         console.error("Error loading health status:", error);
-        this.$notify({
-          title: "Warning",
-          text: "Failed to load health status",
-          type: "warn",
-        });
       }
     },
 
@@ -306,11 +301,6 @@ export default {
         };
       } catch (error) {
         console.error("Error loading system info:", error);
-        this.$notify({
-          title: "Warning",
-          text: "Failed to load system information",
-          type: "warn",
-        });
       }
     },
 
@@ -326,21 +316,10 @@ export default {
       window.open(prometheusUrl, "_blank");
     },
 
-    async openRawMetricsEndpoint() {
-      try {
-        console.log("Opening raw metrics endpoint");
-        const metricsUrl = `${
-          import.meta.env.VITE_API_BASE_URL || "/api"
-        }/metrics/prometheus`;
-        window.open(metricsUrl, "_blank");
-      } catch (error) {
-        console.error("Error opening metrics endpoint:", error);
-        this.$notify({
-          title: "Error",
-          text: "Failed to open metrics endpoint",
-          type: "error",
-        });
-      }
+    openRawMetricsEndpoint() {
+      // The server serves the Prometheus metrics at /metrics
+      const metricsUrl = apiClient.getUri({ url: "/metrics" });
+      window.open(metricsUrl, "_blank");
     },
 
     handleRefreshData() {

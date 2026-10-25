@@ -707,6 +707,7 @@
                         <font-awesome-icon :icon="['fas', 'eye']" />
                       </button>
                       <button
+                        v-if="isCancellable(job.state)"
                         class="text-red-600 hover:text-red-900"
                         title="Cancel"
                         @click="cancelJob(job.id)"
@@ -762,6 +763,7 @@ import {
   resourceService,
 } from "../services/index.js";
 import { getStateClass } from "../utils/stateClass.js";
+import { isCancellable } from "../utils/jobState.js";
 import ConfirmationModal from "../components/ConfirmationModal.vue";
 import SuccessModal from "../components/SuccessModal.vue";
 import FailureModal from "../components/FailureModal.vue";
@@ -896,6 +898,7 @@ export default {
   },
   methods: {
     getStateClass,
+    isCancellable,
 
     openModal(title, message, action = null) {
       this.modalTitle = title;
@@ -979,7 +982,7 @@ export default {
             "Cannot connect to the server. Please check your network or server status.",
           );
         } else {
-          this.openModalFailure("Failed to load dashboard data");
+          this.openModalFailure(error.message || "Failed to load dashboard data");
         }
       } finally {
         this.loading = false;
@@ -1172,10 +1175,8 @@ export default {
           try {
             await jobService.cancelJob(jobId);
 
-            const job = this.stalledJobs.find((j) => j.id === jobId);
-            if (job) {
-              job.status = "Cancelled";
-            }
+            // Reload the list: the server enqueues the cancelled job again
+            await this.loadStalledJobs();
 
             this.openModalSuccess(`Job ${jobId} was cancelled successfully`);
           } catch (error) {

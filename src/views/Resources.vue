@@ -26,26 +26,8 @@
     </div>
 
     <!-- Resources Summary -->
+    <!-- The server only knows the locked resources: there is no total to show -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-        <div class="flex items-center">
-          <div class="rounded-full bg-blue-100 p-3">
-            <font-awesome-icon
-              :icon="['fas', 'lock']"
-              class="text-blue-500"
-            />
-          </div>
-          <div class="ml-4">
-            <h4 class="text-gray-500 dark:text-gray-300 text-sm">
-              Total Resources
-            </h4>
-            <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200">
-              {{ totalResources }}
-            </h3>
-          </div>
-        </div>
-      </div>
-
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
         <div class="flex items-center">
           <div class="rounded-full bg-yellow-100 p-3">
@@ -189,9 +171,7 @@ export default {
   components: { ConfirmationModal, SuccessModal, FailureModal },
   data() {
     return {
-      resourcesNames: [],
       resourceStats: [],
-      totalResources: 0,
       lockedResources: 0,
       showModal: false,
       modalTitle: "",
@@ -207,14 +187,7 @@ export default {
   methods: {
     async loadResources() {
       try {
-        const [resourcesResponse, statsResponse] = await Promise.all([
-          resourceService.getResources(),
-          resourceService.getResourceStats(),
-        ]);
-
-        this.resourcesNames = resourcesResponse;
-        this.resourceStats = statsResponse;
-        this.totalResources = resourcesResponse.length;
+        this.resourceStats = await resourceService.getResourceStats();
         this.lockedResources = this.resourceStats.filter(
           (r) => r.jobId !== null
         ).length;
