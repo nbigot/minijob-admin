@@ -13,7 +13,7 @@ export default defineConfig({
       { text: "Guide", link: "/guide/getting-started" },
       { text: "Reference", link: "/reference/job-states" },
       {
-        text: "v1.0.0",
+        text: "v1.0.1",
         items: [
           { text: "Changelog", link: "https://github.com/nbigot/minijob-admin/releases" },
           { text: "Contributing", link: "/guide/contributing" },

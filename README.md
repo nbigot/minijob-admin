@@ -125,7 +125,7 @@ Notes:
 
 ### Overriding embedded app version at build time
 
-`VITE_APP_VERSION` defaults to `1.0.0` but can be overridden during image build with a build argument:
+`VITE_APP_VERSION` defaults to `1.0.1` but can be overridden during image build with a build argument:
 
 ```bash
 docker build --build-arg VITE_APP_VERSION=1.2.3 -t nbigot/minijob-admin .
